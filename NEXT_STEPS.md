@@ -25,9 +25,18 @@ data class PublicationConfig(
 
 ### ✅ Completado Recentemente
 
-5. **Masthead redesenhado** (commit [masthead-redesign])
+6. **Parser usa índice para detectar artigos livres** (commit [index-parser])
+   - Parser consulta `https://avante.pt/pt/{editionNumber}/?tpl=183`
+   - Deteta artigos marcados como "Artigo de acesso livre"
+   - Indicador vermelho (bullet) para artigos pagos no canto inferior direito
+   - Cards compactos só para secções "Opinião" e "Actual"
+   - Pill de autor reduzida e mais próxima do botão "Ler artigo"
+
+5. **Masthead redesenhado** (commit f2c3581, 61bbc29, 0386a9d, 7f34b50, 6408ae7)
    - Subtítulo agora mostra "Órgão Central do Partido Comunista Português"
    - Número da edição movido para badge com ícone de calendário
+   - Ponto de exclamação do logo corrigido para vermelho
+   - Header compactado com badge e ícones na mesma linha
    - Preparação para modularidade futura (múltiplas publicações)
 
 ### ✅ Completado Anteriormente
@@ -52,38 +61,47 @@ data class PublicationConfig(
    - Botão X vermelho para sair do modo
    - Cantos arredondados no banner alinhados com o card de conteúdo
 
+### 🎯 Descoberta Importante: Índice da Edição
+
+**URL do Índice:** `https://avante.pt/pt/{editionNumber}/?tpl=183`
+
+O índice contém informação estruturada sobre todos os artigos da edição:
+- **Artigos livres** marcados com `<h4>Artigo de acesso livre</h4>`
+- **Secções** claramente identificadas (Editorial, Opinião, Em Destaque, etc.)
+- **Tags** de subsecção (ex: "A talhe de foice", "PCP", "Crónica Internacional")
+- **Estrutura completa** da edição
+
+**Implementação:**
+- Parser agora consulta o índice para determinar quais artigos são livres
+- `ArticleSummary` tem novo campo `isFree: Boolean`
+- UI mostra indicador vermelho (bullet point) para artigos pagos
+- Cards compactos só para secções "Opinião" e "Actual"
+
 ### ⚠️ Problemas Identificados mas Não Resolvidos
 
-1. **Parser: Hero image caption tratada como texto**
-   - Exemplo: palavra "Lusa" em https://avante.pt/pt/2745/emdestaque/184314/...
-   - Caption da foto está a ser incluída no corpo do artigo
-   - **Causa:** Parser extrai `article p` sem filtrar `figure figcaption`
-   - **Fix necessário:** Excluir `figcaption` da extração de parágrafos
-   - **Fix necessário**: Parser extrai artigos de opinião (https://avante.pt/pt/2746/opiniao/...) e aplica a hero photo de um deles a todos. Se um dado artigo de opinião não tiver hero, não colocar qualquer imagem.
-   - Parser não trata a <blockquote> com destaque gráfico. Alguns artigos possuem <blockquote> destacada a cinzento e itálico. App deve tratá-los da mesma forma. Para cada URL, procurar <blockquote> e aplicar formatação.
-   - Secção argumentos (https://avante.pt/pt/2746/argumentos/) é tratada como memória (https://avante.pt/pt/2746/memoria/)
-   - Colocar grelha Sugestões (https://avante.pt/pt/2746/sugestoes/) no final da View Edição.
-   - Ícone da view Edição deve ser um jornal (como, por exemplo https://fontawesome.com/icons/classic/solid/newspaper, mas não necessariamente Font Awesome, principalmente se Font Awesome tiver custos ou precisar de atribuição)
-   - Ícone de caderno deve ser um bloco de notas (exemplo: https://fontawesome.com/icons/classic/solid/book)
-   - Grelha Aconteceu (https://avante.pt/pt/2746/aconteceu/) deve ter uma card na main view. Clicando, vamos para uma disposição em grelha com os conteúdos parsed (https://avante.pt/pt/2746/aconteceu/184461/Pe%C3%A7a-de-Saramago-estreia-em-ingl%C3%AAs.htm e seguintes)
+1. **Parser: Blockquotes não formatadas**
+   - Alguns artigos possuem `<blockquote>` destacada a cinzento e itálico
+   - App deve tratá-las com formatação especial
+   - **Severidade:** NICE TO HAVE
+   - **Tempo estimado:** 1 hora
 
-2. **Loading state sem preview**
-   - Spinner branco longo sem contexto
-   - Má primeira impressão na demo
-   - **Fix necessário:** `ReaderUiState.LoadingWithPreview(articleSummary)`
+2. **UI: Secções especiais em falta**
+   - Grelha Sugestões (https://avante.pt/pt/2746/sugestoes/) no final da View Edição
+   - Grelha Aconteceu (https://avante.pt/pt/2746/aconteceu/) com card na main view
+   - **Severidade:** NICE TO HAVE
+   - **Tempo estimado:** 5 horas total
 
-3. **Partilha não inclui summary**
-   - Partilha atual: só título + URL
-   - Falta: summary/excerpt do artigo
-   - Falta: hero image (opcional, mais complexo)
+3. **UI: Ícones incorretos**
+   - Ícone da view Edição deve ser um jornal
+   - Ícone de caderno deve ser um bloco de notas
+   - **Severidade:** NICE TO HAVE
+   - **Tempo estimado:** 30 minutos
 
-4. **Note status pills incompletos**
-   - Pills existem mas não há distinção visual clara entre tipos
-   - Falta: cores diferentes por tipo de nota
-
-5. **Proveniência da fonte no Caderno**
+4. **Proveniência da fonte no Caderno**
    - NoteCard não mostra de que artigo veio a nota
    - Requer: `NoteWithSource` data class + query adicional
+   - **Severidade:** NICE TO HAVE
+   - **Tempo estimado:** 2 horas
 
 ## Próximos Passos Prioritários
 
@@ -523,6 +541,8 @@ Se encontrares bugs ou tiveres dúvidas:
 
 **Última atualização:** 16 Jul 2026  
 **Branch:** aider-audit  
-**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, 99b6b9f, e9b5aa4, 17243a7, f2c3581
+**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, 99b6b9f, e9b5aa4, 17243a7, f2c3581, 61bbc29, 0386a9d, 7f34b50, 6408ae7, [index-parser]
 
 **Nota sobre Modularidade:** A app está a ser preparada para servir múltiplas publicações. Ver secção "Arquitetura Modular para Múltiplas Publicações" no topo deste documento.
+
+**Nota sobre Índice:** O parser agora usa o índice estruturado (`/?tpl=183`) para obter informação precisa sobre artigos livres vs pagos e estrutura da edição.

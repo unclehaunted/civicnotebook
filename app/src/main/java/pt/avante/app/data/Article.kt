@@ -38,7 +38,8 @@ data class ArticleSummary(
     val isPremium: Boolean = false,
     val heroImageUrl: String? = null,
     val summary: String,
-    val section: String? = null
+    val section: String? = null,
+    val isFree: Boolean = true // Explicitly marked as free access in index
 )
 
 data class HomeFeed(

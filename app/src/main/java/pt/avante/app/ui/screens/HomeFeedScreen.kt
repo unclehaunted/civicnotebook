@@ -203,10 +203,12 @@ fun ArticleListLayout(
     ) {
         items(articles.size) { index ->
             val summary = articles[index]
-            if (index == 0) {
-                LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
-            } else {
-                CompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
+            val isCompactSection = summary.section?.lowercase() in listOf("opinião", "actual", "opiniao")
+            
+            when {
+                index == 0 -> LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                isCompactSection -> CompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                else -> TextArticleCard(article = summary, onClick = { onArticleClick(summary) })
             }
         }
     }

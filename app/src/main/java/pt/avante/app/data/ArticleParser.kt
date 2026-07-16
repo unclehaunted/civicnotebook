@@ -111,9 +111,12 @@ object ArticleParser {
             val editionText = editionNode?.text()?.trim() ?: "Nº Desconhecido"
             val editionNumber = Regex("""n\.º\s*(\d+)""").find(editionText)?.groupValues?.get(1) ?: ""
             
+            // 2. Fetch index to get free/premium status
+            val freeArticleUrls = fetchFreeArticlesFromIndex(editionNumber)
+            
             val articles = mutableListOf<ArticleSummary>()
             
-            // 2. Sequentially parse the homepage content to track categories
+            // 3. Sequentially parse the homepage content to track categories
             val elements = doc.select(".content-front h2, .content-front h3, .content-front article")
             var currentCategory = "Destaque"
             
@@ -150,7 +153,9 @@ object ArticleParser {
                         }
                     }
                     
-                    val isPremium = !el.text().lowercase().contains("livre")
+                    // Check if article is free based on index
+                    val isFree = freeArticleUrls.contains(fullUrl)
+                    val isPremium = !isFree
                     
                     articles.add(ArticleSummary(
                         title = title,
@@ -159,7 +164,8 @@ object ArticleParser {
                         heroImageUrl = heroImageUrl,
                         summary = summary,
                         isPremium = isPremium,
-                        section = currentCategory
+                        section = currentCategory,
+                        isFree = isFree
                     ))
                 }
             }
@@ -192,6 +198,33 @@ object ArticleParser {
             )
         } catch (e: Exception) {
             null
+        }
+    }
+    
+    private suspend fun fetchFreeArticlesFromIndex(editionNumber: String): Set<String> = withContext(Dispatchers.IO) {
+        try {
+            val indexUrl = "https://avante.pt/pt/$editionNumber/?tpl=183"
+            val doc = Jsoup.connect(indexUrl).get()
+            
+            val freeUrls = mutableSetOf<String>()
+            
+            // Find all articles marked as "Artigo de acesso livre"
+            val articles = doc.select("article, section")
+            for (article in articles) {
+                val hasFreeMarker = article.select("h4:contains(Artigo de acesso livre)").isNotEmpty()
+                if (hasFreeMarker) {
+                    // Get the article link
+                    val link = article.select("a[href*='.htm']").first()?.attr("href")
+                    if (link != null) {
+                        val fullUrl = if (link.startsWith("http")) link else "https://avante.pt$link"
+                        freeUrls.add(fullUrl)
+                    }
+                }
+            }
+            
+            freeUrls
+        } catch (e: Exception) {
+            emptySet()
         }
     }
 }

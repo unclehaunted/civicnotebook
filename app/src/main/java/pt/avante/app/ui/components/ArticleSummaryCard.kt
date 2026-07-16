@@ -224,7 +224,7 @@ fun ArticleCardFooter(article: ArticleSummary) {
                     modifier = Modifier.size(16.dp)
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
             Surface(
                 color = Color.Transparent,
                 shape = CircleShape,
@@ -232,19 +232,31 @@ fun ArticleCardFooter(article: ArticleSummary) {
             ) {
                 Text(
                     text = article.author ?: "Redacção",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = TextSecondary,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
-        Icon(
-            Icons.Default.Star, // Replace with bookmark equivalent
-            contentDescription = "Guardar",
-            tint = TextSecondary,
-            modifier = Modifier.size(20.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (!article.isFree) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(OriginalRed, CircleShape)
+                )
+            }
+            Icon(
+                Icons.Default.Star,
+                contentDescription = "Guardar",
+                tint = TextSecondary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
     }
 }
