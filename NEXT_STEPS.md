@@ -1,6 +1,93 @@
 # CivicNotebook — Próximos Passos da Auditoria
 
-## Estado Atual (16 Jul 2026)
+## Doutrina de Arquitetura Parser/Source-Layer
+
+### Princípio Fundamental
+
+**O parser não é o produto. O caderno é o produto.**
+
+Esta aplicação é um caderno de leitura cívica/política. Artigos são fontes externas; destaques, comentários e notas são objetos do utilizador.
+
+O parser é atualmente importante porque o Avante.pt não expõe uma API limpa para aplicações. No entanto, o parser deve ser tratado como um **adaptador de fonte temporário**, não como o núcleo do produto.
+
+### Separação de Responsabilidades
+
+```text
+Fetching (HTTP/XML)
+    ↓
+Parsing/Source Adaptation (Avante HTML → modelo estável)
+    ↓
+Publication Model (Issue, Section, Article, Access Status)
+    ↓
+App Domain (UI, Caderno, Notes, Highlights, Search, Archive)
+```
+
+**Regra de ouro:**
+```text
+O parser preenche o modelo de publicação.
+O modelo de publicação alimenta a app.
+O parser é substituível.
+O caderno é durável.
+```
+
+### Modelo de Publicação Estável
+
+O parser deve produzir objetos que representam a organização jornalística/editorial do jornal:
+
+- **Issue** (edição/número)
+- **Issue Index** (inventário canónico de artigos)
+- **Section/Category** (secção editorial)
+- **Article Summary** (título, autor, intro, imagem, URL, estado de acesso)
+- **Article Full Content** (corpo completo, blocos estruturados)
+- **Access Status** (FREE, SUBSCRIBER_OR_PRINT, UNKNOWN)
+- **Author** (autoria)
+- **Intro/Lead** (parágrafo de abertura)
+- **Body Blocks** (texto, imagem, citação, subtítulo)
+- **Canonical URL** (URL fonte)
+- **Images** (com atribuição)
+- **Source Provenance** (de onde veio o conteúdo)
+- **Parser Warnings** (diagnósticos, problemas detetados)
+
+### Princípio de Substituição Futura
+
+O parser deve ser modular o suficiente para que uma futura integração API/backoffice possa preencher o mesmo modelo sem reescrever a app.
+
+**Fontes futuras possíveis:**
+```text
+AvanteHtmlSource        parser HTML atual
+AvanteApiSource         futura API oficial/backoffice
+OMilitanteHtmlSource    futuro parser para O Militante
+StaticFixtureSource     fixtures de teste/dev
+```
+
+Todas devem produzir o mesmo tipo de dados de publicação.
+
+### Inventário Canónico: Índice tpl=183
+
+O Índice estruturado é especialmente importante porque expressa a estrutura editorial real do jornal:
+
+```text
+https://www.avante.pt/pt/{issue}/?tpl=183
+```
+
+**O que o Índice contém:**
+- Inventário completo de artigos da edição
+- Secções claramente identificadas (`div.seccao`)
+- Marcadores de acesso livre ("Artigo de acesso livre")
+- Títulos, intros, imagens locais
+- Estrutura em ordem de documento
+
+**Estratégia de parsing:**
+```text
+Dentro do Índice:
+  percorrer conteúdo em ordem de documento
+  quando aparece marcador de secção/categoria, atualizar secção atual
+  quando um heading/link aponta para URL .htm, criar/atualizar resumo de artigo
+  anexar título local, URL, secção, intro, imagem, marcador de acesso
+  desduplicar por URL canónico normalizado
+```
+
+A página visual de destaque (`/pt/{issue}/`) é importante para destaques, mas **não é o inventário completo**.
 
 ### 🎯 Arquitetura Modular para Múltiplas Publicações
 
@@ -22,6 +109,8 @@ data class PublicationConfig(
     val parserStrategy: ArticleParserStrategy
 )
 ```
+
+## Estado Atual (16 Jul 2026)
 
 ### ✅ Completado Recentemente
 
@@ -103,7 +192,210 @@ O índice contém informação estruturada sobre todos os artigos da edição:
    - **Severidade:** NICE TO HAVE
    - **Tempo estimado:** 2 horas
 
-## Próximos Passos Prioritários
+## Próxima Tarefa Imediata: Auditoria de Arquitetura Parser/Source-Layer
+
+### Objetivo
+
+Auditar a arquitetura atual de parser/source e propor o menor refactor seguro que mova o parsing HTML específico do Avante para uma estrutura de adaptador de fonte modular e substituível.
+
+### Âmbito
+
+**Parser/source layer apenas.**
+
+**NÃO MUDAR:**
+- UI
+- Navegação
+- Caderno/notas
+- Schema de base de dados (a menos que claramente necessário e explicitamente justificado)
+- Styling
+- Funcionalidades de anotação
+
+### Antes de Editar, Identificar
+
+1. Ficheiros/funções atuais do parser
+2. Modelos de dados produzidos pelo parsing
+3. Onde acontece o fetching
+4. Onde acontece a normalização de URLs
+5. Onde são criados resumos de artigos e corpos de artigos
+6. Onde o output do parser entra na UI/repositório
+7. O que tornaria a substituição futura do parser dolorosa
+8. O menor passo de modularização seguro
+
+### Direção Esperada
+
+- Isolar funções de parsing específicas do Avante
+- Separar parsing de índice de edição do parsing de corpo de artigo
+- Separar helpers de normalização de URL/imagem/acesso
+- Fazer output do parser assemelhar-se a objetos de publicação estáveis
+- Evitar vazamento de seletores para código UI/repositório
+- Preservar comportamento existente da app enquanto se prepara para melhor substituição do parser
+
+### Política de Reescrita
+
+Uma reescrita completa da camada parser/source é permitida se o refactor incremental produzir piores resultados a longo prazo.
+
+**Se recomendar uma reescrita, deve fornecer:**
+1. Porquê o refactor incremental é insuficiente
+2. Que partes devem ser reescritas
+3. Que partes devem ser preservadas
+4. Benefícios esperados
+5. Riscos
+6. Caminho de migração
+7. Estratégia de teste/fixture
+8. Plano de rollback
+9. Menor passo de prova de conceito de reescrita
+
+**Distinguir entre:**
+- Reescrita completa da app
+- Reescrita da camada parser
+- Reescrita apenas do ArticleParser
+- Extração de módulo
+
+### Critérios de Aceitação
+
+Após a auditoria:
+1. Explicar o menor passo de implementação seguro
+2. Se seguro, implementar apenas esse passo
+3. Listar ficheiros alterados
+4. Parar
+
+### Prompt Pronto para Aider
+
+```text
+Temos um estudo do parser Avante e uma decisão de produto:
+
+A app é um caderno de leitura cívica/política. Artigos são fontes externas; notas/destaques são objetos do utilizador. O parser é atualmente importante porque o Avante.pt não tem uma API limpa para apps, mas o parser deve ser modular, substituível e extraível.
+
+Tarefa:
+Auditar a arquitetura atual de parser/source e propor o menor refactor seguro que mova o parsing HTML específico do Avante para uma estrutura de adaptador de fonte modular e substituível.
+
+Importante:
+- Não enquadrar isto como meramente corrigir seletores.
+- O parser deve preencher um modelo de publicação estável: issue, section/category, article summary, article full content, access status, author, intro, body blocks, canonical URL, images, source provenance, parser warnings.
+- A UI, Caderno, notas, destaques, pesquisa e arquivo devem consumir dados de publicação estáveis, não detalhes HTML do Avante.
+- Uma futura fonte API/backoffice/RSS/export do Avante, ou uma fonte O Militante, deve poder preencher o mesmo modelo mais tarde.
+
+Antes de editar:
+1. identificar ficheiros/funções atuais do parser;
+2. identificar modelos de dados produzidos pelo parsing;
+3. identificar onde acontece o fetching;
+4. identificar onde acontece a normalização de URLs;
+5. identificar onde são criados resumos de artigos e corpos de artigos;
+6. identificar onde o output do parser entra na UI/repositório;
+7. identificar o que tornaria a substituição futura do parser dolorosa;
+8. propor o menor passo de modularização seguro.
+
+Âmbito:
+Camada parser/source apenas.
+Sem mudanças de UI.
+Sem mudanças de Caderno/notas/navegação/styling.
+Sem reescrita ampla sem justificação extrema.
+
+Política de Reescrita:
+Uma reescrita completa da camada parser/source é permitida se o refactor incremental produzir piores resultados a longo prazo.
+Se recomendar uma reescrita, deve fornecer:
+1. porquê o refactor incremental é insuficiente;
+2. que partes devem ser reescritas;
+3. que partes devem ser preservadas;
+4. benefícios esperados;
+5. riscos;
+6. caminho de migração;
+7. estratégia de teste/fixture;
+8. plano de rollback;
+9. menor passo de prova de conceito de reescrita.
+Distinguir entre reescrita completa da app, reescrita da camada parser, reescrita apenas do ArticleParser, ou extração de módulo.
+
+Sem mudanças de base de dados/schema a menos que claramente necessário e explicitamente justificado.
+
+Direção esperada:
+- isolar funções de parsing específicas do Avante;
+- separar parsing de índice de edição do parsing de corpo de artigo;
+- separar helpers de normalização de URL/imagem/acesso;
+- evitar vazamento de seletores para código UI/repositório;
+- preservar comportamento existente.
+
+Após a auditoria:
+- explicar o menor passo de implementação seguro;
+- se seguro, implementar apenas esse passo;
+- listar ficheiros alterados;
+- parar.
+```
+
+## Tarefas Encenadas Posteriores
+
+### Tarefa 2: Parse Índice tpl=183 como Inventário Canónico de Edição
+
+**Âmbito:** Camada parser/source apenas.
+
+**Objetivos:**
+1. Adicionar ou melhorar parsing de `/pt/{issue}/?tpl=183`
+2. Extrair inventário de artigos do Índice
+3. Percorrer conteúdo do índice em ordem e rastrear `div.seccao` como secção atual
+4. Extrair links de artigos de âncoras `h2`/`h3` terminando em `.htm`
+5. Não depender apenas de wrappers `<article>`
+6. Extrair título local, URL, secção, intro, imagem e marcador de acesso onde disponível
+7. Desduplicar por URL canónico normalizado
+8. Ignorar imagens placeholder/logo
+9. Retornar valores de modelo de publicação estáveis, não valores específicos de UI
+
+### Tarefa 3: Melhorar Parsing de Corpo de Artigo Individual
+
+**Âmbito:** Camada parser/source apenas.
+
+**Objetivos:**
+1. Extrair corpo apenas de `section.main.entry article`
+2. Extrair título, autor, intro, citação e corpo completo
+3. Detetar artigos bloqueados/preview usando mensagem de subscrição
+4. Evitar parsing de grelhas de artigos relacionados como corpo
+5. Preservar proveniência de fonte e avisos do parser
+
+### Tarefa 4: Adicionar Avisos/Diagnósticos de Debug do Parser
+
+**Âmbito:** Diagnósticos parser/modelo apenas.
+
+**Objetivos:**
+1. Adicionar avisos para título/corpo/imagem/estado de acesso em falta
+2. Registar imagens placeholder ignoradas
+3. Registar merges de URLs duplicados
+4. Registar tipo de página desconhecido
+5. Registar estado preview/paywall
+
+### Tarefa 5: Preservar Metadados do Índice ao Abrir Artigo
+
+**Âmbito:** Comportamento de merge repositório/parser apenas.
+
+**Objetivos:**
+1. Não sobrescrever boas imagens do índice com imagens nulas do artigo
+2. Fazer merge cuidadoso do estado de acesso
+3. Preservar secção/categoria do índice a menos que página do artigo forneça dados melhores
+4. Preservar proveniência de fonte
+
+### Tarefa 6: Criar Testes de Parser Baseados em Fixtures
+
+**Âmbito:** Testes apenas.
+
+**Objetivos:**
+1. Adicionar fixtures HTML locais se o repo suportar testes
+2. Testar contagem de inventário do índice acima de limiar esperado
+3. Testar remoção de URLs duplicados
+4. Testar deteção de marcador livre
+5. Testar deteção de preview de artigo bloqueado
+6. Testar rejeição de imagem placeholder
+7. Testar exclusão de grelha relacionada
+
+## Não-Objetivos Explícitos
+
+**NÃO fazer sem justificação explícita:**
+
+1. **Reescrita ampla da app** — A app funciona. O parser precisa de modularização, não a app inteira.
+2. **Mudanças de UI** — A UI consome dados de publicação. Se o parser produzir dados estáveis, a UI não precisa de mudar.
+3. **Mudanças de Caderno/notas** — O Caderno é o produto durável. Não tocar a menos que absolutamente necessário.
+4. **Mudanças de navegação** — A navegação funciona.
+5. **Mudanças de styling** — O styling funciona.
+6. **Mudanças de schema de base de dados** — O schema atual suporta o modelo de publicação. Só mudar se claramente necessário e explicitamente justificado.
+7. **Corrigir apenas seletores** — Isto não é apenas sobre seletores quebrados. É sobre arquitetura de fonte substituível.
+
+## Trabalho Completado Recentemente
 
 ### ✅ PITCH BLOCKER #4: Loading State com Preview — COMPLETADO
 
@@ -440,48 +732,26 @@ if (noteWithSource.sourceArticle != null) {
 }
 ```
 
-## Checklist para Pitch Demo
+## Problemas Conhecidos do Parser (Para Referência)
 
-### Antes da Demo (CRÍTICO - 1 hora restante)
-- [x] ✅ PARSER #1: Fix parser caption (30 min) — COMPLETADO (e9b5aa4)
-- [x] ✅ Loading state com preview (2h) — COMPLETADO
-- [x] ✅ Melhorar partilha com summary (1h) — COMPLETADO (8461bf0)
-- [x] ✅ Pills com cores (1h) — COMPLETADO (99b6b9f)
-- [ ] PARSER #2: Fix hero images em opinião (1h) — **PRÓXIMO BLOCKER**
-- [ ] Testar fluxo completo 3x com artigos variados
+### ✅ Resolvidos
+1. ✅ Texto duplicado → RESOLVIDO (commits 47ef010, 039a812)
+2. ✅ Caption incluída no texto → RESOLVIDO (commit e9b5aa4)
+3. ✅ Hero image melhorada → RESOLVIDO (commit 17243a7)
+4. ✅ Partilha melhorada → RESOLVIDO (commit 8461bf0)
 
-### Artigos de Teste Obrigatórios
-1. https://avante.pt/pt/2745/emdestaque/184314/... (caption "Lusa") — ✅ RESOLVIDO
-2. https://avante.pt/pt/2746/opiniao/... (vários artigos de opinião) — TESTAR
-3. Artigo com blockquote (encontrar exemplo)
-4. Artigo normal sem problemas (baseline)
+### 🟡 Pendentes (Após Auditoria)
+1. 🟡 Hero image pode não ser a correta em alguns casos
+2. 🟡 Blockquotes não formatadas
+3. 🟡 Secção "Argumentos" pode ser categorizada incorretamente
+4. 🟡 Secção "Memoria" pode não aparecer
+5. 🟡 Imagens `/get_img?ImageWidth=...` podem não ser convertidas corretamente
 
-### Fluxo da Demo (4 minutos)
-1. ✅ Abrir app → feed carrega
-2. ✅ Tocar artigo → abre com parallax
-3. ⚠️ Loading deve mostrar preview (FIX NECESSÁRIO)
-4. ✅ Artigo carrega → texto legível
-5. ⚠️ Caption não deve aparecer no texto (FIX NECESSÁRIO)
-6. ✅ Tocar "Anotar" → banner vermelho aparece
-7. ✅ Selecionar texto → menu aparece
-8. ✅ Criar nota → editor abre
-9. ✅ Escrever → auto-save funciona
-10. ✅ Voltar → Caderno mostra nota com pill "Livre"
-11. ✅ FAB → criar nova nota standalone
-12. ✅ Pesquisar → encontra notas
-13. ✅ Partilhar → inclui summary quando disponível
-
-### Depois da Demo (Refactors)
-- [ ] Unified search (artigos + notas + highlights)
-- [ ] Settings screen
-- [ ] Arquivo implementation
-- [ ] Highlight → Note linking
-- [ ] Add highlight to existing note
-- [ ] Delete confirmation dialogs
-- [ ] Canonical URL extraction
-- [ ] Tags/keywords extraction
-- [ ] Hero image attribution fix
-- [ ] Index creation (through https://avante.pt/pt/2746/aconteceu/?tpl=183 parsing)
+### ⚠️ Futuro
+1. ⚠️ Keywords não extraídas
+2. ⚠️ Canonical URL não extraído
+3. ⚠️ Atribuição de imagem não extraída
+4. ⚠️ Avisos do parser não implementados
 
 ## Comandos Úteis
 
@@ -503,16 +773,121 @@ adb logcat | grep "Caderno"
 - Pensões: https://avante.pt/pt/2745/emfoco/184316/...
 - População: https://avante.pt/pt/2745/emdestaque/184314/... (tem caption "Lusa")
 
-## Notas Técnicas
+## Referências de Arquitetura
 
-### Parser Issues Conhecidos
-1. ✅ Texto duplicado → RESOLVIDO (commits 47ef010, 039a812)
-2. ✅ Caption incluída no texto → RESOLVIDO (commit e9b5aa4)
-3. 🟡 Hero image pode não ser a correta / não existir → PENDENTE (PARSER #2)
-4. 🟢 Blockquotes não formatadas → PENDENTE (PARSER #3)
-5. 🟢 Secção "Argumentos" categorizada incorretamente → PENDENTE (PARSER #4)
-6. ⚠️ Keywords não extraídas → FUTURO
-7. ⚠️ Canonical URL não extraído → FUTURO
+### Mapa de Tipos de Página Avante Atual
+
+```json
+[
+  {
+    "type": "RSS_CURRENT",
+    "url_pattern": "/pt/?tpl=181",
+    "purpose": "RSS feed/sinal de edição atual e descoberta de secções",
+    "confidence": "high"
+  },
+  {
+    "type": "EDITION_FRONT",
+    "url_pattern": "/pt/2746/",
+    "purpose": "página visual de destaque da edição/destaques, propensa a duplicados",
+    "confidence": "high"
+  },
+  {
+    "type": "ISSUE_INDEX",
+    "url_pattern": "/pt/2746/?tpl=183",
+    "purpose": "candidato a inventário canónico de edição",
+    "confidence": "high"
+  },
+  {
+    "type": "ARTICLE_SINGLE",
+    "url_pattern": "/pt/2746/{section}/{articleId}/{slug}.htm",
+    "purpose": "parsing de corpo/preview de artigo individual",
+    "confidence": "high"
+  },
+  {
+    "type": "OPINIAO_FRONT",
+    "url_pattern": "/pt/2746/opiniao/",
+    "purpose": "secção/destaque especial Opinião, provavelmente template personalizado",
+    "confidence": "high"
+  },
+  {
+    "type": "MEMORIA_FRONT",
+    "url_pattern": "/pt/2746/memoria/",
+    "purpose": "secção/destaque especial Memória, provavelmente template personalizado",
+    "confidence": "high"
+  }
+]
+```
+
+### Regras Atuais do Parser (Do Estudo)
+
+```json
+{
+  "canonical_inventory_source": "https://www.avante.pt/pt/2746/?tpl=183",
+  "article_url_rule": {
+    "pattern_description": "URLs sob /pt/2746/ terminando em .htm",
+    "dedupe_key": "URL canónico normalizado"
+  },
+  "index_rules": {
+    "root_candidates": ["#grid-indice"],
+    "section_candidates": ["div.seccao"],
+    "entry_link_candidates": [
+      "h2 a[href$='.htm']",
+      "h3 a[href$='.htm']",
+      "qualquer âncora de heading terminando em .htm ao percorrer índice"
+    ],
+    "warning": "Não depender apenas de <article>; algumas entradas podem ser blocos soltos de heading/intro."
+  },
+  "article_body_rules": {
+    "root": "section.main.entry article",
+    "title": "h2.balance-text",
+    "author": "span.author",
+    "intro": "div.texto-intro",
+    "body": "div.texto > p",
+    "quote": "blockquote",
+    "exclude": [
+      "section#grid-articles",
+      "grelhas de artigos relacionados",
+      "footer/nav/sidebar"
+    ]
+  },
+  "access_rules": {
+    "free_marker": "Artigo de acesso livre",
+    "locked_marker": "O artigo completo está disponível na edição impressa ou por assinatura on-line",
+    "states": ["FREE", "SUBSCRIBER_OR_PRINT", "UNKNOWN"]
+  },
+  "image_rules": {
+    "good_patterns": [
+      "/images/cms-image-",
+      "/get_img?ImageId=",
+      "get_img?ImageId="
+    ],
+    "ignore_patterns": [
+      "/themes/publication_2/theme_2/img/",
+      "avante-simbolo_foice_fundo_branco.png",
+      "pcp22px.png",
+      "omilitante22px.png",
+      "festa_avante",
+      "avante_clandestino",
+      "avante.gif"
+    ],
+    "principle": "Extrair do contentor local de artigo/card; nunca primeira imagem global."
+  },
+  "warnings": [
+    "UNKNOWN_PAGE_TYPE",
+    "NO_MAIN_ARTICLE_ROOT",
+    "NO_TITLE",
+    "NO_BODY_TEXT",
+    "PREVIEW_ONLY",
+    "PAYWALL_MARKER_FOUND",
+    "DUPLICATE_URL_MERGED",
+    "PLACEHOLDER_IMAGE_IGNORED",
+    "RELATED_GRID_SKIPPED",
+    "OG_IMAGE_MISSING"
+  ]
+}
+```
+
+## Notas Técnicas
 
 ### Database Schema (v3)
 - `article_sources` — metadados
