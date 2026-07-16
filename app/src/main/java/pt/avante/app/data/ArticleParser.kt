@@ -336,11 +336,12 @@ object ArticleParser {
                     val indexMeta = indexInventory[fullUrl]
                     
                     // Fase 2A: Separar categoria semântica (tpl=183) de placement visual (homepage)
+                    val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
+                    
                     // Fallback seguro: se índice não tem categoria, validar placement visual
                     val semanticCategory = indexMeta?.categoryLabel 
                         ?: canonicalCategoryLabel(visualPlacement)
                     val semanticSubcategory = indexMeta?.subcategoryLabel
-                    val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
                     
                     // Campo section para compatibilidade
                     val compatSection = semanticCategory ?: visualPlacement
