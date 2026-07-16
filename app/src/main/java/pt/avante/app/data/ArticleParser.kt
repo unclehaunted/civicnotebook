@@ -13,6 +13,63 @@ import org.jsoup.nodes.Element
 
 object ArticleParser {
 
+    /**
+     * Normaliza uma URL relativa ou absoluta para URL absoluta.
+     * 
+     * @param url URL a normalizar (pode ser relativa ou absoluta)
+     * @param baseUrl URL base a usar para URLs relativas (default: https://avante.pt)
+     * @return URL absoluta normalizada
+     */
+    private fun normalizeUrl(url: String, baseUrl: String = "https://avante.pt"): String {
+        return when {
+            url.startsWith("http://") || url.startsWith("https://") -> url
+            url.startsWith("/") -> "$baseUrl$url"
+            else -> "$baseUrl/$url"
+        }
+    }
+
+    /**
+     * Normaliza uma URL de imagem, convertendo URLs relativas em absolutas.
+     * Retorna null se a imagem for placeholder/logo.
+     * 
+     * @param imageUrl URL da imagem a normalizar (pode ser null)
+     * @param baseUrl URL base a usar para URLs relativas (default: https://avante.pt)
+     * @return URL absoluta normalizada ou null se for placeholder
+     */
+    private fun normalizeImageUrl(imageUrl: String?, baseUrl: String = "https://avante.pt"): String? {
+        if (imageUrl == null) return null
+        if (isPlaceholderImage(imageUrl)) return null
+        
+        return when {
+            imageUrl.startsWith("http://") || imageUrl.startsWith("https://") -> imageUrl
+            imageUrl.startsWith("/") -> "$baseUrl$imageUrl"
+            else -> "$baseUrl/$imageUrl"
+        }
+    }
+
+    /**
+     * Verifica se uma URL de imagem é um placeholder/logo que deve ser ignorado.
+     * 
+     * @param imageUrl URL da imagem a verificar
+     * @return true se for placeholder, false caso contrário
+     */
+    private fun isPlaceholderImage(imageUrl: String?): Boolean {
+        if (imageUrl == null) return true
+        
+        val placeholderPatterns = listOf(
+            "simbolo_foice_fundo_branco.png",
+            "ImageId=41",
+            "pcp22px.png",
+            "omilitante22px.png",
+            "festa_avante",
+            "avante_clandestino",
+            "avante.gif",
+            "/themes/publication_2/theme_2/img/"
+        )
+        
+        return placeholderPatterns.any { pattern -> imageUrl.contains(pattern) }
+    }
+
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
         val doc = Jsoup.connect(url).get()
         
@@ -41,18 +98,7 @@ object ArticleParser {
                 articleImg = doc.select("section img, .content img").first()?.attr("src")
             }
             
-            if (articleImg != null && 
-                !articleImg.contains("simbolo_foice_fundo_branco.png") && 
-                !articleImg.contains("ImageId=41")) {
-                heroImageUrl = if (articleImg.startsWith("/get_img")) {
-                    // Convert /get_img URLs to absolute URLs
-                    "https://avante.pt$articleImg"
-                } else if (articleImg.startsWith("/")) {
-                    "https://avante.pt$articleImg"
-                } else {
-                    articleImg
-                }
-            }
+            heroImageUrl = normalizeImageUrl(articleImg)
         }
         
         val blocks = mutableListOf<ArticleBlock>()
@@ -150,20 +196,15 @@ object ArticleParser {
                     
                     if (title.isEmpty() || url.isEmpty()) continue
                     
-                    val fullUrl = if (url.startsWith("http")) url else "https://avante.pt$url"
+                    val fullUrl = normalizeUrl(url)
                     val author = "Redacção" 
                     val summary = el.select(".texto-intro p, p").firstOrNull()?.text()?.trim() ?: ""
                     
-                    var heroImageUrl = el.select("figure img, .noticia-foto img, img").first()?.attr("src")
-                    if (heroImageUrl != null) {
-                        if (heroImageUrl.contains("simbolo_foice_fundo_branco.png") || heroImageUrl.contains("ImageId=41")) {
-                            heroImageUrl = "LOCAL_SYMBOL"
-                        } else if (heroImageUrl.startsWith("/get_img")) {
-                            // Convert /get_img URLs to absolute URLs
-                            heroImageUrl = "https://avante.pt$heroImageUrl"
-                        } else if (!heroImageUrl.startsWith("http")) {
-                            heroImageUrl = "https://avante.pt$heroImageUrl"
-                        }
+                    val rawImageUrl = el.select("figure img, .noticia-foto img, img").first()?.attr("src")
+                    var heroImageUrl = if (isPlaceholderImage(rawImageUrl)) {
+                        "LOCAL_SYMBOL"
+                    } else {
+                        normalizeImageUrl(rawImageUrl)
                     }
                     
                     // Check if article is free based on index
@@ -196,15 +237,7 @@ object ArticleParser {
                                 if (articleImg == null) {
                                     articleImg = articleDoc.select("section img, .content img").first()?.attr("src")
                                 }
-                                if (articleImg != null && !articleImg.contains("simbolo_foice") && !articleImg.contains("ImageId=41")) {
-                                    finalImage = if (articleImg.startsWith("/get_img")) {
-                                        "https://avante.pt$articleImg"
-                                    } else if (articleImg.startsWith("/")) {
-                                        "https://avante.pt$articleImg"
-                                    } else {
-                                        articleImg
-                                    }
-                                }
+                                finalImage = normalizeImageUrl(articleImg)
                             } catch (e: Exception) {
                                 // Keep LOCAL_SYMBOL on error
                             }
@@ -239,7 +272,7 @@ object ArticleParser {
                     // Get the article link
                     val link = article.select("a[href*='.htm']").first()?.attr("href")
                     if (link != null) {
-                        val fullUrl = if (link.startsWith("http")) link else "https://avante.pt$link"
+                        val fullUrl = normalizeUrl(link)
                         freeUrls.add(fullUrl)
                     }
                 }
