@@ -240,6 +240,27 @@ object ArticleParser {
                     val isFree = indexMeta?.isFree ?: false
                     val isPremium = !isFree
                     
+                    // Determinar cardTreatment baseado em visualPlacement e categoria semântica
+                    val visual = visualPlacement?.trim()
+                    val isOpinionPlacement = visual.equals("Opinião", ignoreCase = true) ||
+                        visual.equals("Opiniao", ignoreCase = true) ||
+                        visual.equals("Actual", ignoreCase = true)
+                    val isOpinionFallback = visual.isNullOrBlank() &&
+                        semanticCategory.equals("Opinião", ignoreCase = true)
+                    
+                    val cardTreatment = when {
+                        visual.equals("Em Foco", ignoreCase = true) || articles.isEmpty() ->
+                            CardTreatment.LEAD_LARGE
+                        visual.equals("Em Destaque", ignoreCase = true) ->
+                            CardTreatment.FEATURED_MEDIUM
+                        isOpinionPlacement || isOpinionFallback ->
+                            CardTreatment.OPINION_COMPACT
+                        heroImageUrl == null ->
+                            CardTreatment.TEXT_ONLY
+                        else ->
+                            CardTreatment.STANDARD_SMALL
+                    }
+                    
                     articles.add(ArticleSummary(
                         title = title,
                         author = author,
@@ -251,7 +272,8 @@ object ArticleParser {
                         isFree = isFree,
                         categoryLabel = semanticCategory,
                         subcategoryLabel = semanticSubcategory,
-                        visualPlacement = visualPlacement
+                        visualPlacement = visualPlacement,
+                        cardTreatment = cardTreatment
                     ))
                 }
             }

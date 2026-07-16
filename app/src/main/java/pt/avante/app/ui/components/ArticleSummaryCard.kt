@@ -24,7 +24,7 @@ import pt.avante.app.data.ArticleSummary
 import pt.avante.app.theme.*
 
 @Composable
-fun LeadArticleCard(article: ArticleSummary, onClick: () -> Unit) {
+fun LeadLargeArticleCard(article: ArticleSummary, onClick: () -> Unit) {
     if (article.heroImageUrl != null) {
         OutlinedCard(
             modifier = Modifier
@@ -71,10 +71,19 @@ fun LeadArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                         shape = CircleShape
                     ) {
                         Text(
-                            text = (article.section ?: "Destaque").uppercase(),
+                            text = (article.categoryLabel ?: "Avante!").uppercase(),
                             style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
                             color = Color.White,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        )
+                    }
+                    article.subcategoryLabel?.let { subcategory ->
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = subcategory,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -104,7 +113,169 @@ fun LeadArticleCard(article: ArticleSummary, onClick: () -> Unit) {
 }
 
 @Composable
-fun CompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
+fun FeaturedMediumArticleCard(article: ArticleSummary, onClick: () -> Unit) {
+    if (article.heroImageUrl != null) {
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .clickable { onClick() },
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            border = BorderStroke(1.dp, SoftDivider),
+            shape = RoundedCornerShape(14.dp),
+            elevation = CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
+        ) {
+            Column {
+                if (article.heroImageUrl == "LOCAL_SYMBOL") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(160.dp)
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_avante),
+                            contentDescription = "Avante Logo",
+                            tint = Color.Black,
+                            modifier = Modifier.fillMaxSize(0.5f)
+                        )
+                    }
+                } else {
+                    AsyncImage(
+                        model = article.heroImageUrl,
+                        contentDescription = "Imagem do Artigo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth().height(160.dp)
+                    )
+                }
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Surface(
+                        color = OriginalRed,
+                        shape = CircleShape
+                    ) {
+                        Text(
+                            text = (article.categoryLabel ?: "Avante!").uppercase(),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        )
+                    }
+                    article.subcategoryLabel?.let { subcategory ->
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = subcategory,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = article.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = OriginalRed,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = article.summary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextSecondary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ArticleCardFooter(article)
+                }
+            }
+        }
+    } else {
+        TextOnlyArticleCard(article, onClick)
+    }
+}
+
+@Composable
+fun StandardSmallArticleCard(article: ArticleSummary, onClick: () -> Unit) {
+    if (article.heroImageUrl != null) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .clickable { onClick() },
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                if (article.heroImageUrl == "LOCAL_SYMBOL") {
+                    Box(
+                        modifier = Modifier
+                            .width(90.dp)
+                            .height(90.dp)
+                            .background(Color.White),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_avante),
+                            contentDescription = "Avante Logo",
+                            tint = Color.Black,
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+                } else {
+                    AsyncImage(
+                        model = article.heroImageUrl,
+                        contentDescription = "Imagem do Artigo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.width(90.dp).height(90.dp)
+                    )
+                }
+                
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = (article.categoryLabel ?: "Avante!").uppercase(),
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = OriginalRed
+                    )
+                    article.subcategoryLabel?.let { subcategory ->
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = subcategory,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = TextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = article.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = TextPrimary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+    } else {
+        TextOnlyArticleCard(article, onClick)
+    }
+}
+
+@Composable
+fun OpinionCompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
     if (article.heroImageUrl != null) {
         Card(
             modifier = Modifier
@@ -143,21 +314,51 @@ fun CompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp)
+                        .padding(14.dp)
                 ) {
-                    Text(
-                        text = (article.section ?: "Destaque").uppercase(),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = OriginalRed
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = (article.categoryLabel ?: "Avante!").uppercase(),
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                            color = OriginalRed
+                        )
+                        article.subcategoryLabel?.let { subcategory ->
+                            Text(
+                                text = "·",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextSecondary
+                            )
+                            Text(
+                                text = subcategory,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextSecondary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.titleMedium,
                         color = TextPrimary,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
+                    if (article.summary.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = article.summary,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSecondary,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }
@@ -167,23 +368,44 @@ fun CompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
 }
 
 @Composable
-fun TextArticleCard(article: ArticleSummary, onClick: () -> Unit) {
+fun TextOnlyArticleCard(article: ArticleSummary, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 8.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(16.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Surface(
+                color = OriginalRed,
+                shape = CircleShape
+            ) {
+                Text(
+                    text = (article.categoryLabel ?: "Avante!").uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
+            }
+            article.subcategoryLabel?.let { subcategory ->
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = subcategory,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextSecondary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = article.title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = OriginalRed
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = article.summary,
                 style = MaterialTheme.typography.bodyMedium,
@@ -191,6 +413,8 @@ fun TextArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.height(12.dp))
+            ArticleCardFooter(article)
         }
     }
 }

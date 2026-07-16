@@ -6,6 +6,14 @@ enum class Publication {
     AVANTE, OMILITANTE
 }
 
+enum class CardTreatment {
+    LEAD_LARGE,
+    FEATURED_MEDIUM,
+    STANDARD_SMALL,
+    OPINION_COMPACT,
+    TEXT_ONLY
+}
+
 data class Article(
     val id: String,
     val title: String,
@@ -44,7 +52,8 @@ data class ArticleSummary(
     val isFree: Boolean = true,            // Explicitly marked as free access in index
     val categoryLabel: String? = null,     // Categoria semântica do Índice tpl=183
     val subcategoryLabel: String? = null,  // Subcategoria/rubrica do Índice tpl=183
-    val visualPlacement: String? = null    // Placement visual da homepage (ex: "Em Destaque")
+    val visualPlacement: String? = null,   // Placement visual da homepage (ex: "Em Destaque")
+    val cardTreatment: CardTreatment = CardTreatment.STANDARD_SMALL
 )
 
 data class HomeFeed(

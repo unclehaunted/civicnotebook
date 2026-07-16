@@ -203,13 +203,13 @@ fun ArticleListLayout(
     ) {
         items(articles.size) { index ->
             val summary = articles[index]
-            val isCompactSection = summary.section?.lowercase() in listOf("opinião", "actual", "opiniao")
             
-            when {
-                index == 0 -> LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                isCompactSection && summary.heroImageUrl != null -> CompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                summary.heroImageUrl != null -> LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                else -> TextArticleCard(article = summary, onClick = { onArticleClick(summary) })
+            when (summary.cardTreatment) {
+                pt.avante.app.data.CardTreatment.LEAD_LARGE -> LeadLargeArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> FeaturedMediumArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                pt.avante.app.data.CardTreatment.STANDARD_SMALL -> StandardSmallArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                pt.avante.app.data.CardTreatment.OPINION_COMPACT -> OpinionCompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                pt.avante.app.data.CardTreatment.TEXT_ONLY -> TextOnlyArticleCard(article = summary, onClick = { onArticleClick(summary) })
             }
         }
     }
@@ -253,10 +253,19 @@ fun ArticleStackPager(
 
                     Column(Modifier.padding(22.dp)) {
                         Text(
-                            text = article.section ?: "Em destaque",
+                            text = article.categoryLabel ?: "Avante!",
                             style = MaterialTheme.typography.labelMedium,
                             color = OriginalRed
                         )
+                        article.subcategoryLabel?.let { subcategory ->
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = subcategory,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = TextSecondary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
 
                         Spacer(Modifier.height(10.dp))
 
@@ -323,10 +332,20 @@ fun SmallGridArticleCard(article: ArticleSummary, onClick: () -> Unit) {
             )
             Column(Modifier.padding(12.dp)) {
                 Text(
-                    text = article.section ?: "Avante!",
+                    text = article.categoryLabel ?: "Avante!",
                     style = MaterialTheme.typography.labelSmall,
                     color = OriginalRed
                 )
+                article.subcategoryLabel?.let { subcategory ->
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = subcategory,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = article.title,
