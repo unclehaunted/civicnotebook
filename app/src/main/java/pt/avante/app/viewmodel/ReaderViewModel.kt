@@ -80,8 +80,12 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                     _articleHighlights.value = db.articleDao().getHighlightsForArticle(articleId)
                     _uiState.value = ReaderUiState.Success(article)
                 } else {
-                    // 2. Fetch from network
-                    val fetched = ArticleParser.fetchAvanteArticle(articleSummary.url, articleSummary.section)
+                    // 2. Fetch from network, passing hero image from feed
+                    val fetched = ArticleParser.fetchAvanteArticle(
+                        url = articleSummary.url, 
+                        section = articleSummary.section,
+                        heroImageFromFeed = articleSummary.heroImageUrl
+                    )
                     if (fetched != null) {
                         // Ensure we use the stable ID
                         val stableArticle = fetched.copy(id = articleId)

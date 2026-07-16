@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element
 
 object ArticleParser {
 
-    suspend fun fetchAvanteArticle(url: String, section: String? = null): Article = withContext(Dispatchers.IO) {
+    suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
         val doc = Jsoup.connect(url).get()
         
         // Avante! specific structure
@@ -23,13 +23,26 @@ object ArticleParser {
         val author = doc.select(".author, .autor").first()?.text() ?: "Redacção"
         val publishedAt = doc.select(".date, .data").first()?.text() ?: "Edição Actual"
         
-        // Extract the main hero image
-        var heroImageUrl = doc.select("article img").first()?.attr("src")
-        if (heroImageUrl != null) {
-            if (heroImageUrl.contains("simbolo_foice_fundo_branco.png") || heroImageUrl.contains("ImageId=41")) {
-                heroImageUrl = "LOCAL_SYMBOL"
-            } else if (heroImageUrl.startsWith("/")) {
-                heroImageUrl = "https://avante.pt$heroImageUrl"
+        // Hero image priority:
+        // 1. Use hero from feed if provided and valid
+        // 2. Look for hero in article page
+        // 3. If none found, leave as null (no hero image)
+        var heroImageUrl: String? = null
+        
+        if (heroImageFromFeed != null && heroImageFromFeed != "LOCAL_SYMBOL") {
+            // Use hero from feed if it's valid
+            heroImageUrl = heroImageFromFeed
+        } else {
+            // Try to find hero in article page
+            val articleImg = doc.select("article img").first()?.attr("src")
+            if (articleImg != null && 
+                !articleImg.contains("simbolo_foice_fundo_branco.png") && 
+                !articleImg.contains("ImageId=41")) {
+                heroImageUrl = if (articleImg.startsWith("/")) {
+                    "https://avante.pt$articleImg"
+                } else {
+                    articleImg
+                }
             }
         }
         

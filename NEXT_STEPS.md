@@ -133,7 +133,21 @@ val paragraphs = article?.children()
     ?: emptyList()
 ```
 
-### 🟡 IMPORTANT #2: Melhorar Partilha
+### ✅ IMPORTANT #2: Melhorar Hero Image Detection — COMPLETADO
+
+**Severidade:** IMPORTANT  
+**Tempo estimado:** 1 hora  
+**Ficheiros:** `ArticleParser.kt`, `ReaderViewModel.kt`
+**Status:** ✅ Implementado
+
+**Implementação:**
+- Hero image agora segue prioridade: feed → artigo → null
+- Se hero do feed for válido, usa-o
+- Se não, procura na página do artigo
+- Se não encontrar em nenhum lado, não mostra hero
+- Elimina símbolos PCP como hero images
+
+### 🟡 IMPORTANT #3: Melhorar Partilha
 
 **Severidade:** IMPORTANT  
 **Tempo estimado:** 1 hora  
