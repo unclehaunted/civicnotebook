@@ -232,7 +232,8 @@ object ArticleParser {
                     // atual onde section vem da homepage visual.
                     
                     // Check if article is free based on index inventory
-                    val isFree = indexMeta?.isFree ?: true  // Default true se não estiver no índice
+                    // Preserva comportamento original: se não estiver no índice, assume premium
+                    val isFree = indexMeta?.isFree ?: false
                     val isPremium = !isFree
                     
                     articles.add(ArticleSummary(
