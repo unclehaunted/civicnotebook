@@ -87,6 +87,51 @@ object ArticleParser {
         val intro: String?
     )
 
+    /**
+     * Lista de categorias válidas conhecidas do Avante!
+     * Usado para validar que texto extraído é realmente uma categoria editorial,
+     * não texto de artigo (título, chapeau, blockquote, etc.)
+     */
+    private val VALID_CATEGORIES = setOf(
+        "Editorial",
+        "Opinião",
+        "Opiniao",
+        "Em Destaque",
+        "Em Foco",
+        "PCP",
+        "Trabalhadores",
+        "Assembleia da República",
+        "Nacional",
+        "Internacional",
+        "Temas",
+        "Argumentos",
+        "Memória",
+        "Memoria",
+        "Sugestões da semana",
+        "Sugestoes da semana",
+        "Aconteceu",
+        "Agenda",
+        "Resumo da Semana",
+        "Frases"
+    )
+
+    /**
+     * Valida se um texto é uma categoria editorial válida.
+     * Rejeita texto de artigo (títulos longos, chapaús, blockquotes).
+     */
+    private fun isValidCategory(text: String): Boolean {
+        val normalized = text.trim()
+        
+        // Rejeitar texto muito longo (categorias são curtas)
+        if (normalized.length > 50) return false
+        
+        // Rejeitar texto com pontuação típica de artigos
+        if (normalized.contains("?") || normalized.contains("!") || normalized.contains(":")) return false
+        
+        // Verificar se está na lista de categorias conhecidas (case-insensitive)
+        return VALID_CATEGORIES.any { it.equals(normalized, ignoreCase = true) }
+    }
+
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
         val doc = Jsoup.connect(url).get()
         
@@ -350,7 +395,7 @@ object ArticleParser {
                             ?: element.attr("data-section")?.trim()
                             ?: element.id().takeIf { it.isNotBlank() }
                         
-                        if (!sectionLabel.isNullOrBlank()) {
+                        if (!sectionLabel.isNullOrBlank() && isValidCategory(sectionLabel)) {
                             currentCategory = sectionLabel
                             currentSubcategory = null // Reset subcategoria ao mudar de categoria
                         }
@@ -360,7 +405,9 @@ object ArticleParser {
                     (element.tagName() == "h2" || element.tagName() == "h3") && 
                     element.parents().none { it.tagName() == "article" } -> {
                         val headerText = element.text().trim()
-                        if (headerText.isNotBlank() && !headerText.contains("Índice", ignoreCase = true)) {
+                        if (headerText.isNotBlank() && 
+                            !headerText.contains("Índice", ignoreCase = true) &&
+                            isValidCategory(headerText)) {
                             // Verificar se não é um título de artigo (artigos têm links .htm)
                             val hasArticleLink = element.select("a[href\$='.htm']").isNotEmpty()
                             if (!hasArticleLink) {
@@ -371,9 +418,13 @@ object ArticleParser {
                     }
                     
                     // Transição de subcategoria: h5 (rubricas como "A talhe de foice")
-                    element.tagName() == "h5" && element.parents().none { it.tagName() == "article" } -> {
+                    // Só aceitar se já tivermos uma categoria válida
+                    element.tagName() == "h5" && 
+                    element.parents().none { it.tagName() == "article" } &&
+                    currentCategory != null -> {
                         val subcategoryText = element.text().trim()
-                        if (subcategoryText.isNotBlank()) {
+                        // Subcategorias podem ser mais variadas, mas devem ser curtas
+                        if (subcategoryText.isNotBlank() && subcategoryText.length <= 60) {
                             currentSubcategory = subcategoryText
                         }
                     }
