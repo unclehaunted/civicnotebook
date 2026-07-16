@@ -33,8 +33,14 @@ object ArticleParser {
             // Use hero from feed if it's valid
             heroImageUrl = heroImageFromFeed
         } else {
-            // Try to find hero in article page
-            val articleImg = doc.select("article img").first()?.attr("src")
+            // Try to find hero in article page - look in article first, then in section before article
+            var articleImg = doc.select("article img").first()?.attr("src")
+            
+            // If not found in article, look in the section that precedes the article
+            if (articleImg == null) {
+                articleImg = doc.select("section img, .content img").first()?.attr("src")
+            }
+            
             if (articleImg != null && 
                 !articleImg.contains("simbolo_foice_fundo_branco.png") && 
                 !articleImg.contains("ImageId=41")) {
@@ -178,7 +184,11 @@ object ArticleParser {
                         if (finalImage == "LOCAL_SYMBOL" || finalImage == null) {
                             try {
                                 val articleDoc = Jsoup.connect(summary.url).get()
-                                val articleImg = articleDoc.select("article img").first()?.attr("src")
+                                // Try article first, then section/content
+                                var articleImg = articleDoc.select("article img").first()?.attr("src")
+                                if (articleImg == null) {
+                                    articleImg = articleDoc.select("section img, .content img").first()?.attr("src")
+                                }
                                 if (articleImg != null && !articleImg.contains("simbolo_foice") && !articleImg.contains("ImageId=41")) {
                                     finalImage = if (articleImg.startsWith("/")) "https://avante.pt$articleImg" else articleImg
                                 }

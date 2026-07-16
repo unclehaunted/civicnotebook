@@ -207,7 +207,8 @@ fun ArticleListLayout(
             
             when {
                 index == 0 -> LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                isCompactSection -> CompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                isCompactSection && summary.heroImageUrl != null -> CompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
+                summary.heroImageUrl != null -> LeadArticleCard(article = summary, onClick = { onArticleClick(summary) })
                 else -> TextArticleCard(article = summary, onClick = { onArticleClick(summary) })
             }
         }
