@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import pt.avante.app.data.db.AppDatabase
 import pt.avante.app.data.db.NoteEntity
+import pt.avante.app.data.db.NoteType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class CadernoViewModel(private val db: AppDatabase) : ViewModel() {
 
@@ -31,6 +33,23 @@ class CadernoViewModel(private val db: AppDatabase) : ViewModel() {
             db.articleDao().deleteNote(id)
             loadNotes()
         }
+    }
+    
+    fun createNewNote(): String? {
+        val noteId = UUID.randomUUID().toString()
+        viewModelScope.launch {
+            val note = NoteEntity(
+                noteId = noteId,
+                title = "Nova Nota",
+                bodyMarkdown = "",
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis(),
+                noteType = NoteType.STANDALONE
+            )
+            db.articleDao().insertNote(note)
+            loadNotes()
+        }
+        return noteId
     }
 }
 

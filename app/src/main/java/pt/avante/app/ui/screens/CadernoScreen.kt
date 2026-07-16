@@ -39,11 +39,31 @@ fun CadernoScreen(
         viewModel.loadNotes()
     }
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = WarmPaper
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        containerColor = WarmPaper,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    val noteId = viewModel.createNewNote()
+                    if (noteId != null) {
+                        onNoteClick(NoteEntity(
+                            noteId = noteId,
+                            title = "Nova Nota",
+                            bodyMarkdown = "",
+                            createdAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis(),
+                            noteType = pt.avante.app.data.db.NoteType.STANDALONE
+                        ))
+                    }
+                },
+                containerColor = OriginalRed,
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Nova Nota")
+            }
+        }
+    ) { paddingValues ->
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
