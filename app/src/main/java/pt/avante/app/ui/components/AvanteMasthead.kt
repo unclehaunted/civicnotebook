@@ -56,7 +56,7 @@ fun AvanteMasthead(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_avante), // Still using ic_avante vector unless a PNG was provided
+                    painter = painterResource(id = R.drawable.ic_avante),
                     contentDescription = "Avante!",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
