@@ -2,7 +2,35 @@
 
 ## Estado Atual (16 Jul 2026)
 
-### ✅ Completado
+### 🎯 Arquitetura Modular para Múltiplas Publicações
+
+**Nota importante:** Esta aplicação está a ser desenvolvida para servir múltiplas publicações no futuro, não apenas o Avante!. O masthead e outros componentes de branding devem ser modulares e configuráveis.
+
+**Componentes que precisam de modularidade:**
+- `AvanteMasthead` → deve aceitar parâmetros de configuração (título, subtítulo, cores)
+- Cores do tema → devem ser configuráveis por publicação
+- Ícones e logos → devem ser carregados dinamicamente
+- Parser → deve suportar diferentes estruturas HTML por publicação
+
+**Implementação futura:**
+```kotlin
+data class PublicationConfig(
+    val name: String,
+    val subtitle: String,
+    val primaryColor: Color,
+    val logoResourceId: Int,
+    val parserStrategy: ArticleParserStrategy
+)
+```
+
+### ✅ Completado Recentemente
+
+5. **Masthead redesenhado** (commit [masthead-redesign])
+   - Subtítulo agora mostra "Órgão Central do Partido Comunista Português"
+   - Número da edição movido para badge com ícone de calendário
+   - Preparação para modularidade futura (múltiplas publicações)
+
+### ✅ Completado Anteriormente
 1. **Parser text duplication fix** (commits 47ef010, 039a812)
    - Removida lógica `startsWithStrong` que duplicava texto
    - Parser agora mais conservador: só trata como subheading se houver exatamente 1 child `<strong>`
@@ -207,7 +235,152 @@ Surface(
 }
 ```
 
-### 🟡 NICE TO HAVE #1: Proveniência da Fonte
+### 🟢 FUTURE #1: Sistema de Configuração Multi-Publicação
+
+**Severidade:** NICE TO HAVE (FUTURO)  
+**Tempo estimado:** 8 horas  
+**Ficheiros:** Novos ficheiros de configuração, refactor de componentes
+
+**Objetivo:**
+Tornar a app configurável para servir múltiplas publicações (Avante!, O Militante, outras publicações do PCP ou parceiras).
+
+**Componentes a modularizar:**
+
+1. **PublicationConfig.kt** (novo)
+```kotlin
+data class PublicationConfig(
+    val id: String,
+    val name: String,
+    val subtitle: String,
+    val primaryColor: Color,
+    val secondaryColor: Color,
+    val logoResourceId: Int,
+    val mastheadLogoResourceId: Int,
+    val baseUrl: String,
+    val parserStrategy: ArticleParserStrategy
+)
+
+object Publications {
+    val AVANTE = PublicationConfig(
+        id = "avante",
+        name = "Avante!",
+        subtitle = "Órgão Central do Partido Comunista Português",
+        primaryColor = Color(0xFFCC0000),
+        secondaryColor = Color(0xFF8B0000),
+        logoResourceId = R.drawable.avante_logo,
+        mastheadLogoResourceId = R.drawable.avante_masthead,
+        baseUrl = "https://avante.pt",
+        parserStrategy = AvanteParserStrategy()
+    )
+    
+    val O_MILITANTE = PublicationConfig(
+        id = "militante",
+        name = "O Militante",
+        subtitle = "Publicação da JCP",
+        primaryColor = Color(0xFFCC0000),
+        secondaryColor = Color(0xFF8B0000),
+        logoResourceId = R.drawable.militante_logo,
+        mastheadLogoResourceId = R.drawable.militante_masthead,
+        baseUrl = "https://omilitante.pcp.pt",
+        parserStrategy = MilitanteParserStrategy()
+    )
+}
+```
+
+2. **Refactor AvanteMasthead → PublicationMasthead**
+```kotlin
+@Composable
+fun PublicationMasthead(
+    config: PublicationConfig,
+    onMenuClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = onMenuClick) {
+                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            }
+            
+            Image(
+                painter = painterResource(config.mastheadLogoResourceId),
+                contentDescription = config.name,
+                modifier = Modifier.height(56.dp)
+            )
+            
+            IconButton(onClick = onSearchClick) {
+                Icon(Icons.Default.Search, contentDescription = "Pesquisar")
+            }
+        }
+        
+        Text(
+            text = config.subtitle,
+            style = MaterialTheme.typography.labelMedium,
+            color = TextSecondary,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+```
+
+3. **Parser Strategy Pattern**
+```kotlin
+interface ArticleParserStrategy {
+    suspend fun fetchHomeFeed(): HomeFeed?
+    suspend fun fetchArticle(url: String, section: String?, heroImageFromFeed: String?): Article
+}
+
+class AvanteParserStrategy : ArticleParserStrategy {
+    // Implementação atual do ArticleParser
+}
+
+class MilitanteParserStrategy : ArticleParserStrategy {
+    // Implementação específica para O Militante
+}
+```
+
+4. **Theme Configuration**
+```kotlin
+@Composable
+fun PublicationTheme(
+    config: PublicationConfig,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = lightColorScheme(
+        primary = config.primaryColor,
+        secondary = config.secondaryColor,
+        // ... outros mapeamentos
+    )
+    
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+```
+
+5. **Settings para escolher publicação**
+- Ecrã de definições com lista de publicações disponíveis
+- Guardar escolha em SharedPreferences ou DataStore
+- Carregar configuração no arranque da app
+
+**Benefícios:**
+- Suporte para múltiplas publicações sem duplicar código
+- Fácil adicionar novas publicações
+- Branding consistente por publicação
+- Parser específico por publicação (estruturas HTML diferentes)
+
+---
+
+### 🟡 NICE TO HAVE #2: Proveniência da Fonte
 
 **Severidade:** NICE TO HAVE  
 **Tempo estimado:** 2 horas  

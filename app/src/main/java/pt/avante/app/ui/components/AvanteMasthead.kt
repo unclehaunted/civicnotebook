@@ -68,10 +68,10 @@ fun AvanteMasthead(
             }
         }
         
-        // Edition Info
+        // Publication Subtitle
         Text(
-            text = editionLabel,
-            style = MaterialTheme.typography.bodySmall,
+            text = publicationSubtitle,
+            style = MaterialTheme.typography.labelMedium,
             color = Color.Gray,
             modifier = Modifier.padding(top = 4.dp)
         )

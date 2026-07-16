@@ -90,14 +90,10 @@ fun HomeFeedScreen(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                val editionText = if (uiState is HomeUiState.Success) {
-                    (uiState as HomeUiState.Success).feed.editionText
-                } else ""
-
                 AvanteMasthead(
                     onMenuClick = onMenuClick,
                     onSearchClick = onSearchClick,
-                    editionLabel = editionText
+                    publicationSubtitle = "Órgão Central do Partido Comunista Português"
                 )
                 
                 HorizontalDivider(color = SoftDivider, thickness = 1.dp)
@@ -109,6 +105,29 @@ fun HomeFeedScreen(
                 } else if (uiState is HomeUiState.Success) {
                     val feed = (uiState as HomeUiState.Success).feed
                     val articles = feed.articles
+                    
+                    // Edition Badge
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.CalendarToday,
+                            contentDescription = null,
+                            tint = OriginalRed,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = feed.editionText,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = TextPrimary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                     
                     // Layout Toggle
                     Row(
