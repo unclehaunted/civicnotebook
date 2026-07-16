@@ -108,7 +108,7 @@ fun LeadLargeArticleCard(article: ArticleSummary, onClick: () -> Unit) {
             }
         }
     } else {
-        TextArticleCard(article, onClick)
+        TextOnlyArticleCard(article, onClick)
     }
 }
 
@@ -363,7 +363,7 @@ fun OpinionCompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
             }
         }
     } else {
-        TextArticleCard(article, onClick)
+        TextOnlyArticleCard(article, onClick)
     }
 }
 

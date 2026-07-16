@@ -48,6 +48,7 @@ data class ArticleSummary(
     val isPremium: Boolean = false,
     val heroImageUrl: String? = null,
     val summary: String,
+    @Deprecated("Use categoryLabel for semantics or cardTreatment for UI")
     val section: String? = null,           // Compatibilidade: categoryLabel ?: visualPlacement
     val isFree: Boolean = true,            // Explicitly marked as free access in index
     val categoryLabel: String? = null,     // Categoria semântica do Índice tpl=183
