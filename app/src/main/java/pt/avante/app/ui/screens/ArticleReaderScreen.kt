@@ -593,9 +593,19 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
                             color = Color.White,
                             shape = RoundedCornerShape(24.dp),
                             modifier = Modifier.clickable {
+                                val shareText = buildString {
+                                    appendLine(article.title)
+                                    if (article.summary.isNotBlank()) {
+                                        appendLine()
+                                        appendLine(article.summary)
+                                    }
+                                    appendLine()
+                                    appendLine("Lê o artigo completo no Avante!:")
+                                    append(articleUrl)
+                                }
                                 val sendIntent: Intent = Intent().apply {
                                     action = Intent.ACTION_SEND
-                                    putExtra(Intent.EXTRA_TEXT, "${article.title}\n\nLê o artigo completo no Avante!: $articleUrl")
+                                    putExtra(Intent.EXTRA_TEXT, shareText)
                                     type = "text/plain"
                                 }
                                 val shareIntent = Intent.createChooser(sendIntent, null)

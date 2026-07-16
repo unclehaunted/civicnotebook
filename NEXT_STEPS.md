@@ -147,18 +147,20 @@ val paragraphs = article?.children()
 - Se não encontrar em nenhum lado, não mostra hero
 - Elimina símbolos PCP como hero images
 
-### 🟡 IMPORTANT #3: Melhorar Partilha
+### ✅ IMPORTANT #3: Melhorar Partilha — COMPLETADO
 
 **Severidade:** IMPORTANT  
 **Tempo estimado:** 1 hora  
 **Ficheiro:** `ArticleReaderScreen.kt`
+**Status:** ✅ Implementado
 
-**Atual:**
-```kotlin
-putExtra(Intent.EXTRA_TEXT, "${article.title}\n\nLê o artigo completo no Avante!: $articleUrl")
-```
+**Implementação:**
+- Partilha agora inclui título + summary (se disponível) + URL
+- Usa `buildString` para formatação limpa
+- Summary só é incluído se não estiver vazio
+- Formato mais profissional e informativo
 
-**Melhorado:**
+**Código implementado:**
 ```kotlin
 val shareText = buildString {
     appendLine(article.title)
@@ -168,12 +170,12 @@ val shareText = buildString {
     }
     appendLine()
     appendLine("Lê o artigo completo no Avante!:")
-    appendLine(articleUrl)
+    append(articleUrl)
 }
 putExtra(Intent.EXTRA_TEXT, shareText)
 ```
 
-### 🟡 IMPORTANT #3: Note Status Pills com Cores
+### 🟡 IMPORTANT #4: Note Status Pills com Cores
 
 **Severidade:** IMPORTANT  
 **Tempo estimado:** 1 hora  
@@ -266,7 +268,7 @@ if (noteWithSource.sourceArticle != null) {
 10. ✅ Voltar → Caderno mostra nota com pill "Livre"
 11. ✅ FAB → criar nova nota standalone
 12. ✅ Pesquisar → encontra notas
-13. ⚠️ Partilhar → deve incluir summary (MELHORAR)
+13. ✅ Partilhar → inclui summary quando disponível
 
 ### Depois da Demo (Refactors)
 - [ ] Unified search (artigos + notas + highlights)
@@ -336,4 +338,4 @@ Se encontrares bugs ou tiveres dúvidas:
 
 **Última atualização:** 16 Jul 2026  
 **Branch:** aider-audit  
-**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01
+**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, [share-improvement]
