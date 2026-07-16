@@ -67,36 +67,20 @@ object ArticleParser {
         val text = p.text().trim()
         if (text.isBlank()) return emptyList()
         
+        // Only treat as subheading if there's EXACTLY one <strong> child,
+        // no text outside it, and the text is reasonably short (subheadings are brief)
         val onlyStrong =
-            p.children().isNotEmpty() &&
-            p.children().all { it.tagName().equals("strong", ignoreCase = true) } &&
-            p.ownText().trim().isBlank()
+            p.children().size == 1 &&
+            p.children().first().tagName().equals("strong", ignoreCase = true) &&
+            p.ownText().trim().isBlank() &&
+            text.length <= 100
             
         if (onlyStrong) {
             blocks.add(ArticleBlock.Subheading(text))
             return blocks
         }
         
-        val firstChild = p.children().firstOrNull()
-        val startsWithStrong = firstChild?.tagName()?.equals("strong", ignoreCase = true) == true
-        
-        if (startsWithStrong) {
-            val strongText = firstChild.text().trim()
-            val restText = text.removePrefix(strongText).trim()
-            
-            val looksLikeHeading = strongText.length <= 80 && restText.length <= 240 && p.children().size <= 2
-            
-            if (looksLikeHeading) {
-                if (strongText.isNotBlank()) {
-                    blocks.add(ArticleBlock.Subheading(strongText))
-                }
-                if (restText.isNotBlank()) {
-                    blocks.add(ArticleBlock.Text(restText))
-                }
-                return blocks
-            }
-        }
-        
+        // For all other cases, treat as regular text to avoid duplication
         blocks.add(ArticleBlock.Text(text))
         return blocks
     }
