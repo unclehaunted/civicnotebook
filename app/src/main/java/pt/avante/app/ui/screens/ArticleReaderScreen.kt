@@ -243,8 +243,10 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
             // Annotation Mode Banner
             if (readerMode == pt.avante.app.viewmodel.ReaderMode.ANNOTATION_MODE) {
                 item {
+                    val cornerRadius = (32f - (scrollOffset * 0.05f)).coerceIn(0f, 32f).dp
                     Surface(
                         color = OriginalRed,
+                        shape = RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
