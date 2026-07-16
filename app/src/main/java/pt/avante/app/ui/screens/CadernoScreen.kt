@@ -147,7 +147,13 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = if (note.noteType.name == "ARTICLE_NOTE") "Nota de artigo" else "Excerto",
+                            text = when (note.noteType) {
+                                pt.avante.app.data.db.NoteType.STANDALONE -> "Livre"
+                                pt.avante.app.data.db.NoteType.ARTICLE_NOTE -> "Nota de artigo"
+                                pt.avante.app.data.db.NoteType.EXCERPT_NOTE -> "Excerto"
+                                pt.avante.app.data.db.NoteType.REFLECTION -> "Reflexão"
+                                pt.avante.app.data.db.NoteType.COMMENTARY -> "Comentário"
+                            },
                             style = MaterialTheme.typography.labelSmall,
                             color = OriginalRed,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)

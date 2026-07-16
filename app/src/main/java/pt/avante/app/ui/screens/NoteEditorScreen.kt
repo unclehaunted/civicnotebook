@@ -61,11 +61,13 @@ fun NoteEditorScreen(
                         title = { 
                             Column {
                                 Text("Editar Nota", color = TextPrimary)
-                                Text(
-                                    text = if (isSaving) "A guardar..." else "Guardado agora",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = TextSecondary
-                                )
+                                if (isSaving) {
+                                    Text(
+                                        text = "A guardar...",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = TextSecondary
+                                    )
+                                }
                             }
                         },
                         navigationIcon = {
