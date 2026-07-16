@@ -77,38 +77,10 @@ https://www.avante.pt/pt/{issue}/?tpl=183
 - Títulos, intros, imagens locais
 - Estrutura em ordem de documento
 
-**Estratégia de parsing:**
-```text
-Dentro do Índice:
-  percorrer conteúdo em ordem de documento
-  quando aparece marcador de secção/categoria, atualizar secção atual
-  quando um heading/link aponta para URL .htm, criar/atualizar resumo de artigo
-  anexar título local, URL, secção, intro, imagem, marcador de acesso
-  desduplicar por URL canónico normalizado
-```
+**Estado atual:**
+O parser já usa o Índice tpl=183 para detetar artigos livres (`fetchFreeArticlesFromIndex()`). A próxima tarefa é validar, modularizar e testar esta funcionalidade dentro de uma estrutura de adaptador de fonte substituível.
 
 A página visual de destaque (`/pt/{issue}/`) é importante para destaques, mas **não é o inventário completo**.
-
-### 🎯 Arquitetura Modular para Múltiplas Publicações
-
-**Nota importante:** Esta aplicação está a ser desenvolvida para servir múltiplas publicações no futuro, não apenas o Avante!. O masthead e outros componentes de branding devem ser modulares e configuráveis.
-
-**Componentes que precisam de modularidade:**
-- `AvanteMasthead` → deve aceitar parâmetros de configuração (título, subtítulo, cores)
-- Cores do tema → devem ser configuráveis por publicação
-- Ícones e logos → devem ser carregados dinamicamente
-- Parser → deve suportar diferentes estruturas HTML por publicação
-
-**Implementação futura:**
-```kotlin
-data class PublicationConfig(
-    val name: String,
-    val subtitle: String,
-    val primaryColor: Color,
-    val logoResourceId: Int,
-    val parserStrategy: ArticleParserStrategy
-)
-```
 
 ## Estado Atual (16 Jul 2026)
 
@@ -120,13 +92,13 @@ data class PublicationConfig(
    - Indicador vermelho (bullet) para artigos pagos no canto inferior direito
    - Cards compactos só para secções "Opinião" e "Actual"
    - Pill de autor reduzida e mais próxima do botão "Ler artigo"
+   - **Nota:** Esta funcionalidade precisa de ser validada, modularizada e testada na próxima auditoria
 
 5. **Masthead redesenhado** (commit f2c3581, 61bbc29, 0386a9d, 7f34b50, 6408ae7)
    - Subtítulo agora mostra "Órgão Central do Partido Comunista Português"
    - Número da edição movido para badge com ícone de calendário
    - Ponto de exclamação do logo corrigido para vermelho
    - Header compactado com badge e ícones na mesma linha
-   - Preparação para modularidade futura (múltiplas publicações)
 
 ### ✅ Completado Anteriormente
 1. **Parser text duplication fix** (commits 47ef010, 039a812)
@@ -214,12 +186,13 @@ Auditar a arquitetura atual de parser/source e propor o menor refactor seguro qu
 
 1. Ficheiros/funções atuais do parser
 2. Modelos de dados produzidos pelo parsing
-3. Onde acontece o fetching
+3. Onde acontece o fetching (incluindo `fetchFreeArticlesFromIndex()`)
 4. Onde acontece a normalização de URLs
 5. Onde são criados resumos de artigos e corpos de artigos
 6. Onde o output do parser entra na UI/repositório
 7. O que tornaria a substituição futura do parser dolorosa
-8. O menor passo de modularização seguro
+8. Como a funcionalidade tpl=183 existente se encaixa na arquitetura
+9. O menor passo de modularização seguro
 
 ### Direção Esperada
 
@@ -323,20 +296,25 @@ Após a auditoria:
 
 ## Tarefas Encenadas Posteriores
 
-### Tarefa 2: Parse Índice tpl=183 como Inventário Canónico de Edição
+### Tarefa 2: Validar, Modularizar e Testar Parsing do Índice tpl=183
 
 **Âmbito:** Camada parser/source apenas.
 
+**Contexto:**
+O parser já usa `fetchFreeArticlesFromIndex()` para consultar `/pt/{issue}/?tpl=183` e detetar artigos livres. Esta tarefa visa validar, isolar e testar esta funcionalidade dentro de uma estrutura de adaptador de fonte substituível.
+
 **Objetivos:**
-1. Adicionar ou melhorar parsing de `/pt/{issue}/?tpl=183`
-2. Extrair inventário de artigos do Índice
-3. Percorrer conteúdo do índice em ordem e rastrear `div.seccao` como secção atual
-4. Extrair links de artigos de âncoras `h2`/`h3` terminando em `.htm`
-5. Não depender apenas de wrappers `<article>`
-6. Extrair título local, URL, secção, intro, imagem e marcador de acesso onde disponível
-7. Desduplicar por URL canónico normalizado
-8. Ignorar imagens placeholder/logo
-9. Retornar valores de modelo de publicação estáveis, não valores específicos de UI
+1. Validar parsing existente de `/pt/{issue}/?tpl=183`
+2. Isolar lógica de parsing do Índice em função/módulo separado
+3. Extrair inventário completo de artigos do Índice (não apenas marcadores de acesso)
+4. Percorrer conteúdo do índice em ordem e rastrear `div.seccao` como secção atual
+5. Extrair links de artigos de âncoras `h2`/`h3` terminando em `.htm`
+6. Não depender apenas de wrappers `<article>`
+7. Extrair título local, URL, secção, intro, imagem e marcador de acesso onde disponível
+8. Desduplicar por URL canónico normalizado
+9. Ignorar imagens placeholder/logo
+10. Retornar valores de modelo de publicação estáveis, não valores específicos de UI
+11. Adicionar testes baseados em fixtures
 
 ### Tarefa 3: Melhorar Parsing de Corpo de Artigo Individual
 
@@ -392,8 +370,9 @@ Após a auditoria:
 3. **Mudanças de Caderno/notas** — O Caderno é o produto durável. Não tocar a menos que absolutamente necessário.
 4. **Mudanças de navegação** — A navegação funciona.
 5. **Mudanças de styling** — O styling funciona.
-6. **Mudanças de schema de base de dados** — O schema atual suporta o modelo de publicação. Só mudar se claramente necessário e explicitamente justificado.
-7. **Corrigir apenas seletores** — Isto não é apenas sobre seletores quebrados. É sobre arquitetura de fonte substituível.
+6. **Mudanças de tema/masthead/branding** — O branding funciona. Modularização multi-publicação é uma tarefa futura separada.
+7. **Mudanças de schema de base de dados** — O schema atual suporta o modelo de publicação. Só mudar se claramente necessário e explicitamente justificado.
+8. **Corrigir apenas seletores** — Isto não é apenas sobre seletores quebrados. É sobre arquitetura de fonte substituível.
 
 ## Trabalho Completado Recentemente
 
@@ -547,146 +526,40 @@ Surface(
 
 ### 🟢 FUTURE #1: Sistema de Configuração Multi-Publicação
 
-**Severidade:** NICE TO HAVE (FUTURO)  
+**Severidade:** NICE TO HAVE (FUTURO - FORA DO ÂMBITO DA AUDITORIA PARSER/SOURCE)  
 **Tempo estimado:** 8 horas  
-**Ficheiros:** Novos ficheiros de configuração, refactor de componentes
+**Ficheiros:** Novos ficheiros de configuração, refactor de componentes UI/tema
+
+**⚠️ IMPORTANTE:** Esta tarefa está FORA DO ÂMBITO da próxima auditoria parser/source-layer. Não deve ser implementada durante a auditoria. É uma visão futura para depois da camada parser estar modularizada.
 
 **Objetivo:**
 Tornar a app configurável para servir múltiplas publicações (Avante!, O Militante, outras publicações do PCP ou parceiras).
 
-**Componentes a modularizar:**
+**Conceito de alto nível:**
 
-1. **PublicationConfig.kt** (novo)
-```kotlin
-data class PublicationConfig(
-    val id: String,
-    val name: String,
-    val subtitle: String,
-    val primaryColor: Color,
-    val secondaryColor: Color,
-    val logoResourceId: Int,
-    val mastheadLogoResourceId: Int,
-    val baseUrl: String,
-    val parserStrategy: ArticleParserStrategy
-)
+A app deve suportar múltiplas publicações através de:
+- Interface `PublicationSource` com implementações específicas (AvanteSource, MilitanteSource)
+- Configuração de branding por publicação (cores, logos, masthead)
+- Parser strategy pattern para diferentes estruturas HTML
+- Ecrã de definições para escolher publicação ativa
 
-object Publications {
-    val AVANTE = PublicationConfig(
-        id = "avante",
-        name = "Avante!",
-        subtitle = "Órgão Central do Partido Comunista Português",
-        primaryColor = Color(0xFFCC0000),
-        secondaryColor = Color(0xFF8B0000),
-        logoResourceId = R.drawable.avante_logo,
-        mastheadLogoResourceId = R.drawable.avante_masthead,
-        baseUrl = "https://avante.pt",
-        parserStrategy = AvanteParserStrategy()
-    )
-    
-    val O_MILITANTE = PublicationConfig(
-        id = "militante",
-        name = "O Militante",
-        subtitle = "Publicação da JCP",
-        primaryColor = Color(0xFFCC0000),
-        secondaryColor = Color(0xFF8B0000),
-        logoResourceId = R.drawable.militante_logo,
-        mastheadLogoResourceId = R.drawable.militante_masthead,
-        baseUrl = "https://omilitante.pcp.pt",
-        parserStrategy = MilitanteParserStrategy()
-    )
-}
-```
-
-2. **Refactor AvanteMasthead → PublicationMasthead**
-```kotlin
-@Composable
-fun PublicationMasthead(
-    config: PublicationConfig,
-    onMenuClick: () -> Unit,
-    onSearchClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Default.Menu, contentDescription = "Menu")
-            }
-            
-            Image(
-                painter = painterResource(config.mastheadLogoResourceId),
-                contentDescription = config.name,
-                modifier = Modifier.height(56.dp)
-            )
-            
-            IconButton(onClick = onSearchClick) {
-                Icon(Icons.Default.Search, contentDescription = "Pesquisar")
-            }
-        }
-        
-        Text(
-            text = config.subtitle,
-            style = MaterialTheme.typography.labelMedium,
-            color = TextSecondary,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-```
-
-3. **Parser Strategy Pattern**
-```kotlin
-interface ArticleParserStrategy {
-    suspend fun fetchHomeFeed(): HomeFeed?
-    suspend fun fetchArticle(url: String, section: String?, heroImageFromFeed: String?): Article
-}
-
-class AvanteParserStrategy : ArticleParserStrategy {
-    // Implementação atual do ArticleParser
-}
-
-class MilitanteParserStrategy : ArticleParserStrategy {
-    // Implementação específica para O Militante
-}
-```
-
-4. **Theme Configuration**
-```kotlin
-@Composable
-fun PublicationTheme(
-    config: PublicationConfig,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = lightColorScheme(
-        primary = config.primaryColor,
-        secondary = config.secondaryColor,
-        // ... outros mapeamentos
-    )
-    
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
-}
-```
-
-5. **Settings para escolher publicação**
-- Ecrã de definições com lista de publicações disponíveis
-- Guardar escolha em SharedPreferences ou DataStore
-- Carregar configuração no arranque da app
+**Componentes conceptuais:**
+- `PublicationConfig` — configuração de branding e URLs base
+- `PublicationSource` interface — abstração de fonte de dados
+- `AvanteSource`, `MilitanteSource` — implementações específicas
+- Theme configuration por publicação
+- Settings para escolher publicação
 
 **Benefícios:**
 - Suporte para múltiplas publicações sem duplicar código
 - Fácil adicionar novas publicações
 - Branding consistente por publicação
 - Parser específico por publicação (estruturas HTML diferentes)
+
+**Pré-requisitos:**
+- ✅ Camada parser/source modularizada e testada
+- ✅ Interface `PublicationSource` definida e implementada para Avante
+- ✅ Modelo de publicação estável validado
 
 ---
 
