@@ -109,29 +109,21 @@ when (val state = uiState) {
 **Status:** ✅ Implementado
 
 **Problema:**
+Captions de imagens (como "Lusa") apareciam no corpo do artigo porque o parser incluía `<p>` dentro de `<figure>`.
+
+**Solução Implementada:**
 ```kotlin
 val paragraphs = doc.select("article p, article div.texto-intro")
-```
-
-Isto inclui `<p>` dentro de `<figure>` que são captions.
-
-**Fix:**
-```kotlin
-val paragraphs = doc.select("article > p, article > div.texto-intro, article > div > p")
     .filter { p -> 
-        // Excluir parágrafos dentro de figure
-        p.parents().none { it.tagName() == "figure" }
+        // Excluir parágrafos dentro de figure/figcaption
+        p.parents().none { it.tagName() in listOf("figure", "figcaption") }
     }
 ```
 
-Ou mais robusto:
-```kotlin
-val article = doc.select("article").first()
-val paragraphs = article?.children()
-    ?.filter { it.tagName() in listOf("p", "div") }
-    ?.filter { it.className() != "figure" && it.parents().none { p -> p.tagName() == "figure" } }
-    ?: emptyList()
-```
+**Teste:**
+- Abrir https://avante.pt/pt/2745/emdestaque/184314/...
+- Verificar que "Lusa" não aparece no corpo do texto
+- Verificar que outros artigos com captions também funcionam
 
 ### ✅ IMPORTANT #2: Melhorar Hero Image Detection — COMPLETADO
 
@@ -259,12 +251,19 @@ if (noteWithSource.sourceArticle != null) {
 
 ## Checklist para Pitch Demo
 
-### Antes da Demo
-- [ ] Fix parser caption (30 min)
-- [ ] Loading state com preview (2h)
-- [ ] Melhorar partilha com summary (1h)
-- [ ] Pills com cores (1h)
-- [ ] Testar fluxo completo 3x
+### Antes da Demo (CRÍTICO - 1 hora restante)
+- [x] ✅ PARSER #1: Fix parser caption (30 min) — COMPLETADO (e9b5aa4)
+- [x] ✅ Loading state com preview (2h) — COMPLETADO
+- [x] ✅ Melhorar partilha com summary (1h) — COMPLETADO (8461bf0)
+- [x] ✅ Pills com cores (1h) — COMPLETADO (99b6b9f)
+- [ ] PARSER #2: Fix hero images em opinião (1h) — **PRÓXIMO BLOCKER**
+- [ ] Testar fluxo completo 3x com artigos variados
+
+### Artigos de Teste Obrigatórios
+1. https://avante.pt/pt/2745/emdestaque/184314/... (caption "Lusa") — ✅ RESOLVIDO
+2. https://avante.pt/pt/2746/opiniao/... (vários artigos de opinião) — TESTAR
+3. Artigo com blockquote (encontrar exemplo)
+4. Artigo normal sem problemas (baseline)
 
 ### Fluxo da Demo (4 minutos)
 1. ✅ Abrir app → feed carrega
@@ -316,11 +315,13 @@ adb logcat | grep "Caderno"
 ## Notas Técnicas
 
 ### Parser Issues Conhecidos
-1. ✅ Texto duplicado → RESOLVIDO
-2. ⚠️ Caption incluída no texto → PENDENTE
-3. ⚠️ Hero image pode não ser a correta / não existir → PENDENTE
-4. ⚠️ Keywords não extraídas → PENDENTE
-5. ⚠️ Canonical URL não extraído → PENDENTE
+1. ✅ Texto duplicado → RESOLVIDO (commits 47ef010, 039a812)
+2. ✅ Caption incluída no texto → RESOLVIDO (commit e9b5aa4)
+3. 🟡 Hero image pode não ser a correta / não existir → PENDENTE (PARSER #2)
+4. 🟢 Blockquotes não formatadas → PENDENTE (PARSER #3)
+5. 🟢 Secção "Argumentos" categorizada incorretamente → PENDENTE (PARSER #4)
+6. ⚠️ Keywords não extraídas → FUTURO
+7. ⚠️ Canonical URL não extraído → FUTURO
 
 ### Database Schema (v3)
 - `article_sources` — metadados
