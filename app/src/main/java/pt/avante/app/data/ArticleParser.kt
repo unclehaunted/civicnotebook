@@ -57,7 +57,7 @@ object ArticleParser {
         if (imageUrl == null || imageUrl.isBlank()) return false
         
         val placeholderPatterns = listOf(
-            "simbolo_foice_fundo_branco.png",
+            "simbolo_foice",
             "ImageId=41",
             "pcp22px.png",
             "omilitante22px.png",
