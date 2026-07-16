@@ -96,19 +96,24 @@ object ArticleParser {
         "editorial" to "Editorial",
         "opiniao" to "Opinião",
         "em destaque" to "Em Destaque",
+        "emdestaque" to "Em Destaque",
         "em foco" to "Em Foco",
+        "emfoco" to "Em Foco",
         "pcp" to "PCP",
         "trabalhadores" to "Trabalhadores",
         "assembleia da republica" to "Assembleia da República",
+        "assembleiadarepublica" to "Assembleia da República",
         "nacional" to "Nacional",
         "internacional" to "Internacional",
         "temas" to "Temas",
         "argumentos" to "Argumentos",
         "memoria" to "Memória",
         "sugestoes da semana" to "Sugestões da semana",
+        "sugestoes" to "Sugestões da semana",
         "aconteceu" to "Aconteceu",
         "agenda" to "Agenda",
         "resumo da semana" to "Resumo da Semana",
+        "resumosemana" to "Resumo da Semana",
         "frases" to "Frases"
     )
 
@@ -158,6 +163,36 @@ object ArticleParser {
         // Normalizar e procurar no mapa
         val normalized = normalizeForComparison(trimmed)
         return VALID_CATEGORIES[normalized]
+    }
+
+    /**
+     * Extrai categoria de um div.seccao do índice tpl=183.
+     * Procura por link direto de categoria (não .htm), data-section, ou id.
+     * 
+     * @param section Elemento div.seccao
+     * @return Label canónico da categoria ou null
+     */
+    private fun extractCategoryFromSectionDiv(section: Element): String? {
+        // Procurar link direto de categoria (primeiro child <a> que não seja artigo)
+        val directCategoryLinkText = section.children()
+            .firstOrNull { child ->
+                child.tagName().equals("a", ignoreCase = true) &&
+                !child.attr("href").contains(".htm")
+            }
+            ?.text()
+            ?.trim()
+        
+        // Tentar validar o texto do link
+        val fromLink = canonicalCategoryLabel(directCategoryLinkText)
+        if (fromLink != null) return fromLink
+        
+        // Fallback para data-section
+        val fromDataAttr = canonicalCategoryLabel(section.attr("data-section"))
+        if (fromDataAttr != null) return fromDataAttr
+        
+        // Fallback para id (ex: "opiniao", "emdestaque")
+        val sectionId = section.id().takeIf { it.isNotBlank() }
+        return canonicalCategoryLabel(sectionId)
     }
 
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
@@ -301,15 +336,14 @@ object ArticleParser {
                     val indexMeta = indexInventory[fullUrl]
                     
                     // Fase 2A: Separar categoria semântica (tpl=183) de placement visual (homepage)
-                    val semanticCategory = indexMeta?.categoryLabel
+                    // Fallback seguro: se índice não tem categoria, validar placement visual
+                    val semanticCategory = indexMeta?.categoryLabel 
+                        ?: canonicalCategoryLabel(visualPlacement)
                     val semanticSubcategory = indexMeta?.subcategoryLabel
                     val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
                     
-                    // Campo section para compatibilidade: prefere categoria semântica, 
-                    // fallback para visual placement validado
-                    val compatSection = semanticCategory 
-                        ?: canonicalCategoryLabel(visualPlacement) 
-                        ?: visualPlacement
+                    // Campo section para compatibilidade
+                    val compatSection = semanticCategory ?: visualPlacement
                     
                     // Check if article is free based on index inventory
                     // Preserva comportamento original: se não estiver no índice, assume premium
@@ -419,15 +453,9 @@ object ArticleParser {
             
             for (element in elements) {
                 when {
-                    // Transição de categoria: div.seccao ou headers de secção principais
+                    // Transição de categoria: div.seccao
                     element.tagName() == "div" && element.hasClass("seccao") -> {
-                        // Extrair label da secção - preferir ownText ou child direto
-                        val sectionLabel = element.select("h2, h3, .titulo-seccao").firstOrNull()?.ownText()?.trim()
-                            ?: element.ownText().trim().takeIf { it.isNotBlank() }
-                            ?: element.attr("data-section")?.trim()
-                            ?: element.id().takeIf { it.isNotBlank() }
-                        
-                        val canonical = canonicalCategoryLabel(sectionLabel)
+                        val canonical = extractCategoryFromSectionDiv(element)
                         if (canonical != null) {
                             currentCategory = canonical
                             currentSubcategory = null // Reset subcategoria ao mudar de categoria
