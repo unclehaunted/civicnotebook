@@ -291,19 +291,17 @@ object ArticleParser {
             val editionText = editionNode?.text()?.trim() ?: "Nº Desconhecido"
             val editionNumber = Regex("""n\.º\s*(\d+)""").find(editionText)?.groupValues?.get(1) ?: ""
             
-            // 2. Fetch index inventory to get semantic metadata and free/premium status
+            // 2. Fetch index inventory as canonical source (tpl=183)
             val indexInventory = fetchIndexInventory(editionNumber)
             
-            val articles = mutableListOf<ArticleSummary>()
-            
-            // 3. Parse sections from the homepage
+            // 3. Parse homepage for visual placement overlay
+            val homepagePlacement = mutableMapOf<String, HomepagePlacementData>()
             val sections = doc.select(".content-front section")
+            var homepageOrder = 0
             
             for (section in sections) {
-                // Try to find the section title - look for h2 or h3 that's a direct child or close sibling
                 var currentCategory = "Destaque"
                 
-                // Look for section header - could be before the section or inside it
                 val sectionHeader = section.selectFirst("h2, h3")
                 if (sectionHeader != null && sectionHeader.parents().none { it.tagName() == "article" }) {
                     val headerText = sectionHeader.text().trim()
@@ -312,84 +310,92 @@ object ArticleParser {
                     }
                 }
                 
-                // Parse articles within this section
                 val sectionArticles = section.select("article")
                 for (el in sectionArticles) {
                     val titleNode = el.select("h2 a, h3 a").first() ?: continue
-                    val title = titleNode.text().trim()
                     val url = titleNode.attr("href").trim()
-                    
-                    if (title.isEmpty() || url.isEmpty()) continue
+                    if (url.isEmpty()) continue
                     
                     val fullUrl = normalizeUrl(url)
-                    val author = "Redacção" 
-                    val summary = el.select(".texto-intro p, p").firstOrNull()?.text()?.trim() ?: ""
                     
                     val rawImageUrl = el.select("figure img, .noticia-foto img, img").first()?.attr("src")
-                    var heroImageUrl = when {
+                    val homepageImageCandidate = when {
                         rawImageUrl == null || rawImageUrl.isBlank() -> null
                         isPlaceholderImage(rawImageUrl) -> "LOCAL_SYMBOL"
                         else -> normalizeImageUrl(rawImageUrl)
                     }
                     
-                    // Merge com metadados do índice (se disponível)
-                    val indexMeta = indexInventory[fullUrl]
-                    
-                    // Fase 2A: Separar categoria semântica (tpl=183) de placement visual (homepage)
-                    val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
-                    
-                    // Fallback seguro: se índice não tem categoria, validar placement visual
-                    val semanticCategory = indexMeta?.categoryLabel 
-                        ?: canonicalCategoryLabel(visualPlacement)
-                    val semanticSubcategory = indexMeta?.subcategoryLabel
-                    
-                    // Campo section para compatibilidade
-                    val compatSection = semanticCategory ?: visualPlacement
-                    
-                    // Check if article is free based on index inventory
-                    // Preserva comportamento original: se não estiver no índice, assume premium
-                    val isFree = indexMeta?.isFree ?: false
-                    val isPremium = !isFree
-                    
-                    // Determinar cardTreatment baseado em visualPlacement e categoria semântica
-                    val visual = visualPlacement?.trim()
-                    val isOpinionPlacement = visual.equals("Opinião", ignoreCase = true) ||
-                        visual.equals("Opiniao", ignoreCase = true) ||
-                        visual.equals("Actual", ignoreCase = true)
-                    val isOpinionFallback = visual.isNullOrBlank() &&
-                        semanticCategory.equals("Opinião", ignoreCase = true)
-                    
-                    val cardTreatment = when {
-                        visual.equals("Em Foco", ignoreCase = true) || articles.isEmpty() ->
-                            CardTreatment.LEAD_LARGE
-                        visual.equals("Em Destaque", ignoreCase = true) ->
-                            CardTreatment.FEATURED_MEDIUM
-                        isOpinionPlacement || isOpinionFallback ->
-                            CardTreatment.OPINION_COMPACT
-                        heroImageUrl == null ->
-                            CardTreatment.TEXT_ONLY
-                        else ->
-                            CardTreatment.STANDARD_SMALL
-                    }
-                    
-                    articles.add(ArticleSummary(
-                        title = title,
-                        author = author,
-                        url = fullUrl,
-                        heroImageUrl = heroImageUrl,
-                        summary = summary,
-                        isPremium = isPremium,
-                        section = compatSection,
-                        isFree = isFree,
-                        categoryLabel = semanticCategory,
-                        subcategoryLabel = semanticSubcategory,
-                        visualPlacement = visualPlacement,
-                        cardTreatment = cardTreatment
-                    ))
+                    homepagePlacement[fullUrl] = HomepagePlacementData(
+                        visualPlacement = currentCategory,
+                        homepageOrder = homepageOrder++,
+                        homepageImageCandidate = homepageImageCandidate
+                    )
                 }
             }
+            
+            // 4. Build ArticleSummary list from index inventory (canonical)
+            val articles = indexInventory.map { (url, indexMeta) ->
+                val placement = homepagePlacement[url]
+                
+                // Prefer index data, overlay homepage placement
+                val visualPlacement = placement?.visualPlacement
+                val heroImageUrl = placement?.homepageImageCandidate 
+                    ?: indexMeta.indexImageUrl
+                
+                val semanticCategory = indexMeta.categoryLabel 
+                    ?: canonicalCategoryLabel(visualPlacement)
+                val semanticSubcategory = indexMeta.subcategoryLabel
+                
+                val compatSection = semanticCategory ?: visualPlacement ?: "Avante!"
+                
+                val isFree = indexMeta.isFree
+                val isPremium = !isFree
+                
+                // Determinar cardTreatment
+                val visual = visualPlacement?.trim()
+                val isOpinionPlacement = visual.equals("Opinião", ignoreCase = true) ||
+                    visual.equals("Opiniao", ignoreCase = true) ||
+                    visual.equals("Actual", ignoreCase = true)
+                val isOpinionFallback = visual.isNullOrBlank() &&
+                    semanticCategory.equals("Opinião", ignoreCase = true)
+                
+                val cardTreatment = when {
+                    visual.equals("Em Foco", ignoreCase = true) && placement?.homepageOrder == 0 ->
+                        CardTreatment.LEAD_LARGE
+                    visual.equals("Em Destaque", ignoreCase = true) ->
+                        CardTreatment.FEATURED_MEDIUM
+                    isOpinionPlacement || isOpinionFallback ->
+                        CardTreatment.OPINION_COMPACT
+                    heroImageUrl == null ->
+                        CardTreatment.TEXT_ONLY
+                    else ->
+                        CardTreatment.STANDARD_SMALL
+                }
+                
+                ArticleSummary(
+                    title = indexMeta.title ?: "Sem Título",
+                    author = "Redacção",
+                    url = url,
+                    heroImageUrl = heroImageUrl,
+                    summary = indexMeta.intro ?: "",
+                    isPremium = isPremium,
+                    section = compatSection,
+                    isFree = isFree,
+                    categoryLabel = semanticCategory,
+                    subcategoryLabel = semanticSubcategory,
+                    visualPlacement = visualPlacement,
+                    cardTreatment = cardTreatment
+                )
+            }.sortedWith(compareBy(
+                // Artigos na homepage primeiro (por ordem de homepage)
+                { homepagePlacement[it.url]?.homepageOrder ?: Int.MAX_VALUE },
+                // Depois por categoria
+                { it.categoryLabel ?: "zzz" },
+                // Depois por título
+                { it.title }
+            ))
 
-            // Concurrently fetch true images for any LOCAL_SYMBOL fallbacks
+            // 5. Concurrently resolve LOCAL_SYMBOL images
             val resolvedArticles = coroutineScope {
                 articles.map { summary ->
                     async {
@@ -397,7 +403,6 @@ object ArticleParser {
                         if (finalImage == "LOCAL_SYMBOL" || finalImage == null) {
                             try {
                                 val articleDoc = Jsoup.connect(summary.url).get()
-                                // Try article first, then section/content
                                 var articleImg = articleDoc.select("article img").first()?.attr("src")
                                 if (articleImg == null) {
                                     articleImg = articleDoc.select("section img, .content img").first()?.attr("src")
@@ -421,6 +426,16 @@ object ArticleParser {
             null
         }
     }
+    
+    /**
+     * Dados de placement visual da homepage.
+     * Usado apenas como overlay sobre o inventário canónico do índice.
+     */
+    private data class HomepagePlacementData(
+        val visualPlacement: String,
+        val homepageOrder: Int,
+        val homepageImageCandidate: String?
+    )
     
     /**
      * Extrai inventário completo do Índice tpl=183 com metadados semânticos.
