@@ -227,9 +227,13 @@ object ArticleParser {
                     // Merge com metadados do índice (se disponível)
                     val indexMeta = indexInventory[fullUrl]
                     
-                    // TODO (Fase 2): Usar indexMeta.categoryLabel e indexMeta.subcategoryLabel
-                    // quando ArticleSummary tiver esses campos. Por agora, preservar comportamento
-                    // atual onde section vem da homepage visual.
+                    // Fase 2A: Separar categoria semântica (tpl=183) de placement visual (homepage)
+                    val semanticCategory = indexMeta?.categoryLabel
+                    val semanticSubcategory = indexMeta?.subcategoryLabel
+                    val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
+                    
+                    // Campo section para compatibilidade: prefere categoria semântica, fallback para visual
+                    val compatSection = semanticCategory ?: visualPlacement
                     
                     // Check if article is free based on index inventory
                     // Preserva comportamento original: se não estiver no índice, assume premium
@@ -243,8 +247,11 @@ object ArticleParser {
                         heroImageUrl = heroImageUrl,
                         summary = summary,
                         isPremium = isPremium,
-                        section = currentCategory,
-                        isFree = isFree
+                        section = compatSection,
+                        isFree = isFree,
+                        categoryLabel = semanticCategory,
+                        subcategoryLabel = semanticSubcategory,
+                        visualPlacement = visualPlacement
                     ))
                 }
             }

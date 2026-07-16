@@ -14,9 +14,11 @@ data class Article(
     val canonicalUrl: String,
     val heroImageUrl: String? = null,
     val publication: Publication,
-    val section: String? = null,
+    val section: String? = null,           // Compatibilidade: categoryLabel ?: visualPlacement
     val summary: String = "",
-    val blocks: List<ArticleBlock> = emptyList()
+    val blocks: List<ArticleBlock> = emptyList(),
+    val categoryLabel: String? = null,     // Categoria semântica do Índice tpl=183
+    val subcategoryLabel: String? = null   // Subcategoria/rubrica do Índice tpl=183
 )
 
 @Serializable
@@ -38,8 +40,11 @@ data class ArticleSummary(
     val isPremium: Boolean = false,
     val heroImageUrl: String? = null,
     val summary: String,
-    val section: String? = null,
-    val isFree: Boolean = true // Explicitly marked as free access in index
+    val section: String? = null,           // Compatibilidade: categoryLabel ?: visualPlacement
+    val isFree: Boolean = true,            // Explicitly marked as free access in index
+    val categoryLabel: String? = null,     // Categoria semântica do Índice tpl=183
+    val subcategoryLabel: String? = null,  // Subcategoria/rubrica do Índice tpl=183
+    val visualPlacement: String? = null    // Placement visual da homepage (ex: "Em Destaque")
 )
 
 data class HomeFeed(

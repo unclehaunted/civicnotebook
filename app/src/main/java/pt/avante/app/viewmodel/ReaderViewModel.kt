@@ -75,7 +75,9 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                         publication = Publication.AVANTE,
                         heroImageUrl = articleSummary.heroImageUrl,
                         summary = articleSummary.summary,
-                        blocks = blocks
+                        blocks = blocks,
+                        categoryLabel = articleSummary.categoryLabel,
+                        subcategoryLabel = articleSummary.subcategoryLabel
                     )
                     _articleHighlights.value = db.articleDao().getHighlightsForArticle(articleId)
                     _uiState.value = ReaderUiState.Success(article)
@@ -88,7 +90,11 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                     )
                     if (fetched != null) {
                         // Ensure we use the stable ID
-                        val stableArticle = fetched.copy(id = articleId)
+                        val stableArticle = fetched.copy(
+                            id = articleId,
+                            categoryLabel = articleSummary.categoryLabel,
+                            subcategoryLabel = articleSummary.subcategoryLabel
+                        )
                         
                         // Cache Source Stub
                         db.articleDao().insertSources(listOf(
@@ -147,7 +153,9 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                         publication = Publication.AVANTE,
                         heroImageUrl = source.heroImageUrl,
                         summary = source.summary ?: "",
-                        blocks = blocks
+                        blocks = blocks,
+                        categoryLabel = null,  // Não persistido em ArticleEntity
+                        subcategoryLabel = null
                     )
                     _articleHighlights.value = db.articleDao().getHighlightsForArticle(articleId)
                     _uiState.value = ReaderUiState.Success(article)
