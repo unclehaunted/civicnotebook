@@ -142,20 +142,22 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    val (pillText, pillColor) = when (note.noteType) {
+                        pt.avante.app.data.db.NoteType.STANDALONE -> "Livre" to Color(0xFF2196F3) // Blue
+                        pt.avante.app.data.db.NoteType.ARTICLE_NOTE -> "Artigo" to MutedGreen // Green
+                        pt.avante.app.data.db.NoteType.EXCERPT_NOTE -> "Excerto" to AnnotationYellow // Amber
+                        pt.avante.app.data.db.NoteType.REFLECTION -> "Reflexão" to Color(0xFF9C27B0) // Purple
+                        pt.avante.app.data.db.NoteType.COMMENTARY -> "Comentário" to OriginalRed // Red
+                    }
+                    
                     Surface(
-                        color = OriginalRed.copy(alpha = 0.1f),
+                        color = pillColor.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = when (note.noteType) {
-                                pt.avante.app.data.db.NoteType.STANDALONE -> "Livre"
-                                pt.avante.app.data.db.NoteType.ARTICLE_NOTE -> "Nota de artigo"
-                                pt.avante.app.data.db.NoteType.EXCERPT_NOTE -> "Excerto"
-                                pt.avante.app.data.db.NoteType.REFLECTION -> "Reflexão"
-                                pt.avante.app.data.db.NoteType.COMMENTARY -> "Comentário"
-                            },
+                            text = pillText,
                             style = MaterialTheme.typography.labelSmall,
-                            color = OriginalRed,
+                            color = pillColor,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }

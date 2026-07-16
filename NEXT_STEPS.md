@@ -175,20 +175,31 @@ val shareText = buildString {
 putExtra(Intent.EXTRA_TEXT, shareText)
 ```
 
-### 🟡 IMPORTANT #4: Note Status Pills com Cores
+### ✅ IMPORTANT #4: Note Status Pills com Cores — COMPLETADO
 
 **Severidade:** IMPORTANT  
 **Tempo estimado:** 1 hora  
-**Ficheiro:** `CadernoScreen.kt`, `theme/Color.kt`
+**Ficheiro:** `CadernoScreen.kt`
+**Status:** ✅ Implementado
 
-**Adicionar cores por tipo:**
+**Implementação:**
+- Cada tipo de nota agora tem uma cor distinta
+- STANDALONE → Azul (#2196F3)
+- ARTICLE_NOTE → Verde (MutedGreen)
+- EXCERPT_NOTE → Amarelo (AnnotationYellow)
+- REFLECTION → Roxo (#9C27B0)
+- COMMENTARY → Vermelho (OriginalRed)
+- Pills usam cor com 10% de opacidade no fundo
+- Texto da pill usa a cor sólida
+
+**Código implementado:**
 ```kotlin
 val (pillText, pillColor) = when (note.noteType) {
-    NoteType.STANDALONE -> "Livre" to Color(0xFF2196F3) // Blue
-    NoteType.ARTICLE_NOTE -> "Artigo" to Color(0xFF4CAF50) // Green
-    NoteType.EXCERPT_NOTE -> "Excerto" to Color(0xFFFFC107) // Amber
-    NoteType.REFLECTION -> "Reflexão" to Color(0xFF9C27B0) // Purple
-    NoteType.COMMENTARY -> "Comentário" to Color(0xFFFF5722) // Deep Orange
+    NoteType.STANDALONE -> "Livre" to Color(0xFF2196F3)
+    NoteType.ARTICLE_NOTE -> "Artigo" to MutedGreen
+    NoteType.EXCERPT_NOTE -> "Excerto" to AnnotationYellow
+    NoteType.REFLECTION -> "Reflexão" to Color(0xFF9C27B0)
+    NoteType.COMMENTARY -> "Comentário" to OriginalRed
 }
 
 Surface(
@@ -204,7 +215,7 @@ Surface(
 }
 ```
 
-### 🟢 NICE TO HAVE #1: Proveniência da Fonte
+### 🟡 NICE TO HAVE #1: Proveniência da Fonte
 
 **Severidade:** NICE TO HAVE  
 **Tempo estimado:** 2 horas  
@@ -338,4 +349,4 @@ Se encontrares bugs ou tiveres dúvidas:
 
 **Última atualização:** 16 Jul 2026  
 **Branch:** aider-audit  
-**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, [share-improvement]
+**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, [note-pills-colors]
