@@ -26,6 +26,7 @@ enum class ReaderMode {
 
 sealed class ReaderUiState {
     data object Loading : ReaderUiState()
+    data class LoadingWithPreview(val summary: ArticleSummary, val editionNumber: String) : ReaderUiState()
     data class Success(val article: Article) : ReaderUiState()
     data class Error(val message: String) : ReaderUiState()
     data class SubscriptionRequired(val title: String) : ReaderUiState()
@@ -53,7 +54,7 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
 
     fun loadArticle(articleSummary: ArticleSummary, editionNumber: String) {
         viewModelScope.launch {
-            _uiState.value = ReaderUiState.Loading
+            _uiState.value = ReaderUiState.LoadingWithPreview(articleSummary, editionNumber)
             
             // Stable ID generation: sha256(canonicalUrl).take(16)
             val articleId = generateStableId(articleSummary.url)

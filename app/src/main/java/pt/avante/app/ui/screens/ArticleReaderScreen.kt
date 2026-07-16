@@ -86,6 +86,94 @@ fun ArticleReaderScreen(
                 }
             }
         }
+        is ReaderUiState.LoadingWithPreview -> {
+            Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    // Hero image e título do preview
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(280.dp)
+                        ) {
+                            AsyncImage(
+                                model = state.summary.heroImageUrl ?: "https://avante.pt/get_img?ImageWidth=355&ImageHeight=237&ImageId=49919",
+                                contentDescription = "Imagem do Artigo",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.matchParentSize()
+                            )
+                            
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
+                                            startY = 200f
+                                        )
+                                    )
+                            )
+
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .padding(horizontal = 24.dp)
+                                    .padding(top = 48.dp, bottom = 32.dp)
+                            ) {
+                                Surface(
+                                    color = OriginalRed,
+                                    shape = RoundedCornerShape(4.dp),
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                ) {
+                                    Text(
+                                        text = state.summary.section?.uppercase() ?: "AVANTE!",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
+                                Text(
+                                    text = state.summary.title,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        
+                        // Spinner pequeno no centro do conteúdo
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                CircularProgressIndicator(color = OriginalRed, modifier = Modifier.size(32.dp))
+                                Text(
+                                    text = "A carregar artigo...",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = TextSecondary
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Botão voltar
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(top = 48.dp, start = 16.dp)
+                            .background(Color.Black.copy(alpha = 0.4f), CircleShape)
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = Color.White)
+                    }
+                }
+            }
+        }
         is ReaderUiState.Error -> {
             Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

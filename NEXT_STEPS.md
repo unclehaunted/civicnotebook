@@ -59,11 +59,12 @@
 
 ## Próximos Passos Prioritários
 
-### 🔴 PITCH BLOCKER #4: Loading State com Preview
+### ✅ PITCH BLOCKER #4: Loading State com Preview — COMPLETADO
 
 **Severidade:** PITCH BLOCKER  
 **Tempo estimado:** 2 horas  
 **Ficheiros:** `ReaderViewModel.kt`, `ArticleReaderScreen.kt`
+**Status:** ✅ Implementado
 
 **Implementação:**
 1. Adicionar `ReaderUiState.LoadingWithPreview(articleSummary: ArticleSummary)`
