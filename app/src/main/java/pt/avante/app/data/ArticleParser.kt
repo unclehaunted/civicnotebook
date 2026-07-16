@@ -360,9 +360,9 @@ object ArticleParser {
                     semanticCategory.equals("Opinião", ignoreCase = true)
                 
                 val cardTreatment = when {
-                    visual.equals("Em Foco", ignoreCase = true) && placement?.homepageOrder == 0 ->
+                    visual.equals("Em Foco", ignoreCase = true) || placement?.homepageOrder == 0 ->
                         CardTreatment.LEAD_LARGE
-                    visual.equals("Em Destaque", ignoreCase = true) ->
+                    visual.equals("Em Destaque", ignoreCase = true) || visual.equals("Destaque", ignoreCase = true) ->
                         CardTreatment.FEATURED_MEDIUM
                     isOpinionPlacement || isOpinionFallback ->
                         CardTreatment.OPINION_COMPACT
