@@ -19,9 +19,9 @@ import pt.avante.app.theme.OriginalRed
 
 @Composable
 fun AvanteMasthead(
-    editionLabel: String,
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit,
+    publicationSubtitle: String = "Órgão Central do Partido Comunista Português",
     modifier: Modifier = Modifier
 ) {
     Column(

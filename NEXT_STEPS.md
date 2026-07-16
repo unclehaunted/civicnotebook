@@ -523,4 +523,6 @@ Se encontrares bugs ou tiveres dúvidas:
 
 **Última atualização:** 16 Jul 2026  
 **Branch:** aider-audit  
-**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, 99b6b9f, [parser-caption-fix]
+**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, 99b6b9f, e9b5aa4, 17243a7, f2c3581
+
+**Nota sobre Modularidade:** A app está a ser preparada para servir múltiplas publicações. Ver secção "Arquitetura Modular para Múltiplas Publicações" no topo deste documento.
