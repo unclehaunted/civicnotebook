@@ -48,11 +48,11 @@ object ArticleParser {
         
         val blocks = mutableListOf<ArticleBlock>()
         
-        // Extract paragraphs inside the article tag, excluding captions inside <figure>
+        // Extract paragraphs inside the article tag, excluding captions inside <figure> or <figcaption>
         val paragraphs = doc.select("article p, article div.texto-intro")
             .filter { p -> 
-                // Exclude paragraphs that are inside a <figure> element (these are captions)
-                p.parents().none { it.tagName() == "figure" }
+                // Exclude paragraphs that are inside a <figure> or <figcaption> element (these are captions)
+                p.parents().none { it.tagName() in listOf("figure", "figcaption") }
             }
         for (p in paragraphs) {
             val text = p.text().trim()

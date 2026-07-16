@@ -349,4 +349,4 @@ Se encontrares bugs ou tiveres dúvidas:
 
 **Última atualização:** 16 Jul 2026  
 **Branch:** aider-audit  
-**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, [note-pills-colors]
+**Commits relevantes:** 47ef010, 039a812, b838b1a, 941701c, 7d9aca9, e77145e, a760b01, 8461bf0, 99b6b9f, [parser-caption-fix]
