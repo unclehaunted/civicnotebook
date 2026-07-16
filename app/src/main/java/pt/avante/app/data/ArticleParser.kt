@@ -51,10 +51,10 @@ object ArticleParser {
      * Verifica se uma URL de imagem é um placeholder/logo que deve ser ignorado.
      * 
      * @param imageUrl URL da imagem a verificar
-     * @return true se for placeholder, false caso contrário
+     * @return true se for placeholder, false caso contrário (null retorna false)
      */
     private fun isPlaceholderImage(imageUrl: String?): Boolean {
-        if (imageUrl == null) return true
+        if (imageUrl == null || imageUrl.isBlank()) return false
         
         val placeholderPatterns = listOf(
             "simbolo_foice_fundo_branco.png",
@@ -201,10 +201,10 @@ object ArticleParser {
                     val summary = el.select(".texto-intro p, p").firstOrNull()?.text()?.trim() ?: ""
                     
                     val rawImageUrl = el.select("figure img, .noticia-foto img, img").first()?.attr("src")
-                    var heroImageUrl = if (isPlaceholderImage(rawImageUrl)) {
-                        "LOCAL_SYMBOL"
-                    } else {
-                        normalizeImageUrl(rawImageUrl)
+                    var heroImageUrl = when {
+                        rawImageUrl == null || rawImageUrl.isBlank() -> null
+                        isPlaceholderImage(rawImageUrl) -> "LOCAL_SYMBOL"
+                        else -> normalizeImageUrl(rawImageUrl)
                     }
                     
                     // Check if article is free based on index
