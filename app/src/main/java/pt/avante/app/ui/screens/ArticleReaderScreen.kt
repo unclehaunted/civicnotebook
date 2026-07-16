@@ -240,6 +240,44 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
                 Spacer(modifier = Modifier.height(headerHeight))
             }
 
+            // Annotation Mode Banner
+            if (readerMode == pt.avante.app.viewmodel.ReaderMode.ANNOTATION_MODE) {
+                item {
+                    Surface(
+                        color = OriginalRed,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Edit,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Modo de Anotação Ativo",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                            Text(
+                                "Selecione qualquer texto do artigo para realçar, comentar ou criar uma nota.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.9f)
+                            )
+                        }
+                    }
+                }
+            }
+
             // Body content card sliding UP over the photo layer
             item {
                 val cornerRadius = (32f - (scrollOffset * 0.05f)).coerceIn(0f, 32f).dp
@@ -410,21 +448,24 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
                     onClick = { viewModel.toggleAnnotationMode() },
                     modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Color.White, CircleShape)
                 ) {
-                    Icon(Icons.Default.Edit, contentDescription = "Modo de Anotação", tint = OriginalRed)
+                    Icon(Icons.Default.Edit, contentDescription = "Ativar Modo de Anotação", tint = OriginalRed)
                 }
             } else {
+                // Annotation mode active - show exit button with stronger visual
                 Surface(
                     color = OriginalRed,
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    shape = CircleShape,
+                    shadowElevation = 4.dp,
+                    modifier = Modifier.size(48.dp).clickable { viewModel.toggleAnnotationMode() }
                 ) {
-                    Text("Modo Anotação", color = Color.White, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp))
-                }
-                IconButton(
-                    onClick = { viewModel.toggleAnnotationMode() },
-                    modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Color.White, CircleShape)
-                ) {
-                    Icon(Icons.Default.Check, contentDescription = "Sair do modo", tint = OriginalRed)
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Sair do Modo de Anotação",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         }
