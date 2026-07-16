@@ -88,48 +88,76 @@ object ArticleParser {
     )
 
     /**
-     * Lista de categorias válidas conhecidas do Avante!
-     * Usado para validar que texto extraído é realmente uma categoria editorial,
-     * não texto de artigo (título, chapeau, blockquote, etc.)
+     * Mapa de categorias válidas conhecidas do Avante!
+     * Chave: versão normalizada (lowercase, sem acentos)
+     * Valor: label canónico para display
      */
-    private val VALID_CATEGORIES = setOf(
-        "Editorial",
-        "Opinião",
-        "Opiniao",
-        "Em Destaque",
-        "Em Foco",
-        "PCP",
-        "Trabalhadores",
-        "Assembleia da República",
-        "Nacional",
-        "Internacional",
-        "Temas",
-        "Argumentos",
-        "Memória",
-        "Memoria",
-        "Sugestões da semana",
-        "Sugestoes da semana",
-        "Aconteceu",
-        "Agenda",
-        "Resumo da Semana",
-        "Frases"
+    private val VALID_CATEGORIES = mapOf(
+        "editorial" to "Editorial",
+        "opiniao" to "Opinião",
+        "em destaque" to "Em Destaque",
+        "em foco" to "Em Foco",
+        "pcp" to "PCP",
+        "trabalhadores" to "Trabalhadores",
+        "assembleia da republica" to "Assembleia da República",
+        "nacional" to "Nacional",
+        "internacional" to "Internacional",
+        "temas" to "Temas",
+        "argumentos" to "Argumentos",
+        "memoria" to "Memória",
+        "sugestoes da semana" to "Sugestões da semana",
+        "aconteceu" to "Aconteceu",
+        "agenda" to "Agenda",
+        "resumo da semana" to "Resumo da Semana",
+        "frases" to "Frases"
     )
 
     /**
-     * Valida se um texto é uma categoria editorial válida.
-     * Rejeita texto de artigo (títulos longos, chapaús, blockquotes).
+     * Normaliza texto para comparação: lowercase, remove acentos, colapsa espaços.
      */
-    private fun isValidCategory(text: String): Boolean {
-        val normalized = text.trim()
+    private fun normalizeForComparison(text: String): String {
+        return text.trim()
+            .lowercase()
+            .replace("á", "a")
+            .replace("à", "a")
+            .replace("â", "a")
+            .replace("ã", "a")
+            .replace("é", "e")
+            .replace("ê", "e")
+            .replace("í", "i")
+            .replace("ó", "o")
+            .replace("ô", "o")
+            .replace("õ", "o")
+            .replace("ú", "u")
+            .replace("ç", "c")
+            .replace(Regex("\\s+"), " ")
+    }
+
+    /**
+     * Valida e retorna o label canónico de uma categoria.
+     * Retorna null se o texto não for uma categoria válida.
+     * 
+     * @param rawText Texto candidato a categoria
+     * @return Label canónico da categoria ou null
+     */
+    private fun canonicalCategoryLabel(rawText: String?): String? {
+        if (rawText == null) return null
+        
+        val trimmed = rawText.trim()
         
         // Rejeitar texto muito longo (categorias são curtas)
-        if (normalized.length > 50) return false
+        if (trimmed.length > 50) return null
         
         // Rejeitar texto com pontuação típica de artigos
-        if (normalized.contains("?") || normalized.contains("!") || normalized.contains(":")) return false
+        if (trimmed.contains("?") || trimmed.contains("!") || trimmed.contains(":")) return null
         
-        // Verificar se está na lista de categorias conhecidas (case-insensitive)
-        return VALID_CATEGORIES.any { it.equals(normalized, ignoreCase = true) }
+        // Rejeitar se contém "Índice" (título de página)
+        if (trimmed.contains("Índice", ignoreCase = true) || 
+            trimmed.contains("Indice", ignoreCase = true)) return null
+        
+        // Normalizar e procurar no mapa
+        val normalized = normalizeForComparison(trimmed)
+        return VALID_CATEGORIES[normalized]
     }
 
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
@@ -277,8 +305,11 @@ object ArticleParser {
                     val semanticSubcategory = indexMeta?.subcategoryLabel
                     val visualPlacement = currentCategory  // Placement da homepage (ex: "Em Destaque")
                     
-                    // Campo section para compatibilidade: prefere categoria semântica, fallback para visual
-                    val compatSection = semanticCategory ?: visualPlacement
+                    // Campo section para compatibilidade: prefere categoria semântica, 
+                    // fallback para visual placement validado
+                    val compatSection = semanticCategory 
+                        ?: canonicalCategoryLabel(visualPlacement) 
+                        ?: visualPlacement
                     
                     // Check if article is free based on index inventory
                     // Preserva comportamento original: se não estiver no índice, assume premium
@@ -390,13 +421,15 @@ object ArticleParser {
                 when {
                     // Transição de categoria: div.seccao ou headers de secção principais
                     element.tagName() == "div" && element.hasClass("seccao") -> {
-                        // Extrair label da secção
-                        val sectionLabel = element.select("h2, h3, .titulo-seccao").firstOrNull()?.text()?.trim()
+                        // Extrair label da secção - preferir ownText ou child direto
+                        val sectionLabel = element.select("h2, h3, .titulo-seccao").firstOrNull()?.ownText()?.trim()
+                            ?: element.ownText().trim().takeIf { it.isNotBlank() }
                             ?: element.attr("data-section")?.trim()
                             ?: element.id().takeIf { it.isNotBlank() }
                         
-                        if (!sectionLabel.isNullOrBlank() && isValidCategory(sectionLabel)) {
-                            currentCategory = sectionLabel
+                        val canonical = canonicalCategoryLabel(sectionLabel)
+                        if (canonical != null) {
+                            currentCategory = canonical
                             currentSubcategory = null // Reset subcategoria ao mudar de categoria
                         }
                     }
@@ -404,14 +437,16 @@ object ArticleParser {
                     // Headers de secção fora de article (podem ser categorias)
                     (element.tagName() == "h2" || element.tagName() == "h3") && 
                     element.parents().none { it.tagName() == "article" } -> {
-                        val headerText = element.text().trim()
-                        if (headerText.isNotBlank() && 
-                            !headerText.contains("Índice", ignoreCase = true) &&
-                            isValidCategory(headerText)) {
-                            // Verificar se não é um título de artigo (artigos têm links .htm)
-                            val hasArticleLink = element.select("a[href\$='.htm']").isNotEmpty()
-                            if (!hasArticleLink) {
-                                currentCategory = headerText
+                        // Usar ownText para evitar capturar texto de descendentes (artigos)
+                        val headerText = element.ownText().trim()
+                        
+                        // Verificar se não é um título de artigo (artigos têm links .htm)
+                        val hasArticleLink = element.select("a[href\$='.htm']").isNotEmpty()
+                        
+                        if (!hasArticleLink) {
+                            val canonical = canonicalCategoryLabel(headerText)
+                            if (canonical != null) {
+                                currentCategory = canonical
                                 currentSubcategory = null
                             }
                         }
