@@ -106,55 +106,55 @@ fun HomeFeedScreen(
                     val feed = (uiState as HomeUiState.Success).feed
                     val articles = feed.articles
                     
-                    // Edition Badge
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            Icons.Default.CalendarToday,
-                            contentDescription = null,
-                            tint = OriginalRed,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = feed.editionText,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = TextPrimary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    
-                    // Layout Toggle
+                    // Edition Badge + Layout Toggle (same row)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.End
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        SegmentedIconButton(
-                            icon = Icons.Default.ViewList,
-                            selected = layoutMode == HomeLayoutMode.LIST,
-                            onClick = { layoutMode = HomeLayoutMode.LIST },
-                            isFirst = true
-                        )
-                        SegmentedIconButton(
-                            icon = Icons.Default.ViewCarousel,
-                            selected = layoutMode == HomeLayoutMode.STACK,
-                            onClick = { layoutMode = HomeLayoutMode.STACK },
-                            isFirst = false,
-                            isLast = false
-                        )
-                        SegmentedIconButton(
-                            icon = Icons.Default.GridView,
-                            selected = layoutMode == HomeLayoutMode.GRID,
-                            onClick = { layoutMode = HomeLayoutMode.GRID },
-                            isLast = true
-                        )
+                        // Edition Badge (left side)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.CalendarToday,
+                                contentDescription = null,
+                                tint = OriginalRed,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = feed.editionText,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = TextPrimary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        
+                        // Layout Toggle (right side)
+                        Row {
+                            SegmentedIconButton(
+                                icon = Icons.Default.ViewList,
+                                selected = layoutMode == HomeLayoutMode.LIST,
+                                onClick = { layoutMode = HomeLayoutMode.LIST },
+                                isFirst = true
+                            )
+                            SegmentedIconButton(
+                                icon = Icons.Default.ViewCarousel,
+                                selected = layoutMode == HomeLayoutMode.STACK,
+                                onClick = { layoutMode = HomeLayoutMode.STACK },
+                                isFirst = false,
+                                isLast = false
+                            )
+                            SegmentedIconButton(
+                                icon = Icons.Default.GridView,
+                                selected = layoutMode == HomeLayoutMode.GRID,
+                                onClick = { layoutMode = HomeLayoutMode.GRID },
+                                isLast = true
+                            )
+                        }
                     }
 
                     when (layoutMode) {
@@ -171,8 +171,8 @@ fun HomeFeedScreen(
 @Composable
 fun SegmentedIconButton(icon: androidx.compose.ui.graphics.vector.ImageVector, selected: Boolean, onClick: () -> Unit, isFirst: Boolean = false, isLast: Boolean = false) {
     val shape = when {
-        isFirst -> RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-        isLast -> RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
+        isFirst -> RoundedCornerShape(topStart = 14.dp, bottomStart = 14.dp)
+        isLast -> RoundedCornerShape(topEnd = 14.dp, bottomEnd = 14.dp)
         else -> RoundedCornerShape(0.dp)
     }
     
@@ -186,7 +186,7 @@ fun SegmentedIconButton(icon: androidx.compose.ui.graphics.vector.ImageVector, s
             imageVector = icon,
             contentDescription = null,
             tint = if (selected) Color.White else OriginalRed,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp).size(20.dp)
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).size(18.dp)
         )
     }
 }
