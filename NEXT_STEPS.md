@@ -101,11 +101,12 @@ when (val state = uiState) {
 }
 ```
 
-### 🟡 IMPORTANT #1: Fix Parser Hero Image Caption
+### ✅ IMPORTANT #1: Fix Parser Hero Image Caption — COMPLETADO
 
 **Severidade:** IMPORTANT  
 **Tempo estimado:** 30 minutos  
 **Ficheiro:** `ArticleParser.kt`
+**Status:** ✅ Implementado
 
 **Problema:**
 ```kotlin
