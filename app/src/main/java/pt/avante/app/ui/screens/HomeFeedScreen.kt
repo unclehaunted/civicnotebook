@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.items
@@ -252,20 +253,10 @@ fun ArticleStackPager(
                     )
 
                     Column(Modifier.padding(22.dp)) {
-                        Text(
-                            text = article.categoryLabel ?: "Avante!",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = OriginalRed
+                        pt.avante.app.ui.components.CategoryRubricPill(
+                            categoryLabel = article.categoryLabel,
+                            subcategoryLabel = article.subcategoryLabel
                         )
-                        article.subcategoryLabel?.let { subcategory ->
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                text = subcategory,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
 
                         Spacer(Modifier.height(10.dp))
 
@@ -304,8 +295,23 @@ fun ArticleGridLayout(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(articles) { article ->
-            SmallGridArticleCard(article, onClick = { onArticleClick(article) })
+        items(
+            items = articles,
+            span = { article ->
+                when (article.cardTreatment) {
+                    pt.avante.app.data.CardTreatment.LEAD_LARGE,
+                    pt.avante.app.data.CardTreatment.FEATURED_MEDIUM,
+                    pt.avante.app.data.CardTreatment.OPINION_COMPACT -> GridItemSpan(maxLineSpan)
+                    else -> GridItemSpan(1)
+                }
+            }
+        ) { article ->
+            when (article.cardTreatment) {
+                pt.avante.app.data.CardTreatment.LEAD_LARGE -> LeadLargeArticleCard(article = article, onClick = { onArticleClick(article) })
+                pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> FeaturedMediumArticleCard(article = article, onClick = { onArticleClick(article) })
+                pt.avante.app.data.CardTreatment.OPINION_COMPACT -> OpinionCompactArticleCard(article = article, onClick = { onArticleClick(article) })
+                else -> SmallGridArticleCard(article, onClick = { onArticleClick(article) })
+            }
         }
     }
 }
@@ -331,21 +337,10 @@ fun SmallGridArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                     .aspectRatio(1f)
             )
             Column(Modifier.padding(12.dp)) {
-                Text(
-                    text = article.categoryLabel ?: "Avante!",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OriginalRed
+                pt.avante.app.ui.components.CategoryRubricPill(
+                    categoryLabel = article.categoryLabel,
+                    subcategoryLabel = article.subcategoryLabel
                 )
-                article.subcategoryLabel?.let { subcategory ->
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = subcategory,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = article.title,

@@ -120,18 +120,11 @@ fun ArticleReaderScreen(
                                     .padding(horizontal = 24.dp)
                                     .padding(top = 48.dp, bottom = 32.dp)
                             ) {
-                                Surface(
-                                    color = OriginalRed,
-                                    shape = RoundedCornerShape(4.dp),
+                                pt.avante.app.ui.components.CategoryRubricPill(
+                                    categoryLabel = state.summary.categoryLabel,
+                                    subcategoryLabel = state.summary.subcategoryLabel,
                                     modifier = Modifier.padding(bottom = 8.dp)
-                                ) {
-                                    Text(
-                                        text = state.summary.section?.uppercase() ?: "AVANTE!",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color.White,
-                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                                    )
-                                }
+                                )
                                 Text(
                                     text = state.summary.title,
                                     style = MaterialTheme.typography.headlineLarge,
@@ -297,18 +290,11 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
                     .padding(horizontal = 24.dp)
                     .padding(top = 48.dp, bottom = 32.dp)
             ) {
-                Surface(
-                    color = OriginalRed,
-                    shape = RoundedCornerShape(4.dp),
+                pt.avante.app.ui.components.CategoryRubricPill(
+                    categoryLabel = article.categoryLabel,
+                    subcategoryLabel = article.subcategoryLabel,
                     modifier = Modifier.padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = article.section?.uppercase() ?: article.publication.name.uppercase(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
+                )
                 Text(
                     text = article.title,
                     style = MaterialTheme.typography.headlineLarge,

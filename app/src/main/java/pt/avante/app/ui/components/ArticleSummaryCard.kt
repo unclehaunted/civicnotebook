@@ -1,6 +1,8 @@
 package pt.avante.app.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -66,31 +68,15 @@ fun LeadLargeArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                         .fillMaxWidth()
                         .padding(20.dp)
                 ) {
-                    Surface(
-                        color = OriginalRed,
-                        shape = CircleShape
-                    ) {
-                        Text(
-                            text = (article.categoryLabel ?: "Avante!").uppercase(),
-                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
-                        )
-                    }
-                    article.subcategoryLabel?.let { subcategory ->
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = subcategory,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextSecondary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    CategoryRubricPill(
+                        categoryLabel = article.categoryLabel,
+                        subcategoryLabel = article.subcategoryLabel
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = article.title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = OriginalRed,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = TextPrimary,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -125,13 +111,13 @@ fun FeaturedMediumArticleCard(article: ArticleSummary, onClick: () -> Unit) {
             shape = RoundedCornerShape(14.dp),
             elevation = CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
         ) {
-            Column {
+            Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 if (article.heroImageUrl == "LOCAL_SYMBOL") {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(160.dp)
-                            .background(Color.White),
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(WarmPaper),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -146,49 +132,27 @@ fun FeaturedMediumArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                         model = article.heroImageUrl,
                         contentDescription = "Imagem do Artigo",
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().height(160.dp)
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(8.dp))
                     )
                 }
                 
+                Spacer(modifier = Modifier.width(16.dp))
+                
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Surface(
-                        color = OriginalRed,
-                        shape = CircleShape
-                    ) {
-                        Text(
-                            text = (article.categoryLabel ?: "Avante!").uppercase(),
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                        )
-                    }
-                    article.subcategoryLabel?.let { subcategory ->
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = subcategory,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextSecondary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = OriginalRed,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                    CategoryRubricPill(
+                        categoryLabel = article.categoryLabel,
+                        subcategoryLabel = article.subcategoryLabel
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = article.summary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary,
-                        maxLines = 2,
+                        text = article.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = TextPrimary,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -243,21 +207,10 @@ fun StandardSmallArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                         .fillMaxWidth()
                         .padding(12.dp)
                 ) {
-                    Text(
-                        text = (article.categoryLabel ?: "Avante!").uppercase(),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = OriginalRed
+                    CategoryRubricPill(
+                        categoryLabel = article.categoryLabel,
+                        subcategoryLabel = article.subcategoryLabel
                     )
-                    article.subcategoryLabel?.let { subcategory ->
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = subcategory,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextSecondary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = article.title,
@@ -287,7 +240,7 @@ fun OpinionCompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                if (article.heroImageUrl == "LOCAL_SYMBOL") {
+                if (article.heroImageUrl == "LOCAL_SYMBOL" || article.heroImageUrl.isNullOrBlank()) {
                     Box(
                         modifier = Modifier
                             .width(100.dp)
@@ -295,10 +248,9 @@ fun OpinionCompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                             .background(Color.White),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_avante),
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_ah_placeholder),
                             contentDescription = "Avante Logo",
-                            tint = Color.Black,
                             modifier = Modifier.size(60.dp)
                         )
                     }
@@ -316,31 +268,10 @@ fun OpinionCompactArticleCard(article: ArticleSummary, onClick: () -> Unit) {
                         .fillMaxWidth()
                         .padding(14.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = (article.categoryLabel ?: "Avante!").uppercase(),
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = OriginalRed
-                        )
-                        article.subcategoryLabel?.let { subcategory ->
-                            Text(
-                                text = "·",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary
-                            )
-                            Text(
-                                text = subcategory,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f, fill = false)
-                            )
-                        }
-                    }
+                    CategoryRubricPill(
+                        categoryLabel = article.categoryLabel,
+                        subcategoryLabel = article.subcategoryLabel
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = article.title,
@@ -379,26 +310,10 @@ fun TextOnlyArticleCard(article: ArticleSummary, onClick: () -> Unit) {
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Surface(
-                color = OriginalRed,
-                shape = CircleShape
-            ) {
-                Text(
-                    text = (article.categoryLabel ?: "Avante!").uppercase(),
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                )
-            }
-            article.subcategoryLabel?.let { subcategory ->
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = subcategory,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextSecondary,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            CategoryRubricPill(
+                categoryLabel = article.categoryLabel,
+                subcategoryLabel = article.subcategoryLabel
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = article.title,
@@ -451,14 +366,12 @@ fun ArticleCardFooter(article: ArticleSummary) {
             Spacer(modifier = Modifier.width(12.dp))
             Surface(
                 color = Color.Transparent,
-                shape = CircleShape,
-                border = BorderStroke(1.dp, TextSecondary.copy(alpha = 0.2f))
+                shape = CircleShape
             ) {
                 Text(
-                    text = article.author ?: "Redacção",
-                    style = MaterialTheme.typography.bodySmall,
+                    text = displayAuthor(article.author),
+                    style = MaterialTheme.typography.labelSmall,
                     color = TextSecondary,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -483,4 +396,38 @@ fun ArticleCardFooter(article: ArticleSummary) {
             )
         }
     }
+}
+
+@Composable
+fun CategoryRubricPill(
+    categoryLabel: String?, 
+    subcategoryLabel: String?, 
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = OriginalRed,
+        shape = CircleShape,
+        modifier = modifier
+    ) {
+        val text = buildString {
+            append(categoryLabel ?: "Avante!")
+            if (!subcategoryLabel.isNullOrBlank()) {
+                append(" · ")
+                append(subcategoryLabel)
+            }
+        }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+            color = Color.White,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+fun displayAuthor(rawAuthor: String?): String {
+    if (rawAuthor.isNullOrBlank()) return "Redacção"
+    return rawAuthor.substringBefore("(").trim()
 }
