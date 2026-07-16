@@ -71,7 +71,7 @@ object ArticleParser {
         // no text outside it, and the text is reasonably short (subheadings are brief)
         val onlyStrong =
             p.children().size == 1 &&
-            p.children().first().tagName().equals("strong", ignoreCase = true) &&
+            p.children().firstOrNull()?.tagName()?.equals("strong", ignoreCase = true) == true &&
             p.ownText().trim().isBlank() &&
             text.length <= 100
             
