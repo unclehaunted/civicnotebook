@@ -44,7 +44,10 @@ object ArticleParser {
             if (articleImg != null && 
                 !articleImg.contains("simbolo_foice_fundo_branco.png") && 
                 !articleImg.contains("ImageId=41")) {
-                heroImageUrl = if (articleImg.startsWith("/")) {
+                heroImageUrl = if (articleImg.startsWith("/get_img")) {
+                    // Convert /get_img URLs to absolute URLs
+                    "https://avante.pt$articleImg"
+                } else if (articleImg.startsWith("/")) {
                     "https://avante.pt$articleImg"
                 } else {
                     articleImg
@@ -122,38 +125,42 @@ object ArticleParser {
             
             val articles = mutableListOf<ArticleSummary>()
             
-            // 3. Sequentially parse the homepage content to track categories
-            val elements = doc.select(".content-front h2, .content-front h3, .content-front article")
-            var currentCategory = "Destaque"
+            // 3. Parse sections from the homepage
+            val sections = doc.select(".content-front section")
             
-            for (el in elements) {
-                // Update Category if we hit a header that doesn't belong to an article
-                if (el.tagName() in listOf("h2", "h3")) {
-                    // Check if it's not nested inside an article
-                    if (el.parents().none { it.tagName() == "article" }) {
-                        val headerText = el.text().trim()
-                        if (headerText.isNotEmpty()) {
-                            currentCategory = headerText
-                        }
+            for (section in sections) {
+                // Try to find the section title - look for h2 or h3 that's a direct child or close sibling
+                var currentCategory = "Destaque"
+                
+                // Look for section header - could be before the section or inside it
+                val sectionHeader = section.selectFirst("h2, h3")
+                if (sectionHeader != null && sectionHeader.parents().none { it.tagName() == "article" }) {
+                    val headerText = sectionHeader.text().trim()
+                    if (headerText.isNotEmpty()) {
+                        currentCategory = headerText
                     }
-                } 
-                // Parse Article Box
-                else if (el.tagName() == "article") {
-                    val titleNode = el.select("h2 a").first() ?: continue
+                }
+                
+                // Parse articles within this section
+                val sectionArticles = section.select("article")
+                for (el in sectionArticles) {
+                    val titleNode = el.select("h2 a, h3 a").first() ?: continue
                     val title = titleNode.text().trim()
                     val url = titleNode.attr("href").trim()
                     
                     if (title.isEmpty() || url.isEmpty()) continue
                     
                     val fullUrl = if (url.startsWith("http")) url else "https://avante.pt$url"
-                    // Author isn't usually on the homepage cards, it's inside the article. Fallback to Redacção
                     val author = "Redacção" 
-                    val summary = el.select(".texto-intro p").firstOrNull()?.text()?.trim() ?: ""
+                    val summary = el.select(".texto-intro p, p").firstOrNull()?.text()?.trim() ?: ""
                     
                     var heroImageUrl = el.select("figure img, .noticia-foto img, img").first()?.attr("src")
                     if (heroImageUrl != null) {
                         if (heroImageUrl.contains("simbolo_foice_fundo_branco.png") || heroImageUrl.contains("ImageId=41")) {
                             heroImageUrl = "LOCAL_SYMBOL"
+                        } else if (heroImageUrl.startsWith("/get_img")) {
+                            // Convert /get_img URLs to absolute URLs
+                            heroImageUrl = "https://avante.pt$heroImageUrl"
                         } else if (!heroImageUrl.startsWith("http")) {
                             heroImageUrl = "https://avante.pt$heroImageUrl"
                         }
@@ -190,7 +197,13 @@ object ArticleParser {
                                     articleImg = articleDoc.select("section img, .content img").first()?.attr("src")
                                 }
                                 if (articleImg != null && !articleImg.contains("simbolo_foice") && !articleImg.contains("ImageId=41")) {
-                                    finalImage = if (articleImg.startsWith("/")) "https://avante.pt$articleImg" else articleImg
+                                    finalImage = if (articleImg.startsWith("/get_img")) {
+                                        "https://avante.pt$articleImg"
+                                    } else if (articleImg.startsWith("/")) {
+                                        "https://avante.pt$articleImg"
+                                    } else {
+                                        articleImg
+                                    }
                                 }
                             } catch (e: Exception) {
                                 // Keep LOCAL_SYMBOL on error
