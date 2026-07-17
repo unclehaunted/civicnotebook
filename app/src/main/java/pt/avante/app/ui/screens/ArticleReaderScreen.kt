@@ -121,8 +121,10 @@ fun ArticleReaderScreen(
                                     .padding(top = 48.dp, bottom = 32.dp)
                             ) {
                                 pt.avante.app.ui.components.CategoryRubricPill(
-                                    categoryLabel = state.summary.categoryLabel,
-                                    subcategoryLabel = state.summary.subcategoryLabel,
+                                    formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(
+                                        categoryLabel = state.summary.categoryLabel,
+                                        subcategoryLabel = state.summary.subcategoryLabel
+                                    ),
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
                                 Text(
@@ -291,8 +293,10 @@ fun ArticleParallaxView(article: Article, displayImage: String, editionNumber: S
                     .padding(top = 48.dp, bottom = 32.dp)
             ) {
                 pt.avante.app.ui.components.CategoryRubricPill(
-                    categoryLabel = article.categoryLabel,
-                    subcategoryLabel = article.subcategoryLabel,
+                    formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(
+                        categoryLabel = article.categoryLabel,
+                        subcategoryLabel = article.subcategoryLabel
+                    ),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(

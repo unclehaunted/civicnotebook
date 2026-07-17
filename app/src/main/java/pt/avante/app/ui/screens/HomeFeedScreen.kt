@@ -198,20 +198,22 @@ fun ArticleListLayout(
     listState: androidx.compose.foundation.lazy.LazyListState,
     onArticleClick: (ArticleSummary) -> Unit
 ) {
+    val repeatedImages = androidx.compose.runtime.remember(articles) {
+        pt.avante.app.ui.presentation.ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
+    }
+
     LazyColumn(
         state = listState,
         contentPadding = PaddingValues(bottom = 20.dp)
     ) {
         items(articles.size) { index ->
             val summary = articles[index]
-            
-            when (summary.cardTreatment) {
-                pt.avante.app.data.CardTreatment.LEAD_LARGE -> LeadLargeArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> FeaturedMediumArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                pt.avante.app.data.CardTreatment.STANDARD_SMALL -> StandardSmallArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                pt.avante.app.data.CardTreatment.OPINION_COMPACT -> OpinionCompactArticleCard(article = summary, onClick = { onArticleClick(summary) })
-                pt.avante.app.data.CardTreatment.TEXT_ONLY -> TextOnlyArticleCard(article = summary, onClick = { onArticleClick(summary) })
-            }
+            ArticleSummaryCard(
+                article = summary,
+                viewMode = pt.avante.app.ui.presentation.FeedViewMode.LIST,
+                repeatedImages = repeatedImages,
+                onClick = { onArticleClick(summary) }
+            )
         }
     }
 }
@@ -254,8 +256,10 @@ fun ArticleStackPager(
 
                     Column(Modifier.padding(22.dp)) {
                         pt.avante.app.ui.components.CategoryRubricPill(
-                            categoryLabel = article.categoryLabel,
-                            subcategoryLabel = article.subcategoryLabel
+                            formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(
+                                categoryLabel = article.categoryLabel,
+                                subcategoryLabel = article.subcategoryLabel
+                            )
                         )
 
                         Spacer(Modifier.height(10.dp))
@@ -289,67 +293,36 @@ fun ArticleGridLayout(
     articles: List<ArticleSummary>,
     onArticleClick: (ArticleSummary) -> Unit
 ) {
+    val repeatedImages = androidx.compose.runtime.remember(articles) {
+        pt.avante.app.ui.presentation.ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(pt.avante.app.ui.presentation.ArticleCardMetrics.gridGap),
+        horizontalArrangement = Arrangement.spacedBy(pt.avante.app.ui.presentation.ArticleCardMetrics.gridGap)
     ) {
         items(
             items = articles,
             span = { article ->
-                when (article.cardTreatment) {
-                    pt.avante.app.data.CardTreatment.LEAD_LARGE,
-                    pt.avante.app.data.CardTreatment.FEATURED_MEDIUM,
-                    pt.avante.app.data.CardTreatment.OPINION_COMPACT -> GridItemSpan(maxLineSpan)
-                    else -> GridItemSpan(1)
+                val presentation = pt.avante.app.ui.presentation.ArticlePresentationResolver.resolvePresentation(
+                    article = article,
+                    viewMode = pt.avante.app.ui.presentation.FeedViewMode.GRID,
+                    repeatedImages = repeatedImages
+                )
+                when (presentation.spanPolicy) {
+                    pt.avante.app.ui.presentation.ArticleGridSpanPolicy.FULL_WIDTH -> GridItemSpan(maxLineSpan)
+                    pt.avante.app.ui.presentation.ArticleGridSpanPolicy.SINGLE_CELL -> GridItemSpan(1)
                 }
             }
         ) { article ->
-            when (article.cardTreatment) {
-                pt.avante.app.data.CardTreatment.LEAD_LARGE -> LeadLargeArticleCard(article = article, onClick = { onArticleClick(article) })
-                pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> FeaturedMediumArticleCard(article = article, onClick = { onArticleClick(article) })
-                pt.avante.app.data.CardTreatment.OPINION_COMPACT -> OpinionCompactArticleCard(article = article, onClick = { onArticleClick(article) })
-                else -> SmallGridArticleCard(article, onClick = { onArticleClick(article) })
-            }
-        }
-    }
-}
-
-@Composable
-fun SmallGridArticleCard(article: ArticleSummary, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        color = Color.White,
-        shadowElevation = 2.dp,
-        border = BorderStroke(1.dp, SoftDivider)
-    ) {
-        Column {
-            AsyncImage(
-                model = article.heroImageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+            ArticleSummaryCard(
+                article = article,
+                viewMode = pt.avante.app.ui.presentation.FeedViewMode.GRID,
+                repeatedImages = repeatedImages,
+                onClick = { onArticleClick(article) }
             )
-            Column(Modifier.padding(12.dp)) {
-                pt.avante.app.ui.components.CategoryRubricPill(
-                    categoryLabel = article.categoryLabel,
-                    subcategoryLabel = article.subcategoryLabel
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = article.title,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = TextPrimary,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
         }
     }
 }

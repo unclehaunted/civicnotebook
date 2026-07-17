@@ -101,7 +101,7 @@ object AvanteIndexParser {
         return AvanteCategoryRules.canonicalCategoryLabel(sectionId)
     }
 
-    private fun extractArticleFromIndexElement(
+    internal fun extractArticleFromIndexElement(
         article: Element,
         currentCategory: String?,
         currentSubcategory: String?,
@@ -129,13 +129,21 @@ object AvanteIndexParser {
         
         val isFree = article.select("h4:contains(Artigo de acesso livre)").isNotEmpty()
         val authorText = article.select(".author, .autor").firstOrNull()?.text()?.trim()
+
+        val articleSubcategory = article.select("h5")
+            .firstOrNull()
+            ?.text()
+            ?.trim()
+            ?.takeIf { it.isNotBlank() && it.length <= 60 }
+            
+        val resolvedSubcategory = articleSubcategory ?: currentSubcategory
         
         inventory[normalizedUrl] = IndexMetadata(
             url = normalizedUrl,
             title = title,
             author = authorText,
             categoryLabel = currentCategory,
-            subcategoryLabel = currentSubcategory,
+            subcategoryLabel = resolvedSubcategory,
             isFree = isFree,
             indexImageUrl = indexImageUrl,
             intro = intro
