@@ -6,6 +6,18 @@ enum class Publication {
     AVANTE, OMILITANTE
 }
 
+object PublicationMapper {
+    fun map(raw: String?): Publication {
+        if (raw.isNullOrBlank()) return Publication.AVANTE
+        val normalized = raw.trim().uppercase()
+        return if (normalized == "OMILITANTE" || normalized == "O MILITANTE") {
+            Publication.OMILITANTE
+        } else {
+            Publication.AVANTE
+        }
+    }
+}
+
 enum class CardTreatment {
     LEAD_LARGE,
     FEATURED_MEDIUM,
@@ -22,6 +34,7 @@ data class Article(
     val canonicalUrl: String,
     val heroImageUrl: String? = null,
     val publication: Publication,
+    val issueNumber: String? = null,
     val section: String? = null,           // Compatibilidade: categoryLabel ?: visualPlacement
     val summary: String = "",
     val blocks: List<ArticleBlock> = emptyList(),
@@ -37,6 +50,8 @@ sealed class ArticleBlock {
     data class Image(val url: String, val caption: String) : ArticleBlock()
     @Serializable
     data class Subheading(val text: String) : ArticleBlock()
+    @Serializable
+    data class Quote(val content: String) : ArticleBlock()
     @Serializable
     data object PaywallCTA : ArticleBlock()
 }

@@ -2,6 +2,7 @@ package pt.avante.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.withTransaction
 import pt.avante.app.data.db.AppDatabase
 import pt.avante.app.data.db.NoteEntity
 import pt.avante.app.data.db.NoteType
@@ -28,9 +29,13 @@ class CadernoViewModel(private val db: AppDatabase) : ViewModel() {
         }
     }
     
+
     fun removeNote(id: String) {
         viewModelScope.launch {
-            db.articleDao().deleteNote(id)
+            db.withTransaction {
+                db.articleDao().deleteNote(id)
+                db.articleDao().deleteNoteSources(id)
+            }
             loadNotes()
         }
     }

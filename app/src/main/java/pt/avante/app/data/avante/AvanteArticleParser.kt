@@ -19,34 +19,23 @@ object AvanteArticleParser {
         val author = doc.select(".author, .autor").first()?.text() ?: "Redacção"
         val publishedAt = doc.select(".date, .data").first()?.text() ?: "Edição Actual"
         
-        var heroImageUrl: String? = null
+        val articleContainer = doc.select("article").first() ?: doc.body()
         
-        if (heroImageFromFeed != null && heroImageFromFeed != "LOCAL_SYMBOL") {
-            heroImageUrl = heroImageFromFeed
-        } else {
-            var articleImg = doc.select("article img").first()?.attr("src")
-            if (articleImg == null) {
-                articleImg = doc.select("section img, .content img").first()?.attr("src")
-            }
-            heroImageUrl = AvanteImageRules.normalizeImageUrl(articleImg)
-        }
+        // Find valid image inside canonical article hero or body
+        val articleImgCandidate = articleContainer.select(".hero-content img, .article-body img, .conteudo-artigo img").firstOrNull { img ->
+            val src = img.attr("src")
+            !AvanteImageRules.isPlaceholderImage(src)
+        }?.attr("src")
         
-        val blocks = mutableListOf<ArticleBlock>()
+        val articlePageImage = AvanteImageRules.normalizeImageUrl(articleImgCandidate)
         
-        val paragraphs = doc.select("article p, article div.texto-intro")
-            .filter { p -> 
-                p.parents().none { it.tagName() in listOf("figure", "figcaption") }
-            }
-        for (p in paragraphs) {
-            val text = p.text().trim()
-            if (text.contains("O artigo completo está disponível") || text.contains("Compra o «Avante!»")) {
-                blocks.add(ArticleBlock.PaywallCTA)
-                break
-            }
-            if (text.isNotBlank() && !text.contains("Já é assinante ou comprou")) {
-                blocks.addAll(parseParagraphElement(p))
-            }
-        }
+        val validatedFeedImage = heroImageFromFeed
+            ?.let(AvanteImageRules::normalizeImageUrl)
+            ?.takeIf { it != "LOCAL_SYMBOL" && !AvanteImageRules.isPlaceholderImage(it) }
+
+        val heroImageUrl = articlePageImage ?: validatedFeedImage
+        
+        val blocks = AvanteBodyParser.parseBodyContainer(articleContainer)
         
         Article(
             id = url.hashCode().toString(),
@@ -59,25 +48,5 @@ object AvanteArticleParser {
             section = section,
             blocks = blocks
         )
-    }
-
-    private fun parseParagraphElement(p: Element): List<ArticleBlock> {
-        val blocks = mutableListOf<ArticleBlock>()
-        val text = p.text().trim()
-        if (text.isBlank()) return emptyList()
-        
-        val onlyStrong =
-            p.children().size == 1 &&
-            p.children().firstOrNull()?.tagName()?.equals("strong", ignoreCase = true) == true &&
-            p.ownText().trim().isBlank() &&
-            text.length <= 100
-            
-        if (onlyStrong) {
-            blocks.add(ArticleBlock.Subheading(text))
-            return blocks
-        }
-        
-        blocks.add(ArticleBlock.Text(text))
-        return blocks
     }
 }

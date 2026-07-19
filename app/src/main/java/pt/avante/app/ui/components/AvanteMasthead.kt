@@ -22,12 +22,13 @@ fun AvanteMasthead(
     onMenuClick: () -> Unit,
     onSearchClick: () -> Unit,
     publicationSubtitle: String = "Órgão Central do Partido Comunista Português",
+    isCompact: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = if (isCompact) 4.dp else 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Tagline
@@ -36,7 +37,7 @@ fun AvanteMasthead(
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = OriginalRed,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = if (isCompact) 4.dp else 8.dp)
         )
         
         Row(
@@ -52,7 +53,7 @@ fun AvanteMasthead(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(56.dp),
+                    .height(if (isCompact) 40.dp else 56.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -73,10 +74,10 @@ fun AvanteMasthead(
             text = publicationSubtitle,
             style = MaterialTheme.typography.labelMedium,
             color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.padding(top = if (isCompact) 2.dp else 4.dp)
         )
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 8.dp))
         Divider(color = OriginalRed.copy(alpha = 0.2f), thickness = 2.dp)
     }
 }

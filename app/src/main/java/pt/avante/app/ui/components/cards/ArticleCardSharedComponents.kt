@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -79,27 +80,13 @@ fun ArticleCardFooter(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = pt.avante.app.theme.MutedGreen
-            ) {
-                Text(
-                    text = "Ler Artigo",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(8.dp))
-            
+            val displayAuthor = if (author.isNotBlank()) author else "Redacção"
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = pt.avante.app.theme.WarmPaper
             ) {
                 Text(
-                    text = author,
+                    text = displayAuthor,
                     style = MaterialTheme.typography.labelSmall,
                     color = pt.avante.app.theme.TextSecondary,
                     maxLines = 1,
@@ -134,5 +121,22 @@ fun ArticleCardFooter(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun NotesBookmarkOverlay(modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.semantics { contentDescription = "Artigo com notas" },
+        shape = RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp),
+        color = Color(0xFFFFD54F), // Yellow ribbon
+        shadowElevation = 2.dp
+    ) {
+        Icon(
+            imageVector = androidx.compose.material.icons.Icons.Default.Edit,
+            contentDescription = null, // Semantics already on Surface
+            tint = Color(0xFF5D4037), // Dark brown/ink
+            modifier = Modifier.padding(6.dp).size(16.dp)
+        )
     }
 }

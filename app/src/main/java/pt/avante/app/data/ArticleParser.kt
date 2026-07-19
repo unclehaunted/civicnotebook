@@ -52,6 +52,7 @@ object ArticleBlockSerializer {
                     caption = parts.getOrNull(2) ?: ""
                 )
                 "SUBHEADING" -> ArticleBlock.Subheading(text = parts.getOrNull(1) ?: "")
+                "QUOTE" -> ArticleBlock.Quote(content = parts.getOrNull(1) ?: "")
                 "PAYWALL_CTA" -> ArticleBlock.PaywallCTA
                 else -> null
             }

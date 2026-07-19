@@ -17,6 +17,7 @@ fun CompactRowArticleCard(
     article: ArticleSummary,
     presentation: ArticleCardPresentation,
     formattedTaxonomy: String?,
+    isBookmarked: Boolean = false,
     onClick: () -> Unit
 ) {
     androidx.compose.material3.OutlinedCard(
@@ -32,45 +33,50 @@ fun CompactRowArticleCard(
         shape = androidx.compose.foundation.shape.RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
         elevation = androidx.compose.material3.CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
-                    ArticleThumbnail(
-                        heroImageUrl = article.heroImageUrl,
-                        imagePolicy = presentation.imagePolicy,
-                        modifier = Modifier.size(ArticleCardMetrics.smallThumbnailSize),
-                        cornerRadius = 8.dp
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-                
-                Column(modifier = Modifier.weight(1f)) {
-                    if (formattedTaxonomy != null) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
+                        ArticleThumbnail(
+                            heroImageUrl = article.heroImageUrl,
+                            imagePolicy = presentation.imagePolicy,
+                            modifier = Modifier.size(ArticleCardMetrics.smallThumbnailSize),
+                            cornerRadius = 8.dp
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        if (formattedTaxonomy != null) {
+                            Text(
+                                text = formattedTaxonomy,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = OriginalRed,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                        }
                         Text(
-                            text = formattedTaxonomy,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = OriginalRed,
-                            maxLines = 1,
+                            text = article.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = TextPrimary,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
                     }
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = TextPrimary,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                }
+                if (presentation.showFooter || presentation.showFavourite) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ArticleCardFooter(
+                        article = article,
+                        author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),
+                        presentation = presentation
                     )
                 }
             }
-            if (presentation.showFooter || presentation.showFavourite) {
-                Spacer(modifier = Modifier.height(12.dp))
-                ArticleCardFooter(
-                    article = article,
-                    author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),
-                    presentation = presentation
-                )
+            if (isBookmarked) {
+                NotesBookmarkOverlay(modifier = Modifier.align(androidx.compose.ui.Alignment.TopEnd))
             }
         }
     }

@@ -73,6 +73,8 @@ dependencies {
   // Local tests: jUnit, coroutines, Android runner
   testImplementation(libs.junit)
   testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation("org.mockito:mockito-core:5.12.0")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
   // Instrumented tests: jUnit rules and runners
   androidTestImplementation(libs.androidx.test.core)

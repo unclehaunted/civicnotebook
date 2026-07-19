@@ -7,6 +7,7 @@ enum class ArticlePresentationVariant {
     STANDARD_SMALL_ROW,
     GRID_COMPACT_ROW,
     GRID_TEXT_TILE,
+    GRID_IMAGE_TILE,
     STACK_PAGE,
     RELATED_TILE
 }

@@ -22,6 +22,7 @@ fun MediumArticleCard(
     presentation: ArticleCardPresentation,
     formattedTaxonomy: String?,
     formattedAuthor: String,
+    isBookmarked: Boolean = false,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -37,39 +38,44 @@ fun MediumArticleCard(
         shape = RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
-                    ArticleThumbnail(
-                        heroImageUrl = article.heroImageUrl,
-                        imagePolicy = presentation.imagePolicy,
-                        modifier = Modifier.size(ArticleCardMetrics.mediumThumbnailSize),
-                        cornerRadius = 8.dp
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-                
-                Column(modifier = Modifier.weight(1f)) {
-                    if (formattedTaxonomy != null) {
-                        CategoryRubricPill(
-                            formattedTaxonomy = formattedTaxonomy
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
+                        ArticleThumbnail(
+                            heroImageUrl = article.heroImageUrl,
+                            imagePolicy = presentation.imagePolicy,
+                            modifier = Modifier.size(ArticleCardMetrics.mediumThumbnailSize),
+                            cornerRadius = 8.dp
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
                     
-                    Text(
-                        text = article.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
-                        maxLines = ArticleCardMetrics.mediumTitleMaxLines,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        if (formattedTaxonomy != null) {
+                            CategoryRubricPill(
+                                formattedTaxonomy = formattedTaxonomy
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        
+                        Text(
+                            text = article.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = TextPrimary,
+                            maxLines = ArticleCardMetrics.mediumTitleMaxLines,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                
+                if (presentation.showFooter || presentation.showFavourite) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ArticleCardFooter(article = article, author = formattedAuthor, presentation = presentation)
                 }
             }
-            
-            if (presentation.showFooter || presentation.showFavourite) {
-                Spacer(modifier = Modifier.height(16.dp))
-                ArticleCardFooter(article = article, author = formattedAuthor, presentation = presentation)
+            if (isBookmarked) {
+                NotesBookmarkOverlay(modifier = Modifier.align(androidx.compose.ui.Alignment.TopEnd))
             }
         }
     }

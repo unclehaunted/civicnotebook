@@ -6,27 +6,25 @@ object ArticlePresentationResolver {
 
     fun resolvePresentation(
         article: ArticleSummary,
-        viewMode: FeedViewMode,
-        repeatedImages: Set<String> = emptySet()
+        viewMode: FeedViewMode
     ): ArticleCardPresentation {
         val category = article.categoryLabel?.trim()?.uppercase()
-        val normalizedUrl = ArticleImageFrequencyAnalyzer.normalizeUrl(article.heroImageUrl)
-        val hasRemoteImage = normalizedUrl != null && !repeatedImages.contains(normalizedUrl)
+        val hasRemoteImage = article.heroImageUrl != null
 
         return when (viewMode) {
-            FeedViewMode.LIST -> resolveListMode(category, hasRemoteImage)
-            FeedViewMode.GRID -> resolveGridMode(category, hasRemoteImage)
+            FeedViewMode.LIST -> resolveListMode(article, hasRemoteImage)
+            FeedViewMode.GRID -> resolveGridMode(article, hasRemoteImage)
             FeedViewMode.STACK -> resolveStackMode()
             FeedViewMode.RELATED_GRID -> resolveRelatedGridMode()
         }
     }
 
     private fun resolveListMode(
-        category: String?,
+        article: ArticleSummary,
         hasRemoteImage: Boolean
     ): ArticleCardPresentation {
-            return when (category) {
-            "EM FOCO", "EDITORIAL" -> ArticleCardPresentation(
+        return when (article.cardTreatment) {
+            pt.avante.app.data.CardTreatment.LEAD_LARGE -> ArticleCardPresentation(
                 variant = ArticlePresentationVariant.LEAD_LARGE,
                 spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
                 imagePolicy = if (hasRemoteImage) ArticleImagePolicy.REMOTE_IMAGE else ArticleImagePolicy.NO_IMAGE,
@@ -34,7 +32,7 @@ object ArticlePresentationResolver {
                 showFooter = true,
                 showFavourite = true
             )
-            "EM DESTAQUE", "INTERNACIONAL", "ARGUMENTOS" -> ArticleCardPresentation(
+            pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> ArticleCardPresentation(
                 variant = ArticlePresentationVariant.FEATURED_MEDIUM,
                 spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
                 imagePolicy = if (hasRemoteImage) ArticleImagePolicy.REMOTE_IMAGE else ArticleImagePolicy.NO_IMAGE,
@@ -42,7 +40,7 @@ object ArticlePresentationResolver {
                 showFooter = true,
                 showFavourite = true
             )
-            "OPINIÃO" -> ArticleCardPresentation(
+            pt.avante.app.data.CardTreatment.OPINION_COMPACT -> ArticleCardPresentation(
                 variant = ArticlePresentationVariant.OPINION_MEDIUM,
                 spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
                 imagePolicy = ArticleImagePolicy.OPINION_AH_PLACEHOLDER,
@@ -62,7 +60,7 @@ object ArticlePresentationResolver {
                     )
                 } else {
                     ArticleCardPresentation(
-                        variant = ArticlePresentationVariant.GRID_COMPACT_ROW, // Can be mapped to a compact text-only row in list too if desired, or STANDARD_SMALL_ROW with NO_IMAGE. Let's map to GRID_COMPACT_ROW or a compact text card.
+                        variant = ArticlePresentationVariant.GRID_COMPACT_ROW,
                         spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
                         imagePolicy = ArticleImagePolicy.NO_IMAGE,
                         showSummary = false,
@@ -75,11 +73,11 @@ object ArticlePresentationResolver {
     }
 
     private fun resolveGridMode(
-        category: String?,
+        article: ArticleSummary,
         hasRemoteImage: Boolean
     ): ArticleCardPresentation {
-            return when (category) {
-            "EM FOCO", "EDITORIAL" -> ArticleCardPresentation(
+        return when (article.cardTreatment) {
+            pt.avante.app.data.CardTreatment.LEAD_LARGE -> ArticleCardPresentation(
                 variant = ArticlePresentationVariant.LEAD_LARGE,
                 spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
                 imagePolicy = if (hasRemoteImage) ArticleImagePolicy.REMOTE_IMAGE else ArticleImagePolicy.NO_IMAGE,
@@ -87,30 +85,35 @@ object ArticlePresentationResolver {
                 showFooter = true,
                 showFavourite = true
             )
-            "EM DESTAQUE", "INTERNACIONAL", "ARGUMENTOS" -> ArticleCardPresentation(
-                variant = ArticlePresentationVariant.FEATURED_MEDIUM,
-                spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
-                imagePolicy = if (hasRemoteImage) ArticleImagePolicy.REMOTE_IMAGE else ArticleImagePolicy.NO_IMAGE,
-                showSummary = true, // Medium cards in grid can show summary, or false if preferred.
-                showFooter = true,
-                showFavourite = true
-            )
-            "OPINIÃO" -> ArticleCardPresentation(
-                variant = ArticlePresentationVariant.OPINION_MEDIUM,
-                spanPolicy = ArticleGridSpanPolicy.FULL_WIDTH,
-                imagePolicy = ArticleImagePolicy.OPINION_AH_PLACEHOLDER,
-                showSummary = false,
-                showFooter = true,
-                showFavourite = true
-            )
-            else -> ArticleCardPresentation(
-                variant = ArticlePresentationVariant.GRID_TEXT_TILE,
+            pt.avante.app.data.CardTreatment.FEATURED_MEDIUM -> ArticleCardPresentation(
+                variant = if (hasRemoteImage) ArticlePresentationVariant.GRID_IMAGE_TILE else ArticlePresentationVariant.GRID_TEXT_TILE,
                 spanPolicy = ArticleGridSpanPolicy.SINGLE_CELL,
-                imagePolicy = ArticleImagePolicy.NO_IMAGE,
+                imagePolicy = if (hasRemoteImage) ArticleImagePolicy.REMOTE_IMAGE else ArticleImagePolicy.NO_IMAGE,
                 showSummary = false,
-                showFooter = false,
-                showFavourite = false
+                showFooter = true,
+                showFavourite = true
             )
+            else -> {
+                if (hasRemoteImage) {
+                    ArticleCardPresentation(
+                        variant = ArticlePresentationVariant.GRID_IMAGE_TILE,
+                        spanPolicy = ArticleGridSpanPolicy.SINGLE_CELL,
+                        imagePolicy = ArticleImagePolicy.REMOTE_IMAGE,
+                        showSummary = false,
+                        showFooter = true,
+                        showFavourite = true
+                    )
+                } else {
+                    ArticleCardPresentation(
+                        variant = ArticlePresentationVariant.GRID_TEXT_TILE,
+                        spanPolicy = ArticleGridSpanPolicy.SINGLE_CELL,
+                        imagePolicy = ArticleImagePolicy.NO_IMAGE,
+                        showSummary = false,
+                        showFooter = true,
+                        showFavourite = true
+                    )
+                }
+            }
         }
     }
 

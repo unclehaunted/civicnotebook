@@ -20,6 +20,7 @@ fun GridTextArticleCard(
     article: ArticleSummary,
     presentation: ArticleCardPresentation,
     formattedTaxonomy: String?,
+    isBookmarked: Boolean = false,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -31,38 +32,37 @@ fun GridTextArticleCard(
         shape = RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            if (formattedTaxonomy != null) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                if (formattedTaxonomy != null) {
+                    pt.avante.app.ui.components.CategoryRubricPill(formattedTaxonomy)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                
                 Text(
-                    text = formattedTaxonomy,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = OriginalRed,
-                    maxLines = 1,
+                    text = article.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = TextPrimary,
+                    maxLines = ArticleCardMetrics.gridTitleMaxLines,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            
-            Text(
-                text = article.title,
-                style = MaterialTheme.typography.titleSmall,
-                color = TextPrimary,
-                maxLines = ArticleCardMetrics.gridTitleMaxLines,
-                overflow = TextOverflow.Ellipsis
-            )
-            
-            if (presentation.showFooter || presentation.showFavourite) {
+                
+                if (presentation.showFooter || presentation.showFavourite) {
 
-                Spacer(modifier = Modifier.height(12.dp))
-                ArticleCardFooter(
-                    article = article,
-                    author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),
-                    presentation = presentation
-                )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ArticleCardFooter(
+                        article = article,
+                        author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),
+                        presentation = presentation
+                    )
+                }
+            }
+            if (isBookmarked) {
+                NotesBookmarkOverlay(modifier = Modifier.align(androidx.compose.ui.Alignment.TopEnd))
             }
         }
     }

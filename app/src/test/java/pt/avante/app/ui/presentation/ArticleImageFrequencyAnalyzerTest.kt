@@ -7,12 +7,12 @@ import pt.avante.app.data.CardTreatment
 
 class ArticleImageFrequencyAnalyzerTest {
 
-    private fun mockArticle(url: String?): ArticleSummary {
+    private fun mockArticle(imageUrl: String?, articleUrl: String = "http://example.com/${java.util.UUID.randomUUID()}"): ArticleSummary {
         return ArticleSummary(
-            url = "http://example.com/1",
+            url = articleUrl,
             title = "Test Article",
             summary = "Summary",
-            heroImageUrl = url,
+            heroImageUrl = imageUrl,
             categoryLabel = "Test",
             subcategoryLabel = null,
             author = "Redacção",
@@ -21,48 +21,34 @@ class ArticleImageFrequencyAnalyzerTest {
     }
 
     @Test
-    fun `Two occurrences are retained`() {
-        val articles = listOf(
-            mockArticle("https://example.com/img.jpg"),
-            mockArticle("https://example.com/img.jpg")
-        )
-        val repeated = ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
-        assertEquals(emptySet<String>(), repeated)
+    fun `One occurrence is retained`() {
+        val article = mockArticle("https://example.com/img.jpg")
+        val ownership = ArticleImageFrequencyAnalyzer.resolveFeedImageOwnership(listOf(article))
+        assertEquals("https://example.com/img.jpg", ownership[article.url])
+    }
+
+    @Test
+    fun `Two occurrences are suppressed`() {
+        val article1 = mockArticle("https://example.com/img.jpg")
+        val article2 = mockArticle("https://example.com/img.jpg")
+        val ownership = ArticleImageFrequencyAnalyzer.resolveFeedImageOwnership(listOf(article1, article2))
+        assertEquals(null, ownership[article1.url])
+        assertEquals(null, ownership[article2.url])
     }
 
     @Test
     fun `Three occurrences are suppressed`() {
-        val articles = listOf(
-            mockArticle("https://example.com/img.jpg"),
-            mockArticle("https://example.com/img.jpg"),
-            mockArticle("https://example.com/img.jpg")
-        )
-        val repeated = ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
-        assertEquals(setOf("example.com/img.jpg"), repeated)
+        val article1 = mockArticle("https://example.com/img.jpg")
+        val article2 = mockArticle("https://example.com/img.jpg")
+        val article3 = mockArticle("https://example.com/img.jpg")
+        val ownership = ArticleImageFrequencyAnalyzer.resolveFeedImageOwnership(listOf(article1, article2, article3))
+        assertEquals(null, ownership[article1.url])
     }
 
     @Test
-    fun `LOCAL_SYMBOL and blanks are ignored`() {
-        val articles = listOf(
-            mockArticle("LOCAL_SYMBOL"),
-            mockArticle("LOCAL_SYMBOL"),
-            mockArticle("LOCAL_SYMBOL"),
-            mockArticle("   "),
-            mockArticle(""),
-            mockArticle(null)
-        )
-        val repeated = ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
-        assertEquals(emptySet<String>(), repeated)
-    }
-
-    @Test
-    fun `Equivalent normalized URLs count together`() {
-        val articles = listOf(
-            mockArticle("http://example.com/img.jpg"),
-            mockArticle("https://www.example.com/img.jpg"),
-            mockArticle("  example.com/img.jpg  ")
-        )
-        val repeated = ArticleImageFrequencyAnalyzer.findRepeatedImages(articles)
-        assertEquals(setOf("example.com/img.jpg"), repeated)
+    fun `Known placeholder is suppressed immediately`() {
+        val article = mockArticle("https://example.com/simbolo_foice.png")
+        val ownership = ArticleImageFrequencyAnalyzer.resolveFeedImageOwnership(listOf(article))
+        assertEquals(null, ownership[article.url])
     }
 }

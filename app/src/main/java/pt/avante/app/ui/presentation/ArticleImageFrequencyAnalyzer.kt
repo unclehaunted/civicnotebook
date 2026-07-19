@@ -17,19 +17,44 @@ object ArticleImageFrequencyAnalyzer {
     }
 
     /**
-     * Identifies remote images that appear at least three times in the provided article list.
-     * Returns a set of normalized URL identities.
+     * Resolves feed-image ownership by rejecting ambiguous images.
+     * If an image is assigned to more than one distinct canonical article URL, it is ambiguous and returns null.
      */
-    fun findRepeatedImages(articles: List<ArticleSummary>): Set<String> {
-        val frequencies = mutableMapOf<String, Int>()
+    fun resolveFeedImages(articles: List<ArticleSummary>): List<ArticleSummary> {
+        val ownershipMap = resolveFeedImageOwnership(articles)
+        return articles.map { it.copy(heroImageUrl = ownershipMap[it.url]) }
+    }
+
+    /**
+     * Returns a map of canonical article URL to its validated feed image URL (or null if rejected).
+     */
+    fun resolveFeedImageOwnership(articles: List<ArticleSummary>): Map<String, String?> {
+        val urlToArticles = mutableMapOf<String, MutableSet<String>>()
         
         articles.forEach { article ->
-            val normalized = normalizeUrl(article.heroImageUrl)
-            if (normalized != null) {
-                frequencies[normalized] = frequencies.getOrDefault(normalized, 0) + 1
+            val normalizedImg = normalizeUrl(article.heroImageUrl)
+            if (normalizedImg != null) {
+                urlToArticles.getOrPut(normalizedImg) { mutableSetOf() }.add(article.url)
             }
         }
         
-        return frequencies.filter { it.value >= 3 }.keys
+        // Reject if it's assigned to more than 1 distinct canonical article URL
+        val suspiciousNormalizedUrls = urlToArticles.filter { it.value.size > 1 }.keys
+        
+        val ownershipMap = mutableMapOf<String, String?>()
+        articles.forEach { article ->
+            val imgUrl = article.heroImageUrl
+            val normalizedImg = normalizeUrl(imgUrl)
+            
+            if (normalizedImg == null || pt.avante.app.data.avante.AvanteImageRules.isPlaceholderImage(imgUrl)) {
+                ownershipMap[article.url] = null
+            } else if (suspiciousNormalizedUrls.contains(normalizedImg)) {
+                ownershipMap[article.url] = null
+            } else {
+                ownershipMap[article.url] = imgUrl
+            }
+        }
+        
+        return ownershipMap
     }
 }

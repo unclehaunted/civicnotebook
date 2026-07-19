@@ -9,6 +9,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import pt.avante.app.data.Publication
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 // --- New Entities for Stage 2 ---
 
@@ -23,8 +25,27 @@ data class ArticleEntity(
     val publishedAt: String?,
     val accessTier: String,
     val summary: String?,
-    val heroImageUrl: String?
-)
+    val heroImageUrl: String?,
+    val categoryLabel: String? = null,
+    val subcategoryLabel: String? = null
+) {
+    fun toArticle(blocks: List<pt.avante.app.data.ArticleBlock>): pt.avante.app.data.Article {
+        return pt.avante.app.data.Article(
+            id = articleId,
+            title = title,
+            author = author ?: "",
+            publishedAt = publishedAt ?: "",
+            canonicalUrl = canonicalUrl,
+            publication = pt.avante.app.data.PublicationMapper.map(publication),
+            issueNumber = issueNumber,
+            heroImageUrl = heroImageUrl,
+            summary = summary ?: "",
+            blocks = blocks,
+            categoryLabel = categoryLabel,
+            subcategoryLabel = subcategoryLabel
+        )
+    }
+}
 
 @Entity(tableName = "cached_article_contents")
 data class CachedArticleContentEntity(
@@ -87,6 +108,13 @@ abstract class ArticleDao {
     @Query("SELECT * FROM article_sources ORDER BY publishedAt DESC")
     abstract suspend fun getAllSources(): @JvmSuppressWildcards List<ArticleEntity>
 
+    @Query("""
+        SELECT * FROM article_sources
+        WHERE issueNumber = :issueNumber
+        ORDER BY rowid ASC
+    """)
+    abstract suspend fun getSourcesForIssue(issueNumber: String): @JvmSuppressWildcards List<ArticleEntity>
+
     @Query("SELECT * FROM article_sources WHERE articleId = :id")
     abstract suspend fun getSource(id: String): @JvmSuppressWildcards ArticleEntity?
 
@@ -108,6 +136,9 @@ abstract class ArticleDao {
     """)
     abstract suspend fun sweepTemporaryCache(timestamp: Long): @JvmSuppressWildcards Int
 
+    @Query("UPDATE article_sources SET heroImageUrl = null WHERE heroImageUrl LIKE '%ImageId=49919%' OR heroImageUrl = 'LOCAL_SYMBOL'")
+    abstract suspend fun sanitizeStaleHeroes(): @JvmSuppressWildcards Int
+
     // --- Notes ---
     @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
     abstract suspend fun getAllNotes(): @JvmSuppressWildcards List<NoteEntity>
@@ -124,11 +155,17 @@ abstract class ArticleDao {
     @Query("DELETE FROM notes WHERE noteId = :id")
     abstract suspend fun deleteNote(id: String): @JvmSuppressWildcards Int
 
+    @Query("DELETE FROM note_sources WHERE noteId = :noteId")
+    abstract suspend fun deleteNoteSources(noteId: String): @JvmSuppressWildcards Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertNoteSource(noteSource: NoteSourceEntity): @JvmSuppressWildcards Long
 
     @Query("SELECT * FROM note_sources WHERE noteId = :noteId LIMIT 1")
     abstract suspend fun getNoteSource(noteId: String): @JvmSuppressWildcards NoteSourceEntity?
+
+    @Query("SELECT DISTINCT articleId FROM note_sources")
+    abstract fun getBookmarkedArticleIds(): kotlinx.coroutines.flow.Flow<List<String>>
 
     // --- Highlights & Comments ---
     @Query("SELECT * FROM highlights WHERE articleId = :articleId ORDER BY createdAt ASC")
@@ -147,6 +184,14 @@ abstract class ArticleDao {
     abstract suspend fun insertHighlightComment(comment: HighlightCommentEntity): @JvmSuppressWildcards Long
 }
 
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE article_sources ADD COLUMN categoryLabel TEXT")
+        database.execSQL("ALTER TABLE article_sources ADD COLUMN subcategoryLabel TEXT")
+    }
+}
+
 @Database(
     entities = [
         ArticleEntity::class, 
@@ -156,9 +201,27 @@ abstract class ArticleDao {
         HighlightEntity::class,
         HighlightCommentEntity::class
     ], 
-    version = 3, 
+    version = 4, 
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun articleDao(): ArticleDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: android.content.Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: androidx.room.Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "civicnotebook-db"
+                )
+                .addMigrations(MIGRATION_3_4)
+                .build()
+                .also { INSTANCE = it }
+            }
+        }
+    }
 }

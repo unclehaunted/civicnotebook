@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -66,158 +68,37 @@ import pt.avante.app.viewmodel.ReaderViewModel
 import pt.avante.app.viewmodel.NoteViewModel
 
 import pt.avante.app.ui.screens.*
+import pt.avante.app.ui.reader.*
 import pt.avante.app.ui.components.*
+import pt.avante.app.ui.layout.ProvideAppViewport
+import pt.avante.app.ui.main.MainApp
+
+import androidx.activity.viewModels
+import pt.avante.app.viewmodel.AppViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "civicnotebook-db"
-        ).fallbackToDestructiveMigration().build()
+        val db = AppDatabase.getInstance(applicationContext)
+        val currentIssueStore = pt.avante.app.data.CurrentIssueStore(applicationContext)
+        val factory = AppViewModelFactory(db, currentIssueStore)
         
-        val homeViewModel = HomeViewModel(db)
-        val pesquisaViewModel = PesquisaViewModel(db)
-        val cadernoViewModel = CadernoViewModel(db)
-        val readerViewModel = ReaderViewModel(db)
-        val noteViewModel = NoteViewModel(db)
+        lifecycleScope.launch {
+            db.articleDao().sanitizeStaleHeroes()
+        }
+        
+        val homeViewModel: HomeViewModel by viewModels { factory }
+        val pesquisaViewModel: PesquisaViewModel by viewModels { factory }
+        val cadernoViewModel: CadernoViewModel by viewModels { factory }
+        val readerViewModel: ReaderViewModel by viewModels { factory }
+        val noteViewModel: NoteViewModel by viewModels { factory }
         
         setContent {
             OriginalTheme {
-                MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MainApp(db: AppDatabase, homeViewModel: HomeViewModel, pesquisaViewModel: PesquisaViewModel, cadernoViewModel: CadernoViewModel, readerViewModel: ReaderViewModel, noteViewModel: NoteViewModel) {
-    var currentTab by remember { mutableStateOf("Edição") }
-    var viewingArticle by remember { mutableStateOf<ArticleSummary?>(null) }
-    var viewingArticleId by remember { mutableStateOf<String?>(null) }
-    var editingNoteId by remember { mutableStateOf<String?>(null) }
-    var showMenuSheet by remember { mutableStateOf(false) }
-    
-    Scaffold(
-        bottomBar = {
-            if (viewingArticle == null && viewingArticleId == null && editingNoteId == null) {
-                Surface(
-                    color = Color.White,
-                    shadowElevation = 16.dp
-                ) {
-                    NavigationBar(containerColor = Color.White) {
-                        val tabs = listOf(
-                            "Edição" to Icons.Default.MenuBook,
-                            "Caderno" to Icons.Default.Note,
-                            "Arquivo" to Icons.Default.Folder,
-                            "Pesquisa" to Icons.Default.Search
-                        )
-                        tabs.forEach { (title, icon) ->
-                            NavigationBarItem(
-                                icon = { Icon(icon, contentDescription = title) },
-                                label = { Text(title) },
-                                selected = currentTab == title,
-                                onClick = { currentTab = title },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = OriginalRed,
-                                    selectedTextColor = OriginalRed,
-                                    indicatorColor = OriginalRed.copy(alpha = 0.1f),
-                                    unselectedIconColor = TextSecondary,
-                                    unselectedTextColor = TextSecondary
-                                )
-                            )
-                        }
-                    }
+                ProvideAppViewport {
+                    MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel)
                 }
-            }
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            if (editingNoteId != null) {
-                NoteEditorScreen(
-                    noteId = editingNoteId!!,
-                    viewModel = noteViewModel,
-                    onBackClick = { editingNoteId = null },
-                    onOpenArticle = { 
-                        viewingArticleId = it 
-                        editingNoteId = null 
-                    }
-                )
-            } else if (viewingArticle != null || viewingArticleId != null) {
-                ArticleReaderScreen(
-                    articleSummary = viewingArticle,
-                    articleId = viewingArticleId,
-                    editionNumber = "", // Edition number is now handled gracefully inside
-                    viewModel = readerViewModel,
-                    onBackClick = { 
-                        viewingArticle = null
-                        viewingArticleId = null
-                    },
-                    onOpenNote = { editingNoteId = it }
-                )
-            } else {
-                when (currentTab) {
-                    "Edição" -> HomeFeedScreen(
-                        viewModel = homeViewModel,
-                        onArticleClick = { viewingArticle = it },
-                        onFeedLoaded = { /* No longer needed */ },
-                        onSearchClick = { currentTab = "Pesquisa" },
-                        onMenuClick = { showMenuSheet = true }
-                    )
-                    "Caderno" -> CadernoScreen(
-                        viewModel = cadernoViewModel,
-                        onNoteClick = { editingNoteId = it.noteId }
-                    )
-                    "Arquivo" -> ArquivoScreen(isSubscriber = false, isOnline = false)
-                    "Pesquisa" -> PesquisaScreen(
-                        viewModel = pesquisaViewModel,
-                        onNoteClick = { editingNoteId = it }
-                    )
-                    else -> Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("A vista $currentTab ainda não foi construída.", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-        }
-    }
-
-    if (showMenuSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showMenuSheet = false },
-            containerColor = Color.White
-        ) {
-            Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))
-                
-                val context = LocalContext.current
-                
-                ListItem(
-                    headlineContent = { Text("Exportar notas") },
-                    leadingContent = { Icon(Icons.Default.Download, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
-                )
-                ListItem(
-                    headlineContent = { Text("Assinatura") },
-                    leadingContent = { Icon(Icons.Default.Star, contentDescription = null) },
-                    modifier = Modifier.clickable { 
-                        showMenuSheet = false 
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://avante.pt/assinaturas"))
-                        context.startActivity(intent)
-                    }
-                )
-                ListItem(
-                    headlineContent = { Text("Definições") },
-                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
-                )
-                ListItem(
-                    headlineContent = { Text("Sobre") },
-                    leadingContent = { Icon(Icons.Default.Info, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
-                )
-                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

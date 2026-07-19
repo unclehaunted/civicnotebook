@@ -13,9 +13,10 @@ fun ArticleSummaryCard(
     article: ArticleSummary,
     viewMode: FeedViewMode,
     repeatedImages: Set<String> = emptySet(),
+    isBookmarked: Boolean = false,
     onClick: () -> Unit
 ) {
-    val presentation = ArticlePresentationResolver.resolvePresentation(article, viewMode, repeatedImages)
+    val presentation = ArticlePresentationResolver.resolvePresentation(article, viewMode)
     val taxonomyText = ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel)
     val authorText = ArticleAuthorFormatter.formatAuthor(article.author)
 
@@ -26,6 +27,7 @@ fun ArticleSummaryCard(
                 presentation = presentation,
                 formattedTaxonomy = taxonomyText,
                 formattedAuthor = authorText,
+                isBookmarked = isBookmarked,
                 onClick = onClick
             )
         }
@@ -36,6 +38,7 @@ fun ArticleSummaryCard(
                 presentation = presentation,
                 formattedTaxonomy = taxonomyText,
                 formattedAuthor = authorText,
+                isBookmarked = isBookmarked,
                 onClick = onClick
             )
         }
@@ -45,6 +48,7 @@ fun ArticleSummaryCard(
                 article = article,
                 presentation = presentation,
                 formattedTaxonomy = taxonomyText,
+                isBookmarked = isBookmarked,
                 onClick = onClick
             )
         }
@@ -53,6 +57,16 @@ fun ArticleSummaryCard(
                 article = article,
                 presentation = presentation,
                 formattedTaxonomy = taxonomyText,
+                isBookmarked = isBookmarked,
+                onClick = onClick
+            )
+        }
+        ArticlePresentationVariant.GRID_IMAGE_TILE -> {
+            pt.avante.app.ui.components.cards.GridImageArticleCard(
+                article = article,
+                presentation = presentation,
+                formattedTaxonomy = taxonomyText,
+                isBookmarked = isBookmarked,
                 onClick = onClick
             )
         }
@@ -63,6 +77,7 @@ fun ArticleSummaryCard(
                 article = article,
                 presentation = presentation,
                 formattedTaxonomy = taxonomyText,
+                isBookmarked = isBookmarked,
                 onClick = onClick
             )
         }

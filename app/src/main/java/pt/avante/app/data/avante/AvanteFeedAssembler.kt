@@ -87,10 +87,7 @@ object AvanteFeedAssembler {
                                 try {
                                     val articleDoc = Jsoup.connect(summary.url).get()
                                     if (needsImage) {
-                                        var articleImg = articleDoc.select("article img").first()?.attr("src")
-                                        if (articleImg == null) {
-                                            articleImg = articleDoc.select("section img, .content img").first()?.attr("src")
-                                        }
+                                        var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")
                                         finalImage = AvanteImageRules.normalizeImageUrl(articleImg)
                                     }
                                     if (needsAuthor) {

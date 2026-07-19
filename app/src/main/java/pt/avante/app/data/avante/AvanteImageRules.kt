@@ -37,7 +37,9 @@ object AvanteImageRules {
             "festa_avante",
             "avante_clandestino",
             "avante.gif",
-            "/themes/publication_2/theme_2/img/"
+            "/themes/publication_2/theme_2/img/",
+            "ImageId=49919",
+            "LOCAL_SYMBOL"
         )
         
         return placeholderPatterns.any { pattern -> imageUrl.contains(pattern) }

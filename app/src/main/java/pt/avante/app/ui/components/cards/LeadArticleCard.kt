@@ -22,6 +22,7 @@ fun LeadArticleCard(
     presentation: ArticleCardPresentation,
     formattedTaxonomy: String?,
     formattedAuthor: String,
+    isBookmarked: Boolean = false,
     onClick: () -> Unit
 ) {
     OutlinedCard(
@@ -37,53 +38,58 @@ fun LeadArticleCard(
         shape = RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 2.dp)
     ) {
-        Column {
-            if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
-                ArticleThumbnail(
-                    heroImageUrl = article.heroImageUrl,
-                    imagePolicy = presentation.imagePolicy,
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+                if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
+                    ArticleThumbnail(
+                        heroImageUrl = article.heroImageUrl,
+                        imagePolicy = presentation.imagePolicy,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(ArticleCardMetrics.leadImageHeight),
+                        cornerRadius = 0.dp
+                    )
+                }
+                
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(ArticleCardMetrics.leadImageHeight),
-                    cornerRadius = 0.dp
-                )
-            }
-            
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                if (formattedTaxonomy != null) {
-                    CategoryRubricPill(
-                        formattedTaxonomy = formattedTaxonomy
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
-                
-                Text(
-                    text = article.title,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = TextPrimary,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-                
-                if (presentation.showSummary && article.summary.isNotBlank()) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                        .padding(20.dp)
+                ) {
+                    if (formattedTaxonomy != null) {
+                        CategoryRubricPill(
+                            formattedTaxonomy = formattedTaxonomy
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                    
                     Text(
-                        text = article.summary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary,
-                        maxLines = 2,
+                        text = article.title,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = TextPrimary,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
+                    
+                    if (presentation.showSummary && article.summary.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = article.summary,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = TextSecondary,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    
+                    if (presentation.showFooter || presentation.showFavourite) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ArticleCardFooter(article = article, author = formattedAuthor, presentation = presentation)
+                    }
                 }
-                
-                if (presentation.showFooter || presentation.showFavourite) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    ArticleCardFooter(article = article, author = formattedAuthor, presentation = presentation)
-                }
+            }
+            if (isBookmarked) {
+                NotesBookmarkOverlay(modifier = Modifier.align(androidx.compose.ui.Alignment.TopEnd))
             }
         }
     }

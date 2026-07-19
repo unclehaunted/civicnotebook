@@ -43,111 +43,113 @@ fun NoteEditorScreen(
         modifier = Modifier.fillMaxSize(),
         color = WarmPaper
     ) {
-        when (val state = uiState) {
-            is NoteEditorUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = OriginalRed)
-                }
-            }
-            is NoteEditorUiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(state.message, color = OriginalRed)
-                }
-            }
-            is NoteEditorUiState.Success -> {
-                val note = state.note
-                Column(modifier = Modifier.fillMaxSize()) {
-                    TopAppBar(
-                        title = { 
-                            Column {
-                                Text("Editar Nota", color = TextPrimary)
-                                if (isSaving) {
-                                    Text(
-                                        text = "A guardar...",
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = TextSecondary
-                                    )
-                                }
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = onBackClick) {
-                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = TextPrimary)
-                            }
-                        },
-                        actions = {
-                            if (state.articleSourceId != null) {
-                                Surface(
-                                    color = OriginalRed.copy(alpha = 0.1f),
-                                    shape = RoundedCornerShape(16.dp),
-                                    modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }
-                                ) {
-                                    Text(
-                                        "Ver Artigo", 
-                                        color = OriginalRed, 
-                                        style = MaterialTheme.typography.labelMedium,
-                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                    )
-                                }
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper)
-                    )
-
-                    HorizontalDivider(color = SoftDivider)
-
-                    // Title Field
-                    TextField(
-                        value = note.title,
-                        onValueChange = { viewModel.updateTitle(it) },
-                        placeholder = { Text("Título da Nota", style = MaterialTheme.typography.titleLarge) },
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
-                    )
-
-                    HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = 16.dp))
-
-                    // Markdown Toolbar (Simple for now)
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "**Negrito**") }) {
-                            Icon(Icons.Default.FormatBold, contentDescription = "Negrito")
-                        }
-                        IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "*Itálico*") }) {
-                            Icon(Icons.Default.FormatItalic, contentDescription = "Itálico")
-                        }
-                        IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "\n> Citação") }) {
-                            Icon(Icons.Default.FormatQuote, contentDescription = "Citação")
-                        }
+        pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
+            when (val state = uiState) {
+                is NoteEditorUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = OriginalRed)
                     }
-
-                    HorizontalDivider(color = SoftDivider)
-
-                    // Body Field
-                    TextField(
-                        value = note.bodyMarkdown,
-                        onValueChange = { viewModel.updateBody(it) },
-                        placeholder = { Text("Comece a escrever em Markdown...") },
-                        modifier = Modifier.fillMaxSize().padding(16.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = TextPrimary)
-                    )
+                }
+                is NoteEditorUiState.Error -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(state.message, color = OriginalRed)
+                    }
+                }
+                is NoteEditorUiState.Success -> {
+                    val note = state.note
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        TopAppBar(
+                            title = { 
+                                Column {
+                                    Text("Editar Nota", color = TextPrimary)
+                                    if (isSaving) {
+                                        Text(
+                                            text = "A guardar...",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = TextSecondary
+                                        )
+                                    }
+                                }
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = onBackClick) {
+                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = TextPrimary)
+                                }
+                            },
+                            actions = {
+                                if (state.articleSourceId != null) {
+                                    Surface(
+                                        color = OriginalRed.copy(alpha = 0.1f),
+                                        shape = RoundedCornerShape(16.dp),
+                                        modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }
+                                    ) {
+                                        Text(
+                                            "Ver Artigo", 
+                                            color = OriginalRed, 
+                                            style = MaterialTheme.typography.labelMedium,
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                        )
+                                    }
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper)
+                        )
+    
+                        HorizontalDivider(color = SoftDivider)
+    
+                        // Title Field
+                        TextField(
+                            value = note.title,
+                            onValueChange = { viewModel.updateTitle(it) },
+                            placeholder = { Text("Título da Nota", style = MaterialTheme.typography.titleLarge) },
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
+                        )
+    
+                        HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = 16.dp))
+    
+                        // Markdown Toolbar (Simple for now)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.White)
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "**Negrito**") }) {
+                                Icon(Icons.Default.FormatBold, contentDescription = "Negrito")
+                            }
+                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "*Itálico*") }) {
+                                Icon(Icons.Default.FormatItalic, contentDescription = "Itálico")
+                            }
+                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "\n> Citação") }) {
+                                Icon(Icons.Default.FormatQuote, contentDescription = "Citação")
+                            }
+                        }
+    
+                        HorizontalDivider(color = SoftDivider)
+    
+                        // Body Field
+                        TextField(
+                            value = note.bodyMarkdown,
+                            onValueChange = { viewModel.updateBody(it) },
+                            placeholder = { Text("Comece a escrever em Markdown...") },
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(color = TextPrimary)
+                        )
+                    }
                 }
             }
         }

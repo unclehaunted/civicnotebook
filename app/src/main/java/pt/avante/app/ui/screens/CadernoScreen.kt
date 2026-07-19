@@ -64,47 +64,49 @@ fun CadernoScreen(
             }
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        "Caderno", 
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = OriginalRed
-                    ) 
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper),
-            )
-            
-            HorizontalDivider(color = SoftDivider)
-
-            when (val state = uiState) {
-                is CadernoUiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = OriginalRed)
-                    }
-                }
-                is CadernoUiState.Empty -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
+            Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                CenterAlignedTopAppBar(
+                    title = { 
                         Text(
-                            "O seu caderno está vazio.\nCrie notas a partir dos artigos.",
-                            color = TextSecondary,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                            "Caderno", 
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = OriginalRed
+                        ) 
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper),
+                )
+                
+                HorizontalDivider(color = SoftDivider)
+
+                when (val state = uiState) {
+                    is CadernoUiState.Loading -> {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(color = OriginalRed)
+                        }
                     }
-                }
-                is CadernoUiState.Success -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(state.notes, key = { it.noteId }) { note ->
-                            NoteCard(
-                                note = note,
-                                onClick = { onNoteClick(note) },
-                                onDelete = { viewModel.removeNote(note.noteId) }
+                    is CadernoUiState.Empty -> {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                "O seu caderno está vazio.\nCrie notas a partir dos artigos.",
+                                color = TextSecondary,
+                                style = MaterialTheme.typography.bodyLarge
                             )
+                        }
+                    }
+                    is CadernoUiState.Success -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(state.notes, key = { it.noteId }) { note ->
+                                NoteCard(
+                                    note = note,
+                                    onClick = { onNoteClick(note) },
+                                    onDelete = { viewModel.removeNote(note.noteId) }
+                                )
+                            }
                         }
                     }
                 }
