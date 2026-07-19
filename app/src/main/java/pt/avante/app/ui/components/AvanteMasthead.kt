@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import pt.avante.app.R
 import pt.avante.app.theme.OriginalRed
 
@@ -34,10 +35,10 @@ fun AvanteMasthead(
         // Tagline
         Text(
             text = "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!",
-            style = MaterialTheme.typography.labelSmall,
+            style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color = OriginalRed,
-            modifier = Modifier.padding(bottom = if (isCompact) 4.dp else 8.dp)
+            color = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
+            modifier = Modifier.padding(bottom = if (isCompact) 2.dp else 8.dp)
         )
         
         Row(
@@ -53,7 +54,7 @@ fun AvanteMasthead(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(if (isCompact) 40.dp else 56.dp),
+                    .height(if (isCompact) 60.dp else 56.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -72,9 +73,9 @@ fun AvanteMasthead(
         // Publication Subtitle
         Text(
             text = publicationSubtitle,
-            style = MaterialTheme.typography.labelMedium,
+            style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelMedium,
             color = Color.Gray,
-            modifier = Modifier.padding(top = if (isCompact) 2.dp else 4.dp)
+            modifier = Modifier.padding(top = 4.dp)
         )
         
         Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 8.dp))

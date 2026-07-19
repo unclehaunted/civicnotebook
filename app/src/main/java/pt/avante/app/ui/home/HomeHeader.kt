@@ -8,7 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewCarousel
-import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,14 +69,14 @@ fun HomeHeader(
                         Icon(
                             Icons.Default.CalendarToday,
                             contentDescription = null,
-                            tint = OriginalRed,
-                            modifier = Modifier.size(14.dp)
+                            tint = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
+                            modifier = Modifier.size(if (isCompact) 12.dp else 14.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = editionText,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextPrimary,
+                            style = if (isCompact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
+                            color = if (isCompact) TextPrimary.copy(alpha = 0.8f) else TextPrimary,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -84,23 +84,26 @@ fun HomeHeader(
                     // Layout Toggle (right side)
                     Row {
                         SegmentedIconButton(
-                            icon = Icons.Default.ViewList,
+                            icon = Icons.AutoMirrored.Filled.ViewList,
                             selected = layoutMode == HomeLayoutMode.LIST,
                             onClick = { onLayoutModeChange(HomeLayoutMode.LIST) },
-                            isFirst = true
+                            isFirst = true,
+                            isCompact = isCompact
                         )
                         SegmentedIconButton(
                             icon = Icons.Default.ViewCarousel,
                             selected = layoutMode == HomeLayoutMode.STACK,
                             onClick = { onLayoutModeChange(HomeLayoutMode.STACK) },
                             isFirst = false,
-                            isLast = false
+                            isLast = false,
+                            isCompact = isCompact
                         )
                         SegmentedIconButton(
                             icon = Icons.Default.GridView,
                             selected = layoutMode == HomeLayoutMode.GRID,
                             onClick = { onLayoutModeChange(HomeLayoutMode.GRID) },
-                            isLast = true
+                            isLast = true,
+                            isCompact = isCompact
                         )
                     }
                 }
@@ -112,7 +115,7 @@ fun HomeHeader(
 }
 
 @Composable
-fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Unit, isFirst: Boolean = false, isLast: Boolean = false) {
+fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Unit, isFirst: Boolean = false, isLast: Boolean = false, isCompact: Boolean = false) {
     val shape = when {
         isFirst -> RoundedCornerShape(topStart = 14.dp, bottomStart = 14.dp)
         isLast -> RoundedCornerShape(topEnd = 14.dp, bottomEnd = 14.dp)
@@ -129,7 +132,12 @@ fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Uni
             imageVector = icon,
             contentDescription = null,
             tint = if (selected) Color.White else OriginalRed,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).size(18.dp)
+            modifier = Modifier
+                .padding(
+                    horizontal = if (isCompact) 8.dp else 10.dp,
+                    vertical = if (isCompact) 4.dp else 5.dp
+                )
+                .size(if (isCompact) 16.dp else 18.dp)
         )
     }
 }
