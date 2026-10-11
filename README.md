@@ -22,6 +22,14 @@ O acesso a conteúdo exclusivo usa a **palavra-passe semanal publicada na
 edição impressa** (ou na compra do PDF) — exatamente o mesmo acesso que o
 site concede, sem contornos.
 
+## Módulo de apontamentos
+
+Para além da leitura, a app inclui um **módulo de apontamentos (Caderno)**
+concebido para tornar mais fácil a reflexão a partir dos artigos do jornal:
+destacar passagens diretamente no texto, anotar excertos com um toque,
+escrever notas livres ou ligadas a um artigo, e organizar reflexões — tudo
+guardado localmente no dispositivo e pesquisável.
+
 ## Funcionalidades atuais
 
 - **Edição semanal** — feed da edição corrente, com secções, indicação de
