@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
 import pt.avante.app.data.db.HighlightEntity
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun ReaderBody(
@@ -38,12 +38,14 @@ fun ReaderBody(
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val viewportHeight = maxHeight
         val density = LocalDensity.current.density
+        val readerTheme = LocalReaderSettings.current.theme
+        val backgroundColor = androidx.compose.ui.graphics.Color(readerTheme.backgroundColor)
 
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(WarmPaper),
+                .background(backgroundColor),
             contentPadding = PaddingValues(bottom = 100.dp) // Room for FAB
         ) {
         item {
@@ -56,7 +58,7 @@ fun ReaderBody(
                     .fillMaxWidth()
                     .offset(y = (-28).dp)
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                    .background(WarmPaper)
+                    .background(backgroundColor)
                     .padding(top = 28.dp),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
@@ -69,11 +71,11 @@ fun ReaderBody(
                         subcategoryLabel = article.subcategoryLabel,
                         hasNotes = hasArticleNotes,
                         hasHighlights = articleHighlights.isNotEmpty(),
-                        textColor = pt.avante.app.theme.TextSecondary
+                        textColor = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     androidx.compose.material3.Divider(
-                        color = pt.avante.app.theme.TextSecondary.copy(alpha = 0.2f),
+                        color = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor).copy(alpha = 0.2f),
                         thickness = 1.dp
                     )
                     

@@ -83,6 +83,11 @@ class MainActivity : ComponentActivity() {
         val db = AppDatabase.getInstance(applicationContext)
         val currentIssueStore = pt.avante.app.data.CurrentIssueStore(applicationContext)
         val factory = AppViewModelFactory(db, currentIssueStore)
+
+        val readerSettingsStore = pt.avante.app.data.ReaderSettingsStore(applicationContext)
+        val sessionStore = pt.avante.app.data.auth.SessionStore(applicationContext)
+        val authRepository = pt.avante.app.data.auth.AvanteAuthRepository(sessionStore)
+        pt.avante.app.data.auth.AvanteHttp.init(authRepository)
         
         lifecycleScope.launch {
             db.articleDao().sanitizeStaleHeroes()
@@ -96,8 +101,13 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             OriginalTheme {
-                ProvideAppViewport {
-                    MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel)
+                val readerSettings by readerSettingsStore.settings.collectAsState()
+                CompositionLocalProvider(
+                    pt.avante.app.ui.settings.LocalReaderSettings provides readerSettings
+                ) {
+                    ProvideAppViewport {
+                        MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel, readerSettingsStore, authRepository)
+                    }
                 }
             }
         }

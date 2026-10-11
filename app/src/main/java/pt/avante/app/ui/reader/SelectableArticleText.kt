@@ -12,6 +12,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 fun buildHighlightedText(
     text: String,
@@ -83,6 +84,8 @@ fun SelectableArticleText(
     onCreateNote: (String, Int, Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val settings = LocalReaderSettings.current
+
     val spannableText = androidx.compose.runtime.remember(content, articleHighlights, index, isFinalBlock) {
         buildHighlightedText(
             text = content,
@@ -100,12 +103,6 @@ fun SelectableArticleText(
                 setTextIsSelectable(true)
                 movementMethod = LinkMovementMethod.getInstance()
                 highlightColor = android.graphics.Color.TRANSPARENT
-                
-                val fontRes = if (isQuote) pt.avante.app.R.font.source_sans_4_italic else pt.avante.app.R.font.libre_franklin
-                val typeface = ResourcesCompat.getFont(ctx, fontRes)
-                setTypeface(typeface, if (isQuote) android.graphics.Typeface.ITALIC else android.graphics.Typeface.NORMAL)
-                textSize = 18f
-                setTextColor(android.graphics.Color.parseColor(if (isQuote) "#1A1A1A" else "#333333"))
                 setLineSpacing(0f, 1.4f)
                 
                 customSelectionActionModeCallback = object : android.view.ActionMode.Callback {
@@ -139,6 +136,12 @@ fun SelectableArticleText(
             }
         },
         update = { view ->
+            // Aplicar preferências de leitura (Definições)
+            val typeface = ResourcesCompat.getFont(view.context, settings.font.fontResId)
+            view.setTypeface(typeface, if (isQuote) android.graphics.Typeface.ITALIC else android.graphics.Typeface.NORMAL)
+            view.textSize = settings.fontSize.spValue
+            view.setTextColor(settings.theme.textColor.toInt())
+
             if (view.tag != spannableText) {
                 view.text = spannableText
                 view.tag = spannableText

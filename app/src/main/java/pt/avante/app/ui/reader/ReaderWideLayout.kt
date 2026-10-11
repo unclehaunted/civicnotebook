@@ -47,7 +47,7 @@ fun ReaderWideLayout(
     onShareClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier = modifier.fillMaxSize().background(Color.White)) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize().background(Color(pt.avante.app.ui.settings.LocalReaderSettings.current.theme.backgroundColor))) {
         val displayWidth = maxWidth
         
         Row(modifier = Modifier.fillMaxSize()) {

@@ -11,6 +11,7 @@ import pt.avante.app.data.ArticleSummary
 import pt.avante.app.theme.*
 import pt.avante.app.ui.presentation.ArticleCardPresentation
 import pt.avante.app.ui.presentation.ArticleCardMetrics
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun CompactRowArticleCard(
@@ -36,7 +37,8 @@ fun CompactRowArticleCard(
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                    if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
+                    if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE &&
+                        LocalReaderSettings.current.showImages) {
                         ArticleThumbnail(
                             heroImageUrl = article.heroImageUrl,
                             imagePolicy = presentation.imagePolicy,

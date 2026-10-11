@@ -7,15 +7,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.HomeFeed
+import pt.avante.app.data.auth.AvanteHttp
 
 object AvanteFeedAssembler {
 
     suspend fun fetchHomeFeed(): HomeFeed? = withContext(Dispatchers.IO) {
         try {
-            val doc = Jsoup.connect("https://avante.pt/").get()
+            val doc = AvanteHttp.get("https://avante.pt/")
 
             val editionNode = doc.select("#simbolo").first()
             val editionText = editionNode?.text()?.trim() ?: "Nº Desconhecido"
@@ -85,7 +85,7 @@ object AvanteFeedAssembler {
                             
                             if (needsImage || needsAuthor) {
                                 try {
-                                    val articleDoc = Jsoup.connect(summary.url).get()
+                                    val articleDoc = AvanteHttp.get(summary.url)
                                     if (needsImage) {
                                         var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")
                                         finalImage = AvanteImageRules.normalizeImageUrl(articleImg)

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import pt.avante.app.data.Article
+import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.ArticleBlockSerializer
 import pt.avante.app.data.ArticleIdentity
 import pt.avante.app.data.ArticleParser
@@ -106,8 +107,14 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                 // 1. Check local cache
                 val localContent = db.articleDao().getCachedContent(articleId)
                 val source = db.articleDao().getSource(articleId)
-                
-                if (localContent != null) {
+
+                // Se o cache tem apenas o preview paywalled e há sessão ativa, ignorar cache e ir à rede
+                val cachedIsPaywalled = localContent?.let {
+                    ArticleBlockSerializer.deserialize(it.blocksJson).any { block -> block is ArticleBlock.PaywallCTA }
+                } ?: false
+                val skipCache = cachedIsPaywalled && pt.avante.app.data.auth.AvanteHttp.isLoggedIn
+
+                if (localContent != null && !skipCache) {
                     val blocks = ArticleBlockSerializer.deserialize(localContent.blocksJson)
                     val resolvedIssueNumber = source?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }
                     val article = if (source != null) {

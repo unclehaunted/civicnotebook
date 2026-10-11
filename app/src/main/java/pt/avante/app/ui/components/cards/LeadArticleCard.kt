@@ -15,6 +15,7 @@ import pt.avante.app.theme.*
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleCardPresentation
 import pt.avante.app.ui.presentation.ArticleCardMetrics
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun LeadArticleCard(
@@ -40,7 +41,8 @@ fun LeadArticleCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE) {
+                if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE &&
+                    LocalReaderSettings.current.showImages) {
                     ArticleThumbnail(
                         heroImageUrl = article.heroImageUrl,
                         imagePolicy = presentation.imagePolicy,

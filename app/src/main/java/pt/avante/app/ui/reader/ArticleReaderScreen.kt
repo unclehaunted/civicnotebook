@@ -21,8 +21,8 @@ import pt.avante.app.data.ArticleBlock
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
 import pt.avante.app.ui.components.CategoryRubricPill
+import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.ui.presentation.ArticleAuthorFormatter
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.viewmodel.ReaderMode
@@ -41,6 +41,10 @@ fun ArticleReaderScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val selectedHighlight by viewModel.selectedHighlight.collectAsState()
+    val readerTheme = LocalReaderSettings.current.theme
+    val readerBackground = Color(readerTheme.backgroundColor)
+    val readerTextPrimary = Color(readerTheme.textColor)
+    val readerTextSecondary = Color(readerTheme.secondaryTextColor)
 
     LaunchedEffect(articleSummary, articleId) {
         if (articleSummary != null) {
@@ -52,14 +56,14 @@ fun ArticleReaderScreen(
 
     when (val state = uiState) {
         is ReaderUiState.Loading -> {
-            Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+            Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = OriginalRed)
                 }
             }
         }
         is ReaderUiState.LoadingWithPreview -> {
-            Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+            Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         ReaderHero(
@@ -87,7 +91,7 @@ fun ArticleReaderScreen(
                                 Text(
                                     text = "A carregar artigo...",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TextSecondary
+                                    color = readerTextSecondary
                                 )
                             }
                         }
@@ -108,7 +112,7 @@ fun ArticleReaderScreen(
             }
         }
         is ReaderUiState.Error -> {
-            Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+            Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(
                         modifier = Modifier.padding(24.dp),
@@ -117,19 +121,19 @@ fun ArticleReaderScreen(
                         Text(
                             text = "Artigo indisponível offline",
                             style = MaterialTheme.typography.titleLarge,
-                            color = TextPrimary
+                            color = readerTextPrimary
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = "Este artigo ainda não foi guardado neste dispositivo.\nLigue-se à Internet para o abrir.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary,
+                            color = readerTextSecondary,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(32.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             OutlinedButton(onClick = onBackClick) {
-                                Text("Voltar", color = TextPrimary)
+                                Text("Voltar", color = readerTextPrimary)
                             }
                             Button(
                                 onClick = { 

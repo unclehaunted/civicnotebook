@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
 import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.viewmodel.ReaderMode
 
 @Composable
@@ -117,7 +117,7 @@ fun ReaderFloatingActions(
                     .height(140.dp)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, WarmPaper)
+                            colors = listOf(Color.Transparent, Color(LocalReaderSettings.current.theme.backgroundColor))
                         )
                     ),
                 contentAlignment = Alignment.BottomCenter

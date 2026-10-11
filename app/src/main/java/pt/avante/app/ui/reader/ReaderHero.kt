@@ -19,6 +19,7 @@ import coil.compose.AsyncImage
 import pt.avante.app.data.Publication
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun ReaderHero(
@@ -32,12 +33,13 @@ fun ReaderHero(
     currentIssueNumber: String?,
     modifier: Modifier = Modifier
 ) {
-    val hasImage = !displayImage.isNullOrBlank()
+    val settings = LocalReaderSettings.current
+    val hasImage = settings.showImages && !displayImage.isNullOrBlank()
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(if (hasImage) Color.Transparent else pt.avante.app.theme.WarmPaper)
+            .background(if (hasImage) Color.Transparent else Color(settings.theme.backgroundColor))
     ) {
         if (hasImage) {
             // Big photo covering the head space
@@ -79,7 +81,7 @@ fun ReaderHero(
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineLarge,
-                color = if (hasImage) Color.White else pt.avante.app.theme.TextPrimary,
+                color = if (hasImage) Color.White else Color(settings.theme.textColor),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
         }

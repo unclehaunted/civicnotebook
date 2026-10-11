@@ -2,8 +2,8 @@ package pt.avante.app.data.avante
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import pt.avante.app.data.auth.AvanteHttp
 
 data class IndexMetadata(
     val url: String,
@@ -21,7 +21,7 @@ object AvanteIndexParser {
     suspend fun fetchIndexInventory(editionNumber: String): Map<String, IndexMetadata> = withContext(Dispatchers.IO) {
         try {
             val indexUrl = "https://avante.pt/pt/$editionNumber/?tpl=183"
-            val doc = Jsoup.connect(indexUrl).get()
+            val doc = AvanteHttp.get(indexUrl)
             
             val inventory = mutableMapOf<String, IndexMetadata>()
             

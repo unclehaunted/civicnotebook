@@ -20,7 +20,8 @@ import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.SoftDivider
 import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.settings.LocalOpenSettings
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun ArticleBlockRenderer(
@@ -35,6 +36,8 @@ fun ArticleBlockRenderer(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val readerTheme = LocalReaderSettings.current.theme
+    val openSettings = LocalOpenSettings.current
 
     when (block) {
         is ArticleBlock.Text -> {
@@ -53,15 +56,15 @@ fun ArticleBlockRenderer(
             Text(
                 text = block.text,
                 style = MaterialTheme.typography.headlineMedium,
-                color = TextPrimary,
+                color = Color(readerTheme.textColor),
                 modifier = modifier.padding(top = 16.dp, bottom = 12.dp)
             )
         }
         is ArticleBlock.Quote -> {
             Surface(
-                color = androidx.compose.ui.graphics.Color(0xFFF6F1E9),
+                color = Color(readerTheme.quoteSurfaceColor),
                 shape = RoundedCornerShape(8.dp),
-                border = androidx.compose.foundation.BorderStroke(2.dp, androidx.compose.ui.graphics.Color(0xFFD9D0C3)),
+                border = androidx.compose.foundation.BorderStroke(2.dp, Color(readerTheme.quoteBorderColor)),
                 modifier = modifier.fillMaxWidth().padding(vertical = 12.dp)
             ) {
                 Box(modifier = Modifier.padding(16.dp)) {
@@ -100,10 +103,10 @@ fun ArticleBlockRenderer(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Já é assinante? Inicie sessão",
+                    text = "Tem assinatura ou a edição impressa? Introduza a palavra-passe",
                     style = MaterialTheme.typography.labelLarge,
                     color = OriginalRed,
-                    modifier = Modifier.clickable { /* TODO: Login Flow */ }
+                    modifier = Modifier.clickable { openSettings?.invoke() }
                 )
             }
         }

@@ -26,6 +26,26 @@ val IBMPlexSans = FontFamily(
     Font(R.font.ibm_plex_sans_medium, FontWeight.Bold)
 )
 
+val SourceSans4 = FontFamily(
+    Font(R.font.source_sans_4_regular, FontWeight.Normal),
+    Font(R.font.source_sans_4_italic, FontWeight.Normal, style = androidx.compose.ui.text.font.FontStyle.Italic)
+)
+
+val AtkinsonHyperlegible = FontFamily(
+    Font(R.font.atkinson_hyperlegible_regular, FontWeight.Normal),
+    Font(R.font.atkinson_hyperlegible_700, FontWeight.Bold),
+    Font(R.font.atkinson_hyperlegible_italic, FontWeight.Normal, style = androidx.compose.ui.text.font.FontStyle.Italic)
+)
+
+/** Mapeia a escolha de fonte das Definições para a FontFamily Compose (usado em previews). */
+fun readerFontFamily(font: pt.avante.app.data.ReaderFont): FontFamily = when (font) {
+    pt.avante.app.data.ReaderFont.LIBRE_FRANKLIN -> LibreFranklin
+    pt.avante.app.data.ReaderFont.ATKINSON_HYPERLEGIBLE -> AtkinsonHyperlegible
+    pt.avante.app.data.ReaderFont.BITTER -> Bitter
+    pt.avante.app.data.ReaderFont.IBM_PLEX_SANS -> IBMPlexSans
+    pt.avante.app.data.ReaderFont.SOURCE_SANS -> SourceSans4
+}
+
 val Typography = Typography(
     displayMedium = TextStyle(
         fontFamily = Bitter,

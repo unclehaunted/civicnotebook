@@ -2,16 +2,16 @@ package pt.avante.app.data.avante
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.Publication
+import pt.avante.app.data.auth.AvanteHttp
 
 object AvanteArticleParser {
 
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
-        val doc = Jsoup.connect(url).get()
+        val doc = AvanteHttp.get(url)
         
         val title = doc.select("article h2.balance-text").first()?.text() 
             ?: doc.title().substringBefore("|").trim()

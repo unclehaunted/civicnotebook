@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import pt.avante.app.theme.*
 import pt.avante.app.ui.presentation.ArticleCardPresentation
 import pt.avante.app.ui.presentation.ArticleCardMetrics
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun GridImageArticleCard(
@@ -31,7 +32,7 @@ fun GridImageArticleCard(
         androidx.compose.runtime.mutableStateOf(false)
     }
 
-    if (imageFailed) {
+    if (imageFailed || !LocalReaderSettings.current.showImages) {
         GridTextArticleCard(
             article = article.copy(heroImageUrl = null),
             presentation = presentation.copy(

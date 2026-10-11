@@ -30,6 +30,7 @@ import pt.avante.app.data.ArticleSummary
 import pt.avante.app.theme.*
 import pt.avante.app.ui.presentation.ArticleImagePolicy
 import pt.avante.app.ui.presentation.ArticleCardMetrics
+import pt.avante.app.ui.settings.LocalReaderSettings
 
 @Composable
 fun ArticleThumbnail(
@@ -39,6 +40,7 @@ fun ArticleThumbnail(
     cornerRadius: Dp = 8.dp
 ) {
     if (imagePolicy == ArticleImagePolicy.NO_IMAGE) return
+    if (!LocalReaderSettings.current.showImages) return
 
     val shape = RoundedCornerShape(cornerRadius)
 

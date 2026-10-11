@@ -36,7 +36,9 @@ fun MainApp(
     pesquisaViewModel: PesquisaViewModel,
     cadernoViewModel: CadernoViewModel,
     readerViewModel: ReaderViewModel,
-    noteViewModel: NoteViewModel
+    noteViewModel: NoteViewModel,
+    readerSettingsStore: pt.avante.app.data.ReaderSettingsStore,
+    authRepository: pt.avante.app.data.auth.AvanteAuthRepository
 ) {
     var currentTab by rememberSaveable { mutableStateOf(MainDestination.EDICAO) }
     var viewingArticleUrl by rememberSaveable { mutableStateOf<String?>(null) }
@@ -44,6 +46,7 @@ fun MainApp(
     var viewingArticleEdition by rememberSaveable { mutableStateOf<String>("") }
     var editingNoteId by rememberSaveable { mutableStateOf<String?>(null) }
     var showMenuSheet by rememberSaveable { mutableStateOf(false) }
+    var showSettings by rememberSaveable { mutableStateOf(false) }
 
     val homeUiState by homeViewModel.uiState.collectAsState()
     
@@ -69,7 +72,7 @@ fun MainApp(
         }
     }
 
-    val isFullScreen = viewingArticleUrl != null || viewingArticleId != null || editingNoteId != null
+    val isFullScreen = viewingArticleUrl != null || viewingArticleId != null || editingNoteId != null || showSettings
 
     AdaptiveAppScaffold(
         bottomBar = {
@@ -168,12 +171,17 @@ fun MainApp(
             }
         }
     ) { innerPadding ->
+      CompositionLocalProvider(
+        pt.avante.app.ui.settings.LocalOpenSettings provides ({ showSettings = true } as () -> Unit)
+      ) {
         Box(modifier = Modifier.padding(innerPadding)) {
             // Back handler hierarchy
-            val backEnabled = showMenuSheet || editingNoteId != null || viewingArticleUrl != null || viewingArticleId != null
+            val backEnabled = showMenuSheet || showSettings || editingNoteId != null || viewingArticleUrl != null || viewingArticleId != null
             androidx.activity.compose.BackHandler(enabled = backEnabled) {
                 if (showMenuSheet) {
                     showMenuSheet = false
+                } else if (showSettings) {
+                    showSettings = false
                 } else if (editingNoteId != null) {
                     editingNoteId = null
                 } else if (viewingArticleUrl != null || viewingArticleId != null) {
@@ -188,7 +196,13 @@ fun MainApp(
                 }
             }
 
-            if (editingNoteId != null) {
+            if (showSettings) {
+                DefinicoesScreen(
+                    settingsStore = readerSettingsStore,
+                    authRepository = authRepository,
+                    onBackClick = { showSettings = false }
+                )
+            } else if (editingNoteId != null) {
                 NoteEditorScreen(
                     noteId = editingNoteId!!,
                     viewModel = noteViewModel,
@@ -250,6 +264,7 @@ fun MainApp(
                 }
             }
         }
+      }
     }
 
     if (showMenuSheet) {
@@ -278,7 +293,10 @@ fun MainApp(
                 ListItem(
                     headlineContent = { Text("Definições") },
                     leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
+                    modifier = Modifier.clickable {
+                        showMenuSheet = false
+                        showSettings = true
+                    }
                 )
                 ListItem(
                     headlineContent = { Text("Sobre") },

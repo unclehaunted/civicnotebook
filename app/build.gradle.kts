@@ -84,6 +84,7 @@ dependencies {
 
   // Web Scraping
   implementation(libs.jsoup)
+  implementation(libs.androidx.security.crypto)
   implementation(libs.coil.compose)
   implementation(libs.coil.svg)
 
