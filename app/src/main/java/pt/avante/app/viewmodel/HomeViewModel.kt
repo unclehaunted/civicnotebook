@@ -122,30 +122,19 @@ class HomeViewModel(
                     editionLabel = fetchedFeed.editionText,
                     articles = snapshots
                 )
-                
-                val existingSources = db.articleDao().getAllSources().associateBy { it.articleId }
-                val entities = fetchedFeed.articles.map { summary ->
-                    val articleId = ArticleIdentity.generateStableId(summary.url)
-                    val existing = existingSources[articleId]
-                    ArticleEntity(
-                        articleId = articleId,
-                        canonicalUrl = summary.url,
-                        title = summary.title,
-                        author = summary.author,
-                        publication = "Avante!",
-                        issueNumber = fetchedFeed.editionNumber,
-                        publishedAt = null,
-                        accessTier = if (summary.isPremium) "PREMIUM" else "FREE",
-                        summary = summary.summary,
-                        heroImageUrl = summary.heroImageUrl,
-                        categoryLabel = summary.categoryLabel ?: existing?.categoryLabel,
-                        subcategoryLabel = summary.subcategoryLabel ?: existing?.subcategoryLabel
-                    )
-                }
-                
-                db.articleDao().insertSources(entities)
-                
+
+                saveSources(fetchedFeed)
+
+                // Emitir já o feed (rápido): imagens/autores em falta são completados em background
                 _uiState.value = HomeUiState.Success(fetchedFeed, cached = false)
+
+                // Fase 2: completar imagens/autores sem bloquear a UI
+                val enhanced = ArticleParser.enhanceFeedArticles(fetchedFeed.articles)
+                if (enhanced != fetchedFeed.articles) {
+                    val enhancedFeed = fetchedFeed.copy(articles = enhanced)
+                    saveSources(enhancedFeed)
+                    _uiState.value = HomeUiState.Success(enhancedFeed, cached = false)
+                }
             } else {
                 if (_uiState.value !is HomeUiState.Success) {
                     _uiState.value = HomeUiState.Error("Falha ao carregar e não há dados em cache.")
@@ -153,6 +142,29 @@ class HomeViewModel(
                 // If we already have data displayed, don't show an error over it.
             }
         }
+    }
+
+    private suspend fun saveSources(feed: HomeFeed) {
+        val existingSources = db.articleDao().getAllSources().associateBy { it.articleId }
+        val entities = feed.articles.map { summary ->
+            val articleId = ArticleIdentity.generateStableId(summary.url)
+            val existing = existingSources[articleId]
+            ArticleEntity(
+                articleId = articleId,
+                canonicalUrl = summary.url,
+                title = summary.title,
+                author = summary.author,
+                publication = "Avante!",
+                issueNumber = feed.editionNumber,
+                publishedAt = null,
+                accessTier = if (summary.isPremium) "PREMIUM" else "FREE",
+                summary = summary.summary,
+                heroImageUrl = summary.heroImageUrl,
+                categoryLabel = summary.categoryLabel ?: existing?.categoryLabel,
+                subcategoryLabel = summary.subcategoryLabel ?: existing?.subcategoryLabel
+            )
+        }
+        db.articleDao().insertSources(entities)
     }
 }
 

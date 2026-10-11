@@ -72,46 +72,52 @@ object AvanteFeedAssembler {
                 { it.title }
             ))
 
-            val semaphore = Semaphore(10)
-            val resolvedArticles = coroutineScope {
-                articles.map { summary ->
-                    async {
-                        semaphore.withPermit {
-                            var finalImage = summary.heroImageUrl
-                            var finalAuthor = summary.author
-                            
-                            val needsImage = finalImage == "LOCAL_SYMBOL" || finalImage == null
-                            val needsAuthor = finalAuthor == "Redacção"
-                            
-                            if (needsImage || needsAuthor) {
-                                try {
-                                    val articleDoc = AvanteHttp.get(summary.url)
-                                    if (needsImage) {
-                                        var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")
-                                        finalImage = AvanteImageRules.normalizeImageUrl(articleImg)
-                                    }
-                                    if (needsAuthor) {
-                                        val extractedAuthor = articleDoc.select(".author, .autor").first()?.text()
-                                        if (!extractedAuthor.isNullOrBlank()) {
-                                            finalAuthor = extractedAuthor
-                                        }
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
-                            summary.copy(heroImageUrl = finalImage, author = finalAuthor)
-                        }
-                    }
-                }.awaitAll()
-            }
-
             HomeFeed(
                 editionText = editionText,
                 editionNumber = editionNumber,
-                articles = resolvedArticles
+                articles = articles
             )
         } catch (e: Exception) {
             null
+        }
+    }
+
+    /**
+     * Fase 2 (background): completa imagens/autores em falta com fetches por artigo.
+     * O feed é emitido primeiro sem isto, para a primeira abertura ser rápida.
+     */
+    suspend fun enhanceArticles(articles: List<ArticleSummary>): List<ArticleSummary> = withContext(Dispatchers.IO) {
+        val semaphore = Semaphore(10)
+        coroutineScope {
+            articles.map { summary ->
+                async {
+                    semaphore.withPermit {
+                        var finalImage = summary.heroImageUrl
+                        var finalAuthor = summary.author
+
+                        val needsImage = finalImage == "LOCAL_SYMBOL" || finalImage == null
+                        val needsAuthor = finalAuthor == "Redacção"
+
+                        if (needsImage || needsAuthor) {
+                            try {
+                                val articleDoc = AvanteHttp.get(summary.url)
+                                if (needsImage) {
+                                    var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")
+                                    finalImage = AvanteImageRules.normalizeImageUrl(articleImg)
+                                }
+                                if (needsAuthor) {
+                                    val extractedAuthor = articleDoc.select(".author, .autor").first()?.text()
+                                    if (!extractedAuthor.isNullOrBlank()) {
+                                        finalAuthor = extractedAuthor
+                                    }
+                                }
+                            } catch (e: Exception) {
+                            }
+                        }
+                        summary.copy(heroImageUrl = finalImage, author = finalAuthor)
+                    }
+                }
+            }.awaitAll()
         }
     }
 }

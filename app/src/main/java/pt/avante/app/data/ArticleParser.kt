@@ -15,6 +15,10 @@ object ArticleParser {
     suspend fun fetchHomeFeed(): HomeFeed? {
         return AvanteFeedAssembler.fetchHomeFeed()
     }
+
+    suspend fun enhanceFeedArticles(articles: List<ArticleSummary>): List<ArticleSummary> {
+        return AvanteFeedAssembler.enhanceArticles(articles)
+    }
 }
 
 object ArticleBlockSerializer {

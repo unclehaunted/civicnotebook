@@ -40,6 +40,10 @@ class AvanteAuthRepository(private val store: SessionStore) {
 
     private val loginMutex = Mutex()
 
+    /** Último login bem-sucedido (ms). Evita tempestades de re-login em fetches paralelos. */
+    @Volatile
+    private var lastSuccessfulLoginAt: Long = 0L
+
     val isLoggedIn: Boolean get() = _authState.value == AuthState.LOGGED_IN
     val cookies: Map<String, String> get() = store.sessionCookies
     val hasStoredPassword: Boolean get() = !store.weeklyPassword.isNullOrBlank()
@@ -59,7 +63,14 @@ class AvanteAuthRepository(private val store: SessionStore) {
      */
     suspend fun reloginSilently(): Boolean {
         val password = store.weeklyPassword ?: return false
-        return loginMutex.withLock { doLogin(password, rejectedState = AuthState.PASSWORD_REJECTED) }
+        return loginMutex.withLock {
+            // Se outro fetch paralelo já renovou a sessão há pouco, não repetir o login —
+            // basta ao chamador repetir o fetch com as cookies atuais.
+            if (System.currentTimeMillis() - lastSuccessfulLoginAt < RELOGIN_THROTTLE_MS) {
+                return@withLock true
+            }
+            doLogin(password, rejectedState = AuthState.PASSWORD_REJECTED)
+        }
     }
 
     fun logout() {
@@ -93,6 +104,7 @@ class AvanteAuthRepository(private val store: SessionStore) {
             if (success) {
                 store.sessionCookies = response.cookies()
                 store.weeklyPassword = password
+                lastSuccessfulLoginAt = System.currentTimeMillis()
                 _authState.value = AuthState.LOGGED_IN
                 true
             } else {
@@ -111,5 +123,6 @@ class AvanteAuthRepository(private val store: SessionStore) {
         private const val AUTH_URL = "https://avante.pt/auth"
         private const val WEEKLY_USERNAME = "leitor"
         private const val TIMEOUT_MS = 15_000
+        private const val RELOGIN_THROTTLE_MS = 60_000L
     }
 }
