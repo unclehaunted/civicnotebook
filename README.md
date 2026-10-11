@@ -65,6 +65,12 @@ Fetching (HTTP educado) → Parsing (templates online) → Categorias deduzidas 
 - Autenticação: `data/auth/` — credencial semanal, cookies de sessão em
   `EncryptedSharedPreferences`, fetching centralizado com re-login silencioso.
 
+## Descarregar
+
+APK de demonstração disponível em
+[**Releases**](https://github.com/unclehaunted/civicnotebook/releases/latest)
+(requer Android 7.0+; instalação por «fontes desconhecidas»).
+
 ## Build
 
 ```bash
