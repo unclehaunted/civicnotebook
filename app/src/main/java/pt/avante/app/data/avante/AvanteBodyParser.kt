@@ -6,6 +6,8 @@ import org.jsoup.nodes.TextNode
 import pt.avante.app.data.ArticleBlock
 
 object AvanteBodyParser {
+    private const val MAX_SUBHEADING_LENGTH = 100
+
     fun parseBodyContainer(container: Element): List<ArticleBlock> {
         val blocks = mutableListOf<ArticleBlock>()
         
@@ -38,27 +40,27 @@ object AvanteBodyParser {
                 continue
             }
             
-            splitInterviewQuestion(el)?.let { (question, answer) ->
-                blocks.add(ArticleBlock.Question(question))
-                blocks.add(ArticleBlock.Text(answer))
+            splitInterviewQuestion(el)?.let { exchange ->
+                blocks.add(ArticleBlock.Question(exchange.question))
+                blocks.add(ArticleBlock.Text(exchange.answer))
                 continue
             }
 
-            val strongOnly =
+            val isBoldOnly =
                 el.children().size == 1 &&
                 el.children().firstOrNull()?.tagName()?.equals("strong", ignoreCase = true) == true &&
                 el.ownText().trim().isBlank()
 
             // Pergunta de entrevista sozinha num parágrafo a negrito. Até 100 caracteres mantém-se
             // Subheading (um título de secção pode acabar em "?"); acima disso passaria a Text.
-            if (strongOnly && text.length > MAX_SUBHEADING_LENGTH && text.endsWith("?")) {
+            if (isBoldOnly && text.length > MAX_SUBHEADING_LENGTH && text.endsWith("?")) {
                 blocks.add(ArticleBlock.Question(text))
                 continue
             }
 
-            val onlyStrong = strongOnly && text.length <= MAX_SUBHEADING_LENGTH
+            val isShortBoldOnly = isBoldOnly && text.length <= MAX_SUBHEADING_LENGTH
 
-            if (onlyStrong || el.tagName().matches(Regex("h[1-6]", RegexOption.IGNORE_CASE))) {
+            if (isShortBoldOnly || el.tagName().matches(Regex("h[1-6]", RegexOption.IGNORE_CASE))) {
                 blocks.add(ArticleBlock.Subheading(text))
                 continue
             }
@@ -69,34 +71,47 @@ object AvanteBodyParser {
         return blocks
     }
 
-    private const val MAX_SUBHEADING_LENGTH = 100
+    /** Pergunta e resposta separadas de um parágrafo de entrevista. */
+    private data class InterviewExchange(val question: String, val answer: String)
+
+    /** O `strong` inicial de um parágrafo e se o `br` que o fecha está fora dele (logo a seguir). */
+    private class BoldLineBreakLead(val strong: Element, val lineBreakAfterStrong: Boolean)
 
     /**
      * Padrão A de entrevista: `<p><strong>Pergunta?<br/></strong>Resposta…</p>`.
-     * O primeiro filho é um `strong` terminado em `br` (dentro dele ou logo a seguir) e há texto depois.
-     * Devolve (pergunta, resposta) ou null se o parágrafo não tiver esta forma.
+     * Devolve a pergunta e a resposta, ou null se o parágrafo não tiver esta forma.
      */
-    private fun splitInterviewQuestion(p: Element): Pair<String, String>? {
+    private fun splitInterviewQuestion(p: Element): InterviewExchange? {
+        val lead = boldLineBreakLead(p) ?: return null
+
+        val question = lead.strong.text().trim()
+        if (question.isBlank()) return null
+
+        val rest = p.clone()
+        rest.children().first()?.remove() // o strong
+        if (lead.lineBreakAfterStrong) rest.children().firstOrNull()?.remove() // o br
+        val answer = rest.text().trim()
+        if (answer.isBlank()) return null
+
+        return InterviewExchange(question, answer)
+    }
+
+    /**
+     * Deteta um parágrafo que começa por um `strong` terminado em `br` (dentro dele ou logo a seguir).
+     * Null se o primeiro filho não for esse `strong` ou se não houver `br`.
+     */
+    private fun boldLineBreakLead(p: Element): BoldLineBreakLead? {
         if (!p.tagName().equals("p", ignoreCase = true)) return null
         val first = p.childNodes().firstOrNull { it !is TextNode || !it.isBlank } as? Element ?: return null
         if (!first.tagName().equals("strong", ignoreCase = true)) return null
 
         val lastInside = first.childNodes().lastOrNull { it !is TextNode || !it.isBlank }
-        val brInside = (lastInside as? Element)?.tagName()?.equals("br", ignoreCase = true) == true
+        val lineBreakInside = (lastInside as? Element)?.tagName()?.equals("br", ignoreCase = true) == true
         val nextSibling = first.nextSibling()
             ?.let { n -> generateSequence(n) { it.nextSibling() }.firstOrNull { it !is TextNode || !it.isBlank } }
-        val brAfter = (nextSibling as? Element)?.tagName()?.equals("br", ignoreCase = true) == true
-        if (!brInside && !brAfter) return null
+        val lineBreakAfter = (nextSibling as? Element)?.tagName()?.equals("br", ignoreCase = true) == true
+        if (!lineBreakInside && !lineBreakAfter) return null
 
-        val question = first.text().trim()
-        if (question.isBlank()) return null
-
-        val rest = p.clone()
-        rest.children().first()?.remove() // o strong
-        if (brAfter) rest.children().firstOrNull()?.remove() // o br
-        val answer = rest.text().trim()
-        if (answer.isBlank()) return null
-
-        return question to answer
+        return BoldLineBreakLead(first, lineBreakAfter)
     }
 }
