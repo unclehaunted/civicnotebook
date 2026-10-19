@@ -2,6 +2,7 @@ package pt.avante.app.data.avante
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
@@ -19,8 +20,8 @@ object AvanteArticleParser {
         val author = doc.select(".author, .autor").first()?.text() ?: "Redacção"
         val publishedAt = doc.select(".date, .data").first()?.text() ?: "Edição Actual"
         
-        val articleContainer = doc.select("article").first() ?: doc.body()
-        
+        val articleContainer = selectArticleContainer(doc)
+
         // Find valid image inside canonical article hero or body
         val articleImgCandidate = articleContainer.select(".hero-content img, .article-body img, .conteudo-artigo img").firstOrNull { img ->
             val src = img.attr("src")
@@ -49,4 +50,7 @@ object AvanteArticleParser {
             blocks = blocks
         )
     }
+
+    internal fun selectArticleContainer(doc: Document): Element =
+        doc.select("article").first() ?: doc.body()
 }

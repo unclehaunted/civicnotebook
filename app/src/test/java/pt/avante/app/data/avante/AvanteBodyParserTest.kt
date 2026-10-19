@@ -91,6 +91,64 @@ class AvanteBodyParserTest {
         assertEquals("Another subheading", (blocks[1] as ArticleBlock.Subheading).text)
     }
 
+    // Os testes onlyStrong_* fixam o comportamento atual da heurística, não o ideal.
+
+    private fun parse(body: String): List<ArticleBlock> {
+        val container = Jsoup.parse("<article>$body</article>").select("article").first()!!
+        return AvanteBodyParser.parseBodyContainer(container)
+    }
+
+    @Test
+    fun onlyStrong_nestedEmphasis_isSubheading() {
+        val blocks = parse("<p><strong><em>Título</em></strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Subheading("Título")), blocks)
+    }
+
+    @Test
+    fun onlyStrong_surroundingWhitespace_isSubheading() {
+        val blocks = parse("<p>  <strong>Título</strong>  </p>")
+
+        assertEquals(listOf(ArticleBlock.Subheading("Título")), blocks)
+    }
+
+    @Test
+    fun onlyStrong_withSiblingBr_isText() {
+        val blocks = parse("<p><strong>Título</strong><br></p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Título")), blocks)
+    }
+
+    @Test
+    fun onlyStrong_withOwnText_isText() {
+        val blocks = parse("<p><strong>Lisboa</strong> — o resto do parágrafo.</p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Lisboa — o resto do parágrafo.")), blocks)
+    }
+
+    @Test
+    fun onlyStrong_over100Chars_isText() {
+        val long = "a".repeat(101)
+        val blocks = parse("<p><strong>$long</strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Text(long)), blocks)
+    }
+
+    @Test
+    fun onlyStrong_exactly100Chars_isSubheading() {
+        val edge = "a".repeat(100)
+        val blocks = parse("<p><strong>$edge</strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Subheading(edge)), blocks)
+    }
+
+    @Test
+    fun headingsOutsideH3H4_areNotCandidates() {
+        val blocks = parse("<h2>Fora</h2><h5>Também fora</h5><p>Texto</p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Texto")), blocks)
+    }
+
     @Test
     fun parsePaywallCTA() {
         val html = """

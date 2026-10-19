@@ -45,6 +45,11 @@ kotlin {
     jvmToolchain(17)
 }
 
+// Encaminha -DupdateGoldens=true para a JVM dos testes (ver AvanteBodyParserGoldenTest).
+tasks.withType<Test>().configureEach {
+    systemProperty("updateGoldens", System.getProperty("updateGoldens") ?: "false")
+}
+
 dependencies {
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)
