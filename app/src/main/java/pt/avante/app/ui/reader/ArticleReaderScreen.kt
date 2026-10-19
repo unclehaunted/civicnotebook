@@ -279,7 +279,8 @@ fun ArticleReaderScreen(
                     is ArticleBlock.Text -> block.content
                     is ArticleBlock.Subheading -> block.text
                     is ArticleBlock.Quote -> block.content
-                    else -> ""
+                    is ArticleBlock.Image -> ""
+                    is ArticleBlock.PaywallCTA -> ""
                 }
             } else null
 
