@@ -79,13 +79,14 @@ object AvanteBodyParser {
 
     /**
      * Padrão A de entrevista: `<p><strong>Pergunta?<br/></strong>Resposta…</p>`.
-     * Devolve a pergunta e a resposta, ou null se o parágrafo não tiver esta forma.
+     * Devolve a pergunta e a resposta, ou null se o parágrafo não tiver esta forma ou se o negrito
+     * não terminar em "?".
      */
     private fun splitInterviewQuestion(p: Element): InterviewExchange? {
         val lead = boldLineBreakLead(p) ?: return null
 
         val question = lead.strong.text().trim()
-        if (question.isBlank()) return null
+        if (!question.endsWith("?")) return null // um negrito sem "?" (ex.: dateline) não é pergunta
 
         val rest = p.clone()
         rest.children().first()?.remove() // o strong

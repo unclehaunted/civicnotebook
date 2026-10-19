@@ -178,14 +178,11 @@ class AvanteBodyParserTest {
     }
 
     @Test
-    fun interviewPatternA_questionWithoutQuestionMark_stillSplits() {
-        val blocks = parse("<p><strong>Fale-nos da proposta.<br/></strong>É um ataque aos inquilinos.</p>")
+    fun interviewPatternA_boldWithoutQuestionMark_staysText() {
+        val blocks = parse("<p><strong>Lisboa, 12 de Outubro<br/></strong>O Governo aprovou hoje a proposta.</p>")
 
         assertEquals(
-            listOf(
-                ArticleBlock.Question("Fale-nos da proposta."),
-                ArticleBlock.Text("É um ataque aos inquilinos."),
-            ),
+            listOf(ArticleBlock.Text("Lisboa, 12 de Outubro O Governo aprovou hoje a proposta.")),
             blocks,
         )
     }
