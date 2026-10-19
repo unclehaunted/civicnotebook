@@ -39,34 +39,31 @@ fun ArticleBlockRenderer(
     val readerTheme = LocalReaderSettings.current.theme
     val openSettings = LocalOpenSettings.current
 
+    // Os três tipos de bloco de texto partilham tudo menos o estilo e a margem.
+    @Composable
+    fun selectable(
+        content: String,
+        modifier: Modifier = Modifier,
+        isQuote: Boolean = false,
+        isBold: Boolean = false
+    ) = SelectableArticleText(
+        content = content,
+        index = index,
+        isQuote = isQuote,
+        isBold = isBold,
+        isFinalBlock = isFinalCompleteTextBlock,
+        articleHighlights = articleHighlights,
+        onHighlightClick = onHighlightClick,
+        onHighlightPassage = onHighlightPassage,
+        onCreateNote = onCreateNote,
+        modifier = modifier
+    )
+
     when (block) {
-        is ArticleBlock.Text -> {
-            SelectableArticleText(
-                content = block.content,
-                index = index,
-                isFinalBlock = isFinalCompleteTextBlock,
-                articleHighlights = articleHighlights,
-                onHighlightClick = onHighlightClick,
-                onHighlightPassage = onHighlightPassage,
-                onCreateNote = onCreateNote,
-                modifier = modifier.padding(bottom = 16.dp)
-            )
-        }
-        is ArticleBlock.Question -> {
-            // Mesma margem superior de um parágrafo (nenhuma; o espaço vem do bloco anterior)
-            // e margem inferior menor, para a pergunta ficar colada à resposta.
-            SelectableArticleText(
-                content = block.content,
-                index = index,
-                isBold = true,
-                isFinalBlock = isFinalCompleteTextBlock,
-                articleHighlights = articleHighlights,
-                onHighlightClick = onHighlightClick,
-                onHighlightPassage = onHighlightPassage,
-                onCreateNote = onCreateNote,
-                modifier = modifier.padding(bottom = 6.dp)
-            )
-        }
+        is ArticleBlock.Text -> selectable(block.content, modifier.padding(bottom = 16.dp))
+        // Mesma margem superior de um parágrafo (nenhuma; o espaço vem do bloco anterior)
+        // e margem inferior menor, para a pergunta ficar colada à resposta.
+        is ArticleBlock.Question -> selectable(block.content, modifier.padding(bottom = 6.dp), isBold = true)
         is ArticleBlock.Subheading -> {
             Text(
                 text = block.text,
@@ -83,16 +80,7 @@ fun ArticleBlockRenderer(
                 modifier = modifier.fillMaxWidth().padding(vertical = 12.dp)
             ) {
                 Box(modifier = Modifier.padding(16.dp)) {
-                    SelectableArticleText(
-                        content = block.content,
-                        index = index,
-                        isQuote = true,
-                        isFinalBlock = isFinalCompleteTextBlock,
-                        articleHighlights = articleHighlights,
-                        onHighlightClick = onHighlightClick,
-                        onHighlightPassage = onHighlightPassage,
-                        onCreateNote = onCreateNote
-                    )
+                    selectable(block.content, isQuote = true)
                 }
             }
         }
