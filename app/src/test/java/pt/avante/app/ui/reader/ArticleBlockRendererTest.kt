@@ -101,7 +101,7 @@ class ArticleBlockRendererTest {
 
         Selection.setSelection(view.text as Spannable, 0, 6)
         val item = mock<MenuItem>()
-        whenever(item.itemId).thenReturn(2) // "Criar Nota"
+        whenever(item.itemId).thenReturn(SELECTION_MENU_CREATE_NOTE)
         val handled = view.customSelectionActionModeCallback.onActionItemClicked(mock<ActionMode>(), item)
 
         assertTrue(handled)

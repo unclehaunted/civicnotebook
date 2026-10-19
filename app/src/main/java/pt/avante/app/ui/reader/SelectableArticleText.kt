@@ -14,6 +14,10 @@ import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.ui.settings.LocalReaderSettings
 
+/** Ids dos itens do menu de seleção de texto ("Realçar" / "Criar Nota"). */
+const val SELECTION_MENU_HIGHLIGHT = 1
+const val SELECTION_MENU_CREATE_NOTE = 2
+
 fun buildHighlightedText(
     text: String,
     highlights: List<HighlightEntity>,
@@ -108,8 +112,8 @@ fun SelectableArticleText(
                 
                 customSelectionActionModeCallback = object : android.view.ActionMode.Callback {
                     override fun onCreateActionMode(mode: android.view.ActionMode, menu: android.view.Menu): Boolean {
-                        menu.add(0, 1, 0, "Realçar")
-                        menu.add(0, 2, 1, "Criar Nota")
+                        menu.add(0, SELECTION_MENU_HIGHLIGHT, 0, "Realçar")
+                        menu.add(0, SELECTION_MENU_CREATE_NOTE, 1, "Criar Nota")
                         return true
                     }
                     override fun onPrepareActionMode(mode: android.view.ActionMode, menu: android.view.Menu): Boolean = false
@@ -119,12 +123,12 @@ fun SelectableArticleText(
                         if (start < 0 || end < 0 || start >= end) return false
                         val selectedStr = text.substring(start, end).removeSuffix(" ☭").removeSuffix("☭")
                         when (item.itemId) {
-                            1 -> {
+                            SELECTION_MENU_HIGHLIGHT -> {
                                 onHighlightPassage(selectedStr, index, start, end)
                                 mode.finish()
                                 return true
                             }
-                            2 -> {
+                            SELECTION_MENU_CREATE_NOTE -> {
                                 onCreateNote(selectedStr, index, start, end)
                                 mode.finish()
                                 return true
