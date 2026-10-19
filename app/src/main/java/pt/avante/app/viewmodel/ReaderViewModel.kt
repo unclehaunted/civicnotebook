@@ -1,5 +1,6 @@
 package pt.avante.app.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -206,11 +207,12 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
+                Log.e("ReaderViewModel", "Falha ao carregar artigo ${articleSummary.url}", e)
                 _uiState.value = ReaderUiState.Error("Erro: ${e.message}")
             }
         }
     }
-    
+
     fun loadArticleById(articleId: String) {
         viewModelScope.launch {
             _uiState.value = ReaderUiState.Loading
@@ -227,11 +229,12 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                     _uiState.value = ReaderUiState.Error("Artigo não encontrado no dispositivo.")
                 }
             } catch (e: Exception) {
+                Log.e("ReaderViewModel", "Falha ao carregar artigo $articleId da cache", e)
                 _uiState.value = ReaderUiState.Error("Erro: ${e.message}")
             }
         }
     }
-    
+
     fun resetReaderMode() {
         _readerMode.value = ReaderMode.READ_MODE
         _selectedPassageIndex.value = null
