@@ -7,10 +7,14 @@ import pt.avante.app.R
  * Camada de dados pura: cores como Long ARGB para não depender de Compose.
  */
 
-enum class ReaderFont(val label: String, val fontResId: Int) {
-    LIBRE_FRANKLIN("Libre Franklin", R.font.libre_franklin),
-    ATKINSON_HYPERLEGIBLE("Atkinson Hyperlegible", R.font.atkinson_hyperlegible_regular),
-    BITTER("Bitter", R.font.bitter_regular),
+/**
+ * [boldFontResId] é o recurso do negrito real da fonte (ficheiro a 700 ou fonte variável com wght 700).
+ * Null quando a fonte não tem negrito próprio; aí o negrito é sintetizado pelo Android.
+ */
+enum class ReaderFont(val label: String, val fontResId: Int, val boldFontResId: Int? = null) {
+    LIBRE_FRANKLIN("Libre Franklin", R.font.libre_franklin, R.font.libre_franklin_bold),
+    ATKINSON_HYPERLEGIBLE("Atkinson Hyperlegible", R.font.atkinson_hyperlegible_regular, R.font.atkinson_hyperlegible_700),
+    BITTER("Bitter", R.font.bitter_regular, R.font.bitter_700),
     IBM_PLEX_SANS("IBM Plex Sans", R.font.ibm_plex_sans_regular),
     SOURCE_SANS("Source Sans 4", R.font.source_sans_4_regular)
 }
