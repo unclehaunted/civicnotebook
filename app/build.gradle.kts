@@ -34,6 +34,10 @@ android {
       shaders = false
     }
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
     packaging {
       resources {
         excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -78,6 +82,10 @@ dependencies {
   // Local tests: jUnit, coroutines, Android runner
   testImplementation(libs.junit)
   testImplementation(libs.kotlinx.coroutines.test)
+  // Testes de UI na JVM (Robolectric + Compose)
+  testImplementation(libs.robolectric)
+  testImplementation(composeBom)
+  testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation("org.mockito:mockito-core:5.12.0")
   testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.1")
 
