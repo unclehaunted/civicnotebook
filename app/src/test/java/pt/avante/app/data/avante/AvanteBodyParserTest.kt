@@ -270,6 +270,13 @@ class AvanteBodyParserTest {
     }
 
     @Test
+    fun interview_blockquoteWithQuestionShape_stillYieldsQuote() {
+        val blocks = parse("<blockquote><p><strong>Porquê?<br></strong>Porque sim.</p></blockquote>")
+
+        assertEquals(listOf(ArticleBlock.Quote("Porquê? Porque sim.")), blocks)
+    }
+
+    @Test
     fun parsePaywallCTA() {
         val html = """
             <article>
