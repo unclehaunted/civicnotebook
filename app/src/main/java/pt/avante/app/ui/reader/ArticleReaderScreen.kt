@@ -274,15 +274,7 @@ fun ArticleReaderScreen(
             }
             
             val selectedPassageText = if (selectedPassageIndex != null) {
-                val block = article.blocks[selectedPassageIndex!!]
-                when (block) {
-                    is ArticleBlock.Text -> block.content
-                    is ArticleBlock.Subheading -> block.text
-                    is ArticleBlock.Quote -> block.content
-                    is ArticleBlock.Question -> block.content
-                    is ArticleBlock.Image -> ""
-                    is ArticleBlock.PaywallCTA -> ""
-                }
+                article.blocks[selectedPassageIndex!!].selectableText.orEmpty()
             } else null
 
             ReaderAnnotationSheets(

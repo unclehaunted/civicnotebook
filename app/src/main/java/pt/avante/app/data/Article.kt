@@ -44,6 +44,19 @@ data class Article(
 
 @Serializable
 sealed class ArticleBlock {
+    /**
+     * Texto que o Leitor pode selecionar (realçar / criar nota), ou null se o bloco não o permitir.
+     * Propriedade sem campo de apoio: não entra na serialização. O `when` é exaustivo de propósito,
+     * para um novo tipo de bloco obrigar a decidir se é selecionável.
+     */
+    val selectableText: String?
+        get() = when (this) {
+            is Text -> content
+            is Question -> content
+            is Quote -> content
+            is Subheading, is Image, is PaywallCTA -> null
+        }
+
     @Serializable
     data class Text(val content: String) : ArticleBlock()
     @Serializable

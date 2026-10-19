@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
+import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.ui.settings.LocalReaderSettings
 
@@ -107,12 +108,8 @@ fun ReaderBody(
         }
 
         // Determine final text block for the end mark
-        val hasPaywall = article.blocks.any { it is pt.avante.app.data.ArticleBlock.PaywallCTA }
-        val lastTextBlockIndex = if (hasPaywall) -1 else article.blocks.indexOfLast { 
-            it is pt.avante.app.data.ArticleBlock.Text ||
-                it is pt.avante.app.data.ArticleBlock.Quote ||
-                it is pt.avante.app.data.ArticleBlock.Question
-        }
+        val hasPaywall = article.blocks.any { it is ArticleBlock.PaywallCTA }
+        val lastTextBlockIndex = endMarkBlockIndex(article.blocks)
 
         // Render Blocks lazily
         itemsIndexed(article.blocks) { index, block ->
@@ -152,3 +149,11 @@ fun ReaderBody(
     }
 }
 }
+
+/**
+ * Índice do bloco que leva a marca de fim do artigo: o último bloco de texto selecionável
+ * (Text, Question ou Quote), ou -1 se o artigo termina no paywall ou não tem texto.
+ */
+internal fun endMarkBlockIndex(blocks: List<ArticleBlock>): Int =
+    if (blocks.any { it is ArticleBlock.PaywallCTA }) -1
+    else blocks.indexOfLast { it.selectableText != null }
