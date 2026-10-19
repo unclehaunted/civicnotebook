@@ -8,12 +8,13 @@ import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.Publication
 import pt.avante.app.data.auth.AvanteHttp
+import pt.avante.app.data.auth.retryOnTimeout
 
 object AvanteArticleParser {
 
     suspend fun fetchAvanteArticle(url: String, section: String? = null, heroImageFromFeed: String? = null): Article = withContext(Dispatchers.IO) {
-        val doc = AvanteHttp.get(url)
-        
+        val doc = retryOnTimeout { AvanteHttp.get(url) }
+
         val title = doc.select("article h2.balance-text").first()?.text() 
             ?: doc.title().substringBefore("|").trim()
             

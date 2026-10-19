@@ -87,7 +87,9 @@ object AvanteFeedAssembler {
      * O feed é emitido primeiro sem isto, para a primeira abertura ser rápida.
      */
     suspend fun enhanceArticles(articles: List<ArticleSummary>): List<ArticleSummary> = withContext(Dispatchers.IO) {
-        val semaphore = Semaphore(10)
+        // O avante.pt serve os pedidos quase em série: com 10 em paralelo o artigo que o leitor
+        // abre fica em fila (0,8 s → 3,9 s medido) e chega a passar o timeout de 15 s no telemóvel.
+        val semaphore = Semaphore(2)
         coroutineScope {
             articles.map { summary ->
                 async {
