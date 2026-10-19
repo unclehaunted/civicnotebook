@@ -33,21 +33,33 @@ class AvanteBodyParserGoldenTest {
         assertTrue("Sem fixtures em ${fixturesDir.absolutePath}", fixtures.isNotEmpty())
 
         val missing = mutableListOf<String>()
+        val updated = mutableListOf<String>()
         for (html in fixtures) {
             val doc = Jsoup.parse(html, "UTF-8")
             val blocks = AvanteBodyParser.parseBodyContainer(AvanteArticleParser.selectArticleContainer(doc))
             val actual = json.encodeToString<List<ArticleBlock>>(blocks) + "\n"
             val expected = File(fixturesDir, "${html.nameWithoutExtension}.expected.json")
 
-            if (updateGoldens || !expected.exists()) {
+            if (!expected.exists()) {
                 expected.writeText(actual)
                 missing += expected.name
                 continue
             }
+            if (updateGoldens) {
+                // Em modo de atualização só se reescreve o que mudou, e o teste passa: o diff fica no git.
+                if (expected.readText() != actual) {
+                    expected.writeText(actual)
+                    updated += expected.name
+                }
+                continue
+            }
             assertEquals("Saída diferente para ${html.name}", expected.readText(), actual)
         }
+        if (updateGoldens) {
+            println("Snapshots atualizados: ${updated.ifEmpty { listOf("nenhum") }.joinToString()}")
+        }
         if (missing.isNotEmpty()) {
-            fail("Snapshots escritos (rever antes de commit): ${missing.joinToString()}")
+            fail("Snapshots novos escritos (rever antes de commit): ${missing.joinToString()}")
         }
     }
 }
