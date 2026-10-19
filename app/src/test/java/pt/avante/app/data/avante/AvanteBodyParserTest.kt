@@ -149,6 +149,126 @@ class AvanteBodyParserTest {
         assertEquals(listOf(ArticleBlock.Text("Texto")), blocks)
     }
 
+    // Entrevistas: padrão A (pergunta + resposta no mesmo parágrafo) e padrão B (pergunta sozinha).
+
+    @Test
+    fun interviewPatternA_brInsideStrong_splitsQuestionAndAnswer() {
+        val blocks = parse("<p><strong>Que consequências terá?<br /></strong>Os despejos passam a ser mais rápidos.</p>")
+
+        assertEquals(
+            listOf(
+                ArticleBlock.Question("Que consequências terá?"),
+                ArticleBlock.Text("Os despejos passam a ser mais rápidos."),
+            ),
+            blocks,
+        )
+    }
+
+    @Test
+    fun interviewPatternA_brAfterStrong_splitsQuestionAndAnswer() {
+        val blocks = parse("<p><strong>Que consequências terá?</strong><br>Os despejos passam a ser mais rápidos.</p>")
+
+        assertEquals(
+            listOf(
+                ArticleBlock.Question("Que consequências terá?"),
+                ArticleBlock.Text("Os despejos passam a ser mais rápidos."),
+            ),
+            blocks,
+        )
+    }
+
+    @Test
+    fun interviewPatternA_questionWithoutQuestionMark_stillSplits() {
+        val blocks = parse("<p><strong>Fale-nos da proposta.<br/></strong>É um ataque aos inquilinos.</p>")
+
+        assertEquals(
+            listOf(
+                ArticleBlock.Question("Fale-nos da proposta."),
+                ArticleBlock.Text("É um ataque aos inquilinos."),
+            ),
+            blocks,
+        )
+    }
+
+    @Test
+    fun interviewPatternA_leadingWhitespaceBeforeStrong_stillSplits() {
+        val blocks = parse("<p> <strong>Porquê?<br></strong> Porque sim.</p>")
+
+        assertEquals(
+            listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Text("Porque sim.")),
+            blocks,
+        )
+    }
+
+    @Test
+    fun interviewPatternA_strongNotFirstChild_isText() {
+        val blocks = parse("<p>Antes <strong>Porquê?<br></strong>Porque sim.</p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Antes Porquê? Porque sim.")), blocks)
+    }
+
+    @Test
+    fun interviewPatternA_strongWithoutBr_isText() {
+        val blocks = parse("<p><strong>Maria Rita Pinto</strong> é ainda jovem e já militante.</p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Maria Rita Pinto é ainda jovem e já militante.")), blocks)
+    }
+
+    @Test
+    fun interviewPatternA_brButNoTextAfter_isNotSplit() {
+        val blocks = parse("<p><strong>Porquê?<br></strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Subheading("Porquê?")), blocks)
+    }
+
+    @Test
+    fun interviewPatternB_longBoldParagraphEndingInQuestionMark_isQuestion() {
+        val long = "a".repeat(101) + "?"
+        val blocks = parse("<p> <strong>$long</strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Question(long)), blocks)
+    }
+
+    @Test
+    fun interviewPatternB_longBoldParagraphWithoutQuestionMark_staysText() {
+        val long = "a".repeat(101)
+        val blocks = parse("<p><strong>$long.</strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Text("$long.")), blocks)
+    }
+
+    @Test
+    fun interviewPatternB_shortBoldQuestion_staysSubheading() {
+        val blocks = parse("<p><strong>Porquê militar no PCP?</strong></p>")
+
+        assertEquals(listOf(ArticleBlock.Subheading("Porquê militar no PCP?")), blocks)
+    }
+
+    @Test
+    fun interview_paywallAfterQuestion_stopsParsing() {
+        val blocks = parse(
+            "<p><strong>Porquê?<br></strong>Porque sim.</p>" +
+                "<p><strong>Mais uma?<br></strong>O artigo completo está disponível para assinantes</p>" +
+                "<p><strong>Ignorada?<br></strong>Resposta ignorada.</p>",
+        )
+
+        assertEquals(
+            listOf(
+                ArticleBlock.Question("Porquê?"),
+                ArticleBlock.Text("Porque sim."),
+                ArticleBlock.PaywallCTA,
+            ),
+            blocks,
+        )
+    }
+
+    @Test
+    fun interview_subscriberNoiseWithQuestionShape_isDropped() {
+        val blocks = parse("<p><strong>Já é assinante ou comprou?<br></strong>Inicie sessão.</p><p>Texto</p>")
+
+        assertEquals(listOf(ArticleBlock.Text("Texto")), blocks)
+    }
+
     @Test
     fun parsePaywallCTA() {
         val html = """
