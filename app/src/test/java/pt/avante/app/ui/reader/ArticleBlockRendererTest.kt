@@ -189,19 +189,9 @@ class ArticleBlockRendererTest {
         assertFalse(view.paint.isFakeBoldText)
     }
 
+    // Libre Franklin nunca aparece a negrito: a pergunta usa o Bitter 700 dos títulos.
     @Test
-    fun question_withVariableFont_usesWeight700Axis() {
-        val settings = ReaderSettings(font = ReaderFont.LIBRE_FRANKLIN)
-        val (question, text) = renderAll(
-            listOf(ArticleBlock.Question("Porquê militar no PCP?"), ArticleBlock.Text("Porquê militar no PCP?")),
-            settings
-        )
-
-        assertFalse(question.paint.isFakeBoldText)
-        assertTrue(question.typeface.isBold)
-        // Com o eixo wght a 700 as letras são mais largas do que no peso normal.
-        assertTrue(question.paint.measureText("Porquê militar no PCP?") > text.paint.measureText("Porquê militar no PCP?"))
-    }
+    fun question_withLibreFranklin_usesTitleBoldBitter() = assertUsesBoldFile(ReaderFont.LIBRE_FRANKLIN, R.font.bitter_700)
 
     @Test
     fun question_withoutBoldFontFile_fallsBackToSynthesizedBold() {

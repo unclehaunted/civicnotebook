@@ -8,11 +8,12 @@ import pt.avante.app.R
  */
 
 /**
- * [boldFontResId] é o recurso do negrito real da fonte (ficheiro a 700 ou fonte variável com wght 700).
+ * [boldFontResId] é o recurso usado nos elementos a negrito (ficheiro a 700).
+ * Libre Franklin nunca aparece a negrito: usa o Bitter 700 dos títulos.
  * Null quando a fonte não tem negrito próprio; aí o negrito é sintetizado pelo Android.
  */
 enum class ReaderFont(val label: String, val fontResId: Int, val boldFontResId: Int? = null) {
-    LIBRE_FRANKLIN("Libre Franklin", R.font.libre_franklin, R.font.libre_franklin_bold),
+    LIBRE_FRANKLIN("Libre Franklin", R.font.libre_franklin, R.font.bitter_700),
     ATKINSON_HYPERLEGIBLE("Atkinson Hyperlegible", R.font.atkinson_hyperlegible_regular, R.font.atkinson_hyperlegible_700),
     BITTER("Bitter", R.font.bitter_regular, R.font.bitter_700),
     IBM_PLEX_SANS("IBM Plex Sans", R.font.ibm_plex_sans_regular),
