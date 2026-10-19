@@ -109,7 +109,9 @@ fun ReaderBody(
         // Determine final text block for the end mark
         val hasPaywall = article.blocks.any { it is pt.avante.app.data.ArticleBlock.PaywallCTA }
         val lastTextBlockIndex = if (hasPaywall) -1 else article.blocks.indexOfLast { 
-            it is pt.avante.app.data.ArticleBlock.Text || it is pt.avante.app.data.ArticleBlock.Quote 
+            it is pt.avante.app.data.ArticleBlock.Text ||
+                it is pt.avante.app.data.ArticleBlock.Quote ||
+                it is pt.avante.app.data.ArticleBlock.Question
         }
 
         // Render Blocks lazily

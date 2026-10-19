@@ -47,6 +47,8 @@ sealed class ArticleBlock {
     @Serializable
     data class Text(val content: String) : ArticleBlock()
     @Serializable
+    data class Question(val content: String) : ArticleBlock()
+    @Serializable
     data class Image(val url: String, val caption: String) : ArticleBlock()
     @Serializable
     data class Subheading(val text: String) : ArticleBlock()

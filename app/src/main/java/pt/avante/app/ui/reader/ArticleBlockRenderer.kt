@@ -52,6 +52,19 @@ fun ArticleBlockRenderer(
                 modifier = modifier.padding(bottom = 16.dp)
             )
         }
+        is ArticleBlock.Question -> {
+            // Provisório: renderiza como Text; o estilo próprio (negrito) vem no ticket #4.
+            SelectableArticleText(
+                content = block.content,
+                index = index,
+                isFinalBlock = isFinalCompleteTextBlock,
+                articleHighlights = articleHighlights,
+                onHighlightClick = onHighlightClick,
+                onHighlightPassage = onHighlightPassage,
+                onCreateNote = onCreateNote,
+                modifier = modifier.padding(bottom = 16.dp)
+            )
+        }
         is ArticleBlock.Subheading -> {
             Text(
                 text = block.text,
