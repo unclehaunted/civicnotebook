@@ -53,16 +53,18 @@ fun ArticleBlockRenderer(
             )
         }
         is ArticleBlock.Question -> {
-            // Provisório: renderiza como Text; o estilo próprio (negrito) vem no ticket #4.
+            // Mesma margem superior de um parágrafo (nenhuma; o espaço vem do bloco anterior)
+            // e margem inferior menor, para a pergunta ficar colada à resposta.
             SelectableArticleText(
                 content = block.content,
                 index = index,
+                isBold = true,
                 isFinalBlock = isFinalCompleteTextBlock,
                 articleHighlights = articleHighlights,
                 onHighlightClick = onHighlightClick,
                 onHighlightPassage = onHighlightPassage,
                 onCreateNote = onCreateNote,
-                modifier = modifier.padding(bottom = 16.dp)
+                modifier = modifier.padding(bottom = 6.dp)
             )
         }
         is ArticleBlock.Subheading -> {

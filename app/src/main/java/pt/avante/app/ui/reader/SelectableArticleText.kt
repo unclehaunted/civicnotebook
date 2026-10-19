@@ -77,6 +77,7 @@ fun SelectableArticleText(
     content: String,
     index: Int,
     isQuote: Boolean = false,
+    isBold: Boolean = false,
     isFinalBlock: Boolean = false,
     articleHighlights: List<HighlightEntity>,
     onHighlightClick: (HighlightEntity) -> Unit,
@@ -138,7 +139,12 @@ fun SelectableArticleText(
         update = { view ->
             // Aplicar preferências de leitura (Definições)
             val typeface = ResourcesCompat.getFont(view.context, settings.font.fontResId)
-            view.setTypeface(typeface, if (isQuote) android.graphics.Typeface.ITALIC else android.graphics.Typeface.NORMAL)
+            val style = when {
+                isQuote -> android.graphics.Typeface.ITALIC
+                isBold -> android.graphics.Typeface.BOLD
+                else -> android.graphics.Typeface.NORMAL
+            }
+            view.setTypeface(typeface, style)
             view.textSize = settings.fontSize.spValue
             view.setTextColor(settings.theme.textColor.toInt())
 
