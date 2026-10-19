@@ -112,42 +112,14 @@ fun ArticleReaderScreen(
             }
         }
         is ReaderUiState.Error -> {
-            Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Artigo indisponível offline",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = readerTextPrimary
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Este artigo ainda não foi guardado neste dispositivo.\nLigue-se à Internet para o abrir.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = readerTextSecondary,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(32.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            OutlinedButton(onClick = onBackClick) {
-                                Text("Voltar", color = readerTextPrimary)
-                            }
-                            Button(
-                                onClick = { 
-                                    if (articleSummary != null) viewModel.loadArticle(articleSummary, currentIssueNumber ?: "") 
-                                    else if (articleId != null) viewModel.loadArticleById(articleId)
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = OriginalRed)
-                            ) {
-                                Text("Tentar Novamente", color = Color.White)
-                            }
-                        }
-                    }
-                }
-            }
+            ReaderErrorContent(
+                reason = state.reason,
+                onRetry = {
+                    if (articleSummary != null) viewModel.loadArticle(articleSummary, currentIssueNumber ?: "")
+                    else if (articleId != null) viewModel.loadArticleById(articleId)
+                },
+                onBackClick = onBackClick
+            )
         }
         is ReaderUiState.SubscriptionRequired -> {
             // Similar to error but specifically for paywall

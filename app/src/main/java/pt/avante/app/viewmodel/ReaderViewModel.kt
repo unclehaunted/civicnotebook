@@ -34,7 +34,7 @@ sealed class ReaderUiState {
     data object Loading : ReaderUiState()
     data class LoadingWithPreview(val summary: ArticleSummary, val editionNumber: String) : ReaderUiState()
     data class Success(val article: Article) : ReaderUiState()
-    data class Error(val message: String) : ReaderUiState()
+    data class Error(val reason: ReaderErrorReason) : ReaderUiState()
     data class SubscriptionRequired(val title: String) : ReaderUiState()
 }
 
@@ -203,12 +203,12 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                         _articleHighlights.value = db.articleDao().getHighlightsForArticle(articleId)
                         _uiState.value = ReaderUiState.Success(stableArticle)
                     } else {
-                        _uiState.value = ReaderUiState.Error("Falha ao carregar o artigo.")
+                        _uiState.value = ReaderUiState.Error(ReaderErrorReason.SERVER)
                     }
                 }
             } catch (e: Exception) {
                 Log.e("ReaderViewModel", "Falha ao carregar artigo ${articleSummary.url}", e)
-                _uiState.value = ReaderUiState.Error("Erro: ${e.message}")
+                _uiState.value = ReaderUiState.Error(e.toReaderErrorReason())
             }
         }
     }
@@ -226,11 +226,11 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                     _articleHighlights.value = db.articleDao().getHighlightsForArticle(articleId)
                     _uiState.value = ReaderUiState.Success(article)
                 } else {
-                    _uiState.value = ReaderUiState.Error("Artigo não encontrado no dispositivo.")
+                    _uiState.value = ReaderUiState.Error(ReaderErrorReason.NOT_CACHED)
                 }
             } catch (e: Exception) {
                 Log.e("ReaderViewModel", "Falha ao carregar artigo $articleId da cache", e)
-                _uiState.value = ReaderUiState.Error("Erro: ${e.message}")
+                _uiState.value = ReaderUiState.Error(e.toReaderErrorReason())
             }
         }
     }
