@@ -43,6 +43,8 @@ guardado localmente no dispositivo e pesquisável.
   tamanho, cor de fundo (Papel, Branco, Sépia, Escuro) e toggle de imagens.
 - **Pesquisa** — sobre notas e excertos do utilizador.
 
+O que vem a seguir está no [roteiro](ROADMAP.md).
+
 ## Autoria e método
 
 O comportamento da app, o layout e o design de interface e de experiência
