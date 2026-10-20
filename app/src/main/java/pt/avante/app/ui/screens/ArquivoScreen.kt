@@ -19,6 +19,8 @@ import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
 
+// Placeholder mock. The subscriber gate below is mock-only: the Arquivo is open to all
+// and its behaviour is being decided in GitHub issue #35 (map).
 @Composable
 fun ArquivoScreen(
     isSubscriber: Boolean = false, // Mock for now
