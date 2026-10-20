@@ -20,7 +20,7 @@ object AvanteIndexParser {
 
     suspend fun fetchIndexInventory(editionNumber: String): Map<String, IndexMetadata> = withContext(Dispatchers.IO) {
         try {
-            val indexUrl = "https://avante.pt/pt/$editionNumber/?tpl=183"
+            val indexUrl = AvanteSite.indexUrl(editionNumber)
             val doc = AvanteHttp.get(indexUrl)
             
             val inventory = mutableMapOf<String, IndexMetadata>()

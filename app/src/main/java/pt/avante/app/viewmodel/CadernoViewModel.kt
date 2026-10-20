@@ -2,59 +2,40 @@ package pt.avante.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.withTransaction
 import pt.avante.app.data.db.AppDatabase
+import pt.avante.app.data.db.DeletedNote
 import pt.avante.app.data.db.NoteEntity
-import pt.avante.app.data.db.NoteType
-import kotlinx.coroutines.flow.MutableStateFlow
+import pt.avante.app.data.db.deleteNoteWithSources
+import pt.avante.app.data.db.restoreNote
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+private const val STOP_TIMEOUT_MS = 5_000L
+
 class CadernoViewModel(private val db: AppDatabase) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<CadernoUiState>(CadernoUiState.Loading)
-    val uiState: StateFlow<CadernoUiState> = _uiState.asStateFlow()
+    // Observa as Notas: eliminar, anular ou descartar uma Nova Nota no editor atualiza a lista sozinho.
+    val uiState: StateFlow<CadernoUiState> = db.articleDao().observeAllNotes()
+        .map { notes -> if (notes.isEmpty()) CadernoUiState.Empty else CadernoUiState.Success(notes) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), CadernoUiState.Loading)
 
-    fun loadNotes() {
-        viewModelScope.launch {
-            _uiState.value = CadernoUiState.Loading
-            val notes = db.articleDao().getAllNotes()
-            if (notes.isEmpty()) {
-                _uiState.value = CadernoUiState.Empty
-            } else {
-                _uiState.value = CadernoUiState.Success(notes)
-            }
-        }
-    }
-    
+    /** Apaga a Nota; devolve o que é preciso para anular. */
+    suspend fun removeNote(id: String): DeletedNote? = db.deleteNoteWithSources(id)
 
-    fun removeNote(id: String) {
-        viewModelScope.launch {
-            db.withTransaction {
-                db.articleDao().deleteNote(id)
-                db.articleDao().deleteNoteSources(id)
-            }
-            loadNotes()
-        }
+    /** Repõe uma Nota eliminada; a lista atualiza-se sozinha. */
+    fun restoreNote(deleted: DeletedNote) {
+        viewModelScope.launch { db.restoreNote(deleted) }
     }
-    
-    fun createNewNote(): String? {
-        val noteId = UUID.randomUUID().toString()
-        viewModelScope.launch {
-            val note = NoteEntity(
-                noteId = noteId,
-                title = "Nova Nota",
-                bodyMarkdown = "",
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis(),
-                noteType = NoteType.STANDALONE
-            )
-            db.articleDao().insertNote(note)
-            loadNotes()
-        }
-        return noteId
+
+    /** Grava uma Nova Nota e só depois devolve o id, para o editor nunca a procurar antes de existir. */
+    suspend fun createNewNote(): String {
+        val note = NewNote.create(noteId = UUID.randomUUID().toString(), now = System.currentTimeMillis())
+        db.articleDao().insertNote(note)
+        return note.noteId
     }
 }
 

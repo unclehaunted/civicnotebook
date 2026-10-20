@@ -141,10 +141,7 @@ abstract class ArticleDao {
 
     // --- Notes ---
     @Query("SELECT * FROM notes ORDER BY updatedAt DESC")
-    abstract suspend fun getAllNotes(): @JvmSuppressWildcards List<NoteEntity>
-
-    @Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR bodyMarkdown LIKE '%' || :query || '%' ORDER BY updatedAt DESC")
-    abstract suspend fun searchNotes(query: String): @JvmSuppressWildcards List<NoteEntity>
+    abstract fun observeAllNotes(): kotlinx.coroutines.flow.Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE noteId = :id")
     abstract suspend fun getNote(id: String): @JvmSuppressWildcards NoteEntity?
@@ -163,6 +160,12 @@ abstract class ArticleDao {
 
     @Query("SELECT * FROM note_sources WHERE noteId = :noteId LIMIT 1")
     abstract suspend fun getNoteSource(noteId: String): @JvmSuppressWildcards NoteSourceEntity?
+
+    @Query("SELECT * FROM note_sources WHERE noteId = :noteId")
+    abstract suspend fun getNoteSources(noteId: String): @JvmSuppressWildcards List<NoteSourceEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertNoteSources(noteSources: List<NoteSourceEntity>): @JvmSuppressWildcards List<Long>
 
     @Query("SELECT DISTINCT articleId FROM note_sources")
     abstract fun getBookmarkedArticleIds(): kotlinx.coroutines.flow.Flow<List<String>>

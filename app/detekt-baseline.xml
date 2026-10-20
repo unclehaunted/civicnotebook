@@ -19,6 +19,7 @@
     <ID>FunctionNaming:AdaptiveContent.kt:@Composable fun AdaptiveContent</ID>
     <ID>FunctionNaming:AnnotationActionRow.kt:@Composable fun AnnotationActionRow</ID>
     <ID>FunctionNaming:AppViewport.kt:@Composable fun ProvideAppViewport</ID>
+    <ID>FunctionNaming:AnnotationModeBanner.kt:@Composable fun AnnotationModeBanner</ID>
     <ID>FunctionNaming:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
     <ID>FunctionNaming:ArticleBlockRenderer.kt:@Composable fun ArticleBlockRenderer</ID>
     <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun ArticleCardFooter</ID>
@@ -84,6 +85,7 @@
     <ID>LoopWithTooManyJumpStatements:AvanteBodyParser.kt:AvanteBodyParser$for</ID>
     <ID>LoopWithTooManyJumpStatements:AvanteBodyParserGoldenTest.kt:AvanteBodyParserGoldenTest$for</ID>
     <ID>LoopWithTooManyJumpStatements:AvanteHomepageOverlayParser.kt:AvanteHomepageOverlayParser$for</ID>
+    <ID>MagicNumber:AnnotationModeBanner.kt:0xFFFDECEA</ID>
     <ID>MagicNumber:ArquivoScreen.kt:0.7f</ID>
     <ID>MagicNumber:ArquivoScreen.kt:4</ID>
     <ID>MagicNumber:ArticleBlockRenderer.kt:0.8f</ID>
@@ -123,7 +125,6 @@
     <ID>MagicNumber:ReaderActionRail.kt:0xFF4A7C77</ID>
     <ID>MagicNumber:ReaderBody.kt:0xFFB97A00</ID>
     <ID>MagicNumber:ReaderCompactLayout.kt:0.9f</ID>
-    <ID>MagicNumber:ReaderCompactLayout.kt:0xFFFDECEA</ID>
     <ID>MagicNumber:ReaderEndMark.kt:0.67f</ID>
     <ID>MagicNumber:ReaderFloatingActions.kt:0xFF4A7C77</ID>
     <ID>MagicNumber:ReaderSettings.kt:ReaderFontSize.LARGE$21f</ID>
@@ -150,7 +151,6 @@
     <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFE0E0E0</ID>
     <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFF5F5F5</ID>
     <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFFFFFFF</ID>
-    <ID>MagicNumber:ReaderWideLayout.kt:0xFFFDECEA</ID>
     <ID>MagicNumber:SelectableArticleText.kt:0.85f</ID>
     <ID>MagicNumber:SelectableArticleText.kt:1.4f</ID>
     <ID>MagicNumber:SelectableArticleText.kt:178</ID>
@@ -202,7 +202,6 @@
     <ID>MaxLineLength:MainActivity.kt:MainActivity$MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel, readerSettingsStore, authRepository)</ID>
     <ID>MaxLineLength:MainApp.kt:Text("Menu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))</ID>
     <ID>MaxLineLength:MainApp.kt:val backEnabled = showMenuSheet || showSettings || editingNoteId != null || viewingArticleUrl != null || viewingArticleId != null</ID>
-    <ID>MaxLineLength:MainApp.kt:val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://editorial-avante.pcp.pt/avante.html"))</ID>
     <ID>MaxLineLength:MainApp.kt:var isNavExpanded by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }</ID>
     <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO article_sources (articleId, canonicalUrl, title, publication, accessTier) VALUES ('art1', 'http1', 'Title1', 'Avante!', 'FREE')")</ID>
     <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO cached_article_contents (articleId, blocksJson, fetchedAt, isOfflineCopy, contentLicenseStatus) VALUES ('art1', '[]', 1000, 0, 'TEMPORARY')")</ID>
@@ -221,12 +220,10 @@
     <ID>MaxLineLength:NoteEditorScreen.kt:modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }</ID>
     <ID>MaxLineLength:NoteEditorScreen.kt:textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel)</ID>
-    <ID>MaxLineLength:PesquisaScreen.kt:placeholder = { Text(if (searchScope == 0) "Pesquisar na edição atual..." else "Pesquisar no caderno...", color = TextSecondary) }</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual."</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual."</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno."</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:title = { Text("Pesquisa", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = TextPrimary) }</ID>
-    <ID>MaxLineLength:PesquisaScreen.kt:var searchScope by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) } // 0 = Edição atual, 1 = Caderno</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW</ID>
     <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$val formattedAuthor = author?.let { pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(it) }?.takeIf { it.isNotBlank() }</ID>
     <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$withStyle</ID>
@@ -243,7 +240,6 @@
     <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$subcategoryLabel = source.subcategoryLabel?.takeIf { it.isNotBlank() } ?: articleSummary.subcategoryLabel</ID>
     <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$val resolvedIssueNumber = existing?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }</ID>
     <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$val resolvedIssueNumber = source?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }</ID>
-    <ID>MaxLineLength:ReaderWideLayout.kt:BoxWithConstraints</ID>
     <ID>MaxLineLength:ReaderWideLayout.kt:modifier = if (!displayImage.isNullOrBlank()) Modifier.heightIn(max = 400.dp) else Modifier</ID>
     <ID>MaxLineLength:SelectableArticleText.kt:&lt;no name provided&gt;$override</ID>
     <ID>MaxLineLength:SelectableArticleText.kt:&lt;no name provided&gt;$override fun onPrepareActionMode: Boolean</ID>
@@ -350,13 +346,6 @@
     <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.foundation.layout.*</ID>
     <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.material3.*</ID>
     <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.runtime.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.foundation.layout.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.material.icons.filled.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.material3.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.runtime.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.theme.*</ID>
-    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.ui.components.*</ID>
     <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.foundation.layout.*</ID>
     <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.material.icons.filled.*</ID>
     <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.material3.*</ID>

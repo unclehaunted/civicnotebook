@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
+import pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR
 import pt.avante.app.data.Publication
 import pt.avante.app.data.auth.AvanteHttp
 import pt.avante.app.data.auth.retryOnTimeout
@@ -18,7 +19,7 @@ object AvanteArticleParser {
         val title = doc.select("article h2.balance-text").first()?.text() 
             ?: doc.title().substringBefore("|").trim()
             
-        val author = doc.select(".author, .autor").first()?.text() ?: "Redacção"
+        val author = doc.select(".author, .autor").first()?.text() ?: DEFAULT_ARTICLE_AUTHOR
         val publishedAt = doc.select(".date, .data").first()?.text() ?: "Edição Actual"
         
         val articleContainer = selectArticleContainer(doc)

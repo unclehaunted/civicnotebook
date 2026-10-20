@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import pt.avante.app.data.ArticleParser
 import pt.avante.app.data.ArticleSummary
+import pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR
+import pt.avante.app.data.Publication
 import pt.avante.app.data.HomeFeed
 import pt.avante.app.data.db.AppDatabase
 import pt.avante.app.data.db.ArticleEntity
@@ -72,7 +74,7 @@ class HomeViewModel(
                             ArticleSummary(
                                 url = snap.canonicalUrl,
                                 title = entity.title,
-                                author = entity.author ?: "Redacção",
+                                author = entity.author ?: DEFAULT_ARTICLE_AUTHOR,
                                 isPremium = snap.isPremium,
                                 isFree = snap.isFree,
                                 summary = entity.summary ?: "",
@@ -154,7 +156,7 @@ class HomeViewModel(
                 canonicalUrl = summary.url,
                 title = summary.title,
                 author = summary.author,
-                publication = "Avante!",
+                publication = Publication.AVANTE.displayName,
                 issueNumber = feed.editionNumber,
                 publishedAt = null,
                 accessTier = if (summary.isPremium) "PREMIUM" else "FREE",

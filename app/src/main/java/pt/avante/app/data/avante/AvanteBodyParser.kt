@@ -27,7 +27,7 @@ object AvanteBodyParser {
             val text = el.text().trim()
             if (text.isBlank()) continue
             
-            if (text.contains("O artigo completo está disponível") || text.contains("Compra o «Avante!»")) {
+            if (text.contains(AvanteSite.PAYWALL_MARKER) || text.contains("Compra o «Avante!»")) {
                 blocks.add(ArticleBlock.PaywallCTA)
                 break
             }

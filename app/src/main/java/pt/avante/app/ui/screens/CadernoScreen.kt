@@ -21,7 +21,9 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.background
 import pt.avante.app.data.db.NoteEntity
+import kotlinx.coroutines.launch
 import pt.avante.app.theme.*
+import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
 import pt.avante.app.viewmodel.CadernoUiState
 import pt.avante.app.viewmodel.CadernoViewModel
 import java.text.SimpleDateFormat
@@ -32,29 +34,31 @@ import java.util.Locale
 @Composable
 fun CadernoScreen(
     viewModel: CadernoViewModel,
-    onNoteClick: (NoteEntity) -> Unit
+    onNoteClick: (String) -> Unit,
+    onNewNote: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.loadNotes()
-    }
+    val scope = rememberCoroutineScope()
+    var isCreatingNote by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val deleteNote = rememberDeleteNoteWithUndo(snackbarHostState, viewModel::removeNote, viewModel::restoreNote)
 
     Scaffold(
         containerColor = WarmPaper,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    val noteId = viewModel.createNewNote()
-                    if (noteId != null) {
-                        onNoteClick(NoteEntity(
-                            noteId = noteId,
-                            title = "Nova Nota",
-                            bodyMarkdown = "",
-                            createdAt = System.currentTimeMillis(),
-                            updatedAt = System.currentTimeMillis(),
-                            noteType = pt.avante.app.data.db.NoteType.STANDALONE
-                        ))
+                    // Um segundo toque antes de o editor abrir criaria uma Nota que nunca se abre.
+                    if (!isCreatingNote) {
+                        isCreatingNote = true
+                        scope.launch {
+                            try {
+                                onNewNote(viewModel.createNewNote())
+                            } finally {
+                                isCreatingNote = false
+                            }
+                        }
                     }
                 },
                 containerColor = OriginalRed,
@@ -103,8 +107,8 @@ fun CadernoScreen(
                             items(state.notes, key = { it.noteId }) { note ->
                                 NoteCard(
                                     note = note,
-                                    onClick = { onNoteClick(note) },
-                                    onDelete = { viewModel.removeNote(note.noteId) }
+                                    onClick = { onNoteClick(note.noteId) },
+                                    onDelete = { deleteNote(note.noteId) }
                                 )
                             }
                         }

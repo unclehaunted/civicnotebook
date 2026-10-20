@@ -178,7 +178,8 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                                 canonicalUrl = existing?.canonicalUrl?.takeIf { it.isNotBlank() } ?: articleSummary.url,
                                 title = existing?.title?.takeIf { it.isNotBlank() } ?: articleSummary.title,
                                 author = existing?.author?.takeIf { it.isNotBlank() } ?: articleSummary.author,
-                                publication = existing?.publication?.takeIf { it.isNotBlank() } ?: "Avante!",
+                                publication = existing?.publication?.takeIf { it.isNotBlank() }
+                                    ?: Publication.AVANTE.displayName,
                                 issueNumber = resolvedIssueNumber,
                                 publishedAt = existing?.publishedAt,
                                 accessTier = if (articleSummary.isPremium) "PREMIUM" else "FREE",

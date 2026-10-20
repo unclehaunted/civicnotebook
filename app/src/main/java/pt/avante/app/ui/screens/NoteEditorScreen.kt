@@ -28,6 +28,7 @@ import pt.avante.app.viewmodel.NoteViewModel
 @Composable
 fun NoteEditorScreen(
     noteId: String,
+    isNewNote: Boolean,
     viewModel: NoteViewModel,
     onBackClick: () -> Unit,
     onOpenArticle: (String) -> Unit
@@ -36,7 +37,7 @@ fun NoteEditorScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     LaunchedEffect(noteId) {
-        viewModel.loadNote(noteId)
+        viewModel.loadNote(noteId, isNewNote)
     }
 
     Surface(

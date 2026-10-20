@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.avante.app.R
+import pt.avante.app.data.Publication
 import pt.avante.app.theme.OriginalRed
 
 @Composable
@@ -59,7 +60,7 @@ fun AvanteMasthead(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_avante),
-                    contentDescription = "Avante!",
+                    contentDescription = Publication.AVANTE.displayName,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )

@@ -1,76 +1,75 @@
 package pt.avante.app.ui.screens
 
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import pt.avante.app.data.Article
-import pt.avante.app.data.ArticleBlock
-import pt.avante.app.data.ArticleParser
-import pt.avante.app.data.ArticleSummary
-import pt.avante.app.data.HomeFeed
-import pt.avante.app.theme.*
-import kotlinx.coroutines.launch
-
-import androidx.room.Room
-import pt.avante.app.data.db.AppDatabase
-import pt.avante.app.viewmodel.HomeViewModel
-import pt.avante.app.viewmodel.HomeUiState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import pt.avante.app.data.ArticleSummary
+import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.TextPrimary
+import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
+import pt.avante.app.viewmodel.HomeUiState
 import pt.avante.app.viewmodel.PesquisaViewModel
 
-import pt.avante.app.*
-import pt.avante.app.ui.components.*
+/** Onde a Pesquisa procura; a ordem é a dos separadores. */
+private enum class SearchScope(val label: String, val placeholder: String) {
+    CURRENT_EDITION("Edição atual", "Pesquisar na edição atual..."),
+    CADERNO("Caderno", "Pesquisar no caderno...")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PesquisaScreen(
-    viewModel: PesquisaViewModel, 
+    viewModel: PesquisaViewModel,
     homeUiState: HomeUiState,
     onArticleClick: (ArticleSummary) -> Unit,
     onNoteClick: (String) -> Unit
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
-    val searchResults by viewModel.searchResults.collectAsState()
-    var searchScope by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) } // 0 = Edição atual, 1 = Caderno
-    
+    val noteResults by viewModel.noteResults.collectAsState()
+    val editionResults by viewModel.editionResults.collectAsState()
+    var searchScope by rememberSaveable { mutableStateOf(SearchScope.CURRENT_EDITION) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val deleteNote = rememberDeleteNoteWithUndo(snackbarHostState, viewModel::removeNote, viewModel::restoreNote)
+
     Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+      Box(modifier = Modifier.fillMaxSize()) {
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
             Column(modifier = Modifier.fillMaxSize()) {
             CenterAlignedTopAppBar(
@@ -80,35 +79,32 @@ fun PesquisaScreen(
                     titleContentColor = TextPrimary
                 )
             )
-            
+
             TabRow(
-                selectedTabIndex = searchScope,
+                selectedTabIndex = searchScope.ordinal,
                 containerColor = WarmPaper,
                 contentColor = OriginalRed,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
-                        Modifier.tabIndicatorOffset(tabPositions[searchScope]),
+                        Modifier.tabIndicatorOffset(tabPositions[searchScope.ordinal]),
                         color = OriginalRed
                     )
                 }
             ) {
-                Tab(
-                    selected = searchScope == 0,
-                    onClick = { searchScope = 0 },
-                    text = { Text("Edição atual", color = if (searchScope == 0) OriginalRed else TextSecondary) }
-                )
-                Tab(
-                    selected = searchScope == 1,
-                    onClick = { searchScope = 1 },
-                    text = { Text("Caderno", color = if (searchScope == 1) OriginalRed else TextSecondary) }
-                )
+                SearchScope.entries.forEach { scope ->
+                    Tab(
+                        selected = searchScope == scope,
+                        onClick = { searchScope = scope },
+                        text = { Text(scope.label, color = if (searchScope == scope) OriginalRed else TextSecondary) }
+                    )
+                }
             }
-            
+
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                placeholder = { Text(if (searchScope == 0) "Pesquisar na edição atual..." else "Pesquisar no caderno...", color = TextSecondary) },
+                placeholder = { Text(searchScope.placeholder, color = TextSecondary) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Pesquisar") },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -123,41 +119,19 @@ fun PesquisaScreen(
                     unfocusedLeadingIconColor = TextSecondary
                 )
             )
-            
-            if (searchScope == 0) {
-                // Edição atual
-                val isCurrentEdition = homeUiState is HomeUiState.Success && 
-                    homeUiState.feed.editionNumber == viewModel.lastKnownCurrentIssueNumber
-                
-                if (!isCurrentEdition) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = TextPrimary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(32.dp)
-                        )
+
+            when (searchScope) {
+                SearchScope.CURRENT_EDITION -> {
+                    val currentEditionFeed = (homeUiState as? HomeUiState.Success)?.feed
+                        ?.takeIf { it.editionNumber == viewModel.lastKnownCurrentIssueNumber }
+                    LaunchedEffect(currentEditionFeed) {
+                        viewModel.onCurrentEditionLoaded(currentEditionFeed?.articles.orEmpty())
                     }
-                } else {
-                    val feed = (homeUiState as HomeUiState.Success).feed
-                    val filteredArticles = if (searchQuery.isBlank()) {
-                        emptyList()
-                    } else {
-                        val queryLower = searchQuery.lowercase()
-                        feed.articles.filter { article ->
-                            article.title.lowercase().contains(queryLower) ||
-                            article.author.lowercase().contains(queryLower) ||
-                            article.categoryLabel?.lowercase()?.contains(queryLower) == true ||
-                            article.subcategoryLabel?.lowercase()?.contains(queryLower) == true ||
-                            article.summary.lowercase().contains(queryLower)
-                        }
-                    }
-                    
-                    if (filteredArticles.isEmpty()) {
+
+                    if (currentEditionFeed == null) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(
-                                text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual.",
+                                text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
                                 textAlign = TextAlign.Center,
@@ -165,58 +139,72 @@ fun PesquisaScreen(
                             )
                         }
                     } else {
-                        val bookmarkedArticles by viewModel.bookmarkedArticles.collectAsState()
-                        LazyColumn(contentPadding = PaddingValues(bottom = 20.dp, start = 16.dp, end = 16.dp)) {
-                            items(filteredArticles) { article ->
-                                Box(modifier = Modifier.padding(bottom = 16.dp)) {
-                                    val presentation = pt.avante.app.ui.presentation.ArticleCardPresentation(
-                                        variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW,
-                                        spanPolicy = pt.avante.app.ui.presentation.ArticleGridSpanPolicy.FULL_WIDTH,
-                                        imagePolicy = pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE,
-                                        showSummary = false,
-                                        showFooter = false,
-                                        showFavourite = false
-                                    )
-                                    val articleId = pt.avante.app.data.ArticleIdentity.generateStableId(article.url)
-                                    pt.avante.app.ui.components.cards.CompactRowArticleCard(
-                                        article = article,
-                                        presentation = presentation,
-                                        formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel),
-                                        isBookmarked = bookmarkedArticles.contains(articleId),
-                                        onClick = { onArticleClick(article) }
-                                    )
+                        if (editionResults.isEmpty()) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = TextPrimary,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(32.dp)
+                                )
+                            }
+                        } else {
+                            val bookmarkedArticles by viewModel.bookmarkedArticles.collectAsState()
+                            LazyColumn(contentPadding = PaddingValues(bottom = 20.dp, start = 16.dp, end = 16.dp)) {
+                                items(editionResults) { article ->
+                                    Box(modifier = Modifier.padding(bottom = 16.dp)) {
+                                        val presentation = pt.avante.app.ui.presentation.ArticleCardPresentation(
+                                            variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW,
+                                            spanPolicy = pt.avante.app.ui.presentation.ArticleGridSpanPolicy.FULL_WIDTH,
+                                            imagePolicy = pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE,
+                                            showSummary = false,
+                                            showFooter = false,
+                                            showFavourite = false
+                                        )
+                                        val articleId = pt.avante.app.data.ArticleIdentity.generateStableId(article.url)
+                                        pt.avante.app.ui.components.cards.CompactRowArticleCard(
+                                            article = article,
+                                            presentation = presentation,
+                                            formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel),
+                                            isBookmarked = bookmarkedArticles.contains(articleId),
+                                            onClick = { onArticleClick(article) }
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            } else {
-                // Caderno
-                if (searchResults.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = TextPrimary,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(32.dp)
-                        )
-                    }
-                } else {
-                    LazyColumn(
-                        contentPadding = PaddingValues(bottom = 20.dp)
-                    ) {
-                        items(searchResults) { note ->
-                            NoteCard(
-                                note = note,
-                                onClick = { onNoteClick(note.noteId) },
-                                onDelete = { /* TODO in a later phase */ }
+                SearchScope.CADERNO -> {
+                    if (noteResults.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = TextPrimary,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(32.dp)
                             )
+                        }
+                    } else {
+                        LazyColumn(
+                            contentPadding = PaddingValues(bottom = 20.dp)
+                        ) {
+                            items(noteResults, key = { it.noteId }) { note ->
+                                NoteCard(
+                                    note = note,
+                                    onClick = { onNoteClick(note.noteId) },
+                                    onDelete = { deleteNote(note.noteId) }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
         }
+        SnackbarHost(snackbarHostState, modifier = Modifier.align(Alignment.BottomCenter))
+      }
     }
 }

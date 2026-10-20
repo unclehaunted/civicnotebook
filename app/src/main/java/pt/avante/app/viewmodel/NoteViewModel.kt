@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import pt.avante.app.data.db.AppDatabase
 import pt.avante.app.data.db.NoteEntity
+import pt.avante.app.data.db.deleteNoteWithSources
 
 sealed class NoteEditorUiState {
     object Loading : NoteEditorUiState()
@@ -24,6 +25,9 @@ class NoteViewModel(private val db: AppDatabase) : ViewModel() {
 
     private var currentNote: NoteEntity? = null
 
+    // A Nova Nota que o + criou e abriu neste editor: só essa se descarta ao sair, se ficar vazia.
+    private var newNoteId: String? = null
+
     private var currentSourceId: String? = null
     
     private val _isSaving = MutableStateFlow(false)
@@ -31,8 +35,12 @@ class NoteViewModel(private val db: AppDatabase) : ViewModel() {
     
     private var saveJob: Job? = null
 
-    fun loadNote(noteId: String) {
-        viewModelScope.launch {
+    private var loadJob: Job? = null
+
+    fun loadNote(noteId: String, isNewNote: Boolean = false) {
+        newNoteId = noteId.takeIf { isNewNote }
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             _uiState.value = NoteEditorUiState.Loading
             try {
                 val note = db.articleDao().getNote(noteId)
@@ -64,6 +72,28 @@ class NoteViewModel(private val db: AppDatabase) : ViewModel() {
         currentNote = updated
         _uiState.value = NoteEditorUiState.Success(updated, currentSourceId)
         debouncedSave()
+    }
+
+    /**
+     * Sair do editor: descarta uma Nova Nota que ficou vazia ou grava já o que ainda
+     * esperava pelo debounce. O Job deixa quem chama esperar pelo fim.
+     */
+    fun closeNote(): Job {
+        // Uma Nova Nota que ainda não acabou de carregar está, por definição, vazia.
+        loadJob?.cancel()
+        val closing = currentNote?.takeIf { it.noteId == newNoteId || newNoteId == null }
+        val discardId = newNoteId?.takeIf { closing == null || NewNote.isLeftEmpty(closing) }
+        val hasPendingSave = saveJob?.isActive == true
+        saveJob?.cancel()
+        _isSaving.value = false
+        newNoteId = null
+        currentNote = null
+        return viewModelScope.launch {
+            when {
+                discardId != null -> db.deleteNoteWithSources(discardId)
+                closing != null && hasPendingSave -> db.articleDao().insertNote(closing)
+            }
+        }
     }
 
     private fun debouncedSave() {

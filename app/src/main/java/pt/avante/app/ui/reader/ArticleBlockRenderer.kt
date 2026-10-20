@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleBlock
+import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.SoftDivider
@@ -93,7 +94,7 @@ fun ArticleBlockRenderer(
             ) {
                 androidx.compose.material3.Button(
                     onClick = {
-                        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://editorial-avante.pcp.pt/avante.html"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AvanteSite.SUBSCRIPTION_URL))
                         context.startActivity(intent)
                     },
                     colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = OriginalRed),

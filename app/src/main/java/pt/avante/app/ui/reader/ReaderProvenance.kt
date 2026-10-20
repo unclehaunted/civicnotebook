@@ -25,13 +25,8 @@ fun ReaderProvenance(
     textColor: Color = pt.avante.app.theme.TextSecondary,
     modifier: Modifier = Modifier
 ) {
-    val publicationName = when (publication) {
-        pt.avante.app.data.Publication.AVANTE -> "Avante!"
-        pt.avante.app.data.Publication.OMILITANTE -> "O Militante"
-    }
-
     val formatted = pt.avante.app.ui.components.ProvenanceFormatter.formatProvenance(
-        publication = publicationName,
+        publication = publication.displayName,
         issueNumber = issueNumber,
         author = author,
         currentIssueNumber = currentIssueNumber,

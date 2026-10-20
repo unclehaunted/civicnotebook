@@ -9,14 +9,16 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import pt.avante.app.data.ArticleSummary
+import pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR
 import pt.avante.app.data.HomeFeed
+import pt.avante.app.data.Publication
 import pt.avante.app.data.auth.AvanteHttp
 
 object AvanteFeedAssembler {
 
     suspend fun fetchHomeFeed(): HomeFeed? = withContext(Dispatchers.IO) {
         try {
-            val doc = AvanteHttp.get("https://avante.pt/")
+            val doc = AvanteHttp.get("${AvanteSite.BASE_URL}/")
 
             val editionNode = doc.select("#simbolo").first()
             val editionText = editionNode?.text()?.trim() ?: "Nº Desconhecido"
@@ -37,7 +39,7 @@ object AvanteFeedAssembler {
                     ?: AvanteCategoryRules.canonicalCategoryLabel(visualPlacement)
                 val semanticSubcategory = indexMeta.subcategoryLabel
                 
-                val compatSection = semanticCategory ?: visualPlacement ?: "Avante!"
+                val compatSection = semanticCategory ?: visualPlacement ?: Publication.AVANTE.displayName
                 
                 val isFree = indexMeta.isFree
                 val isPremium = !isFree
@@ -55,7 +57,7 @@ object AvanteFeedAssembler {
                 
                 ArticleSummary(
                     title = indexMeta.title ?: "Sem Título",
-                    author = indexMeta.author ?: "Redacção",
+                    author = indexMeta.author ?: DEFAULT_ARTICLE_AUTHOR,
                     url = url,
                     heroImageUrl = heroImageUrl,
                     summary = indexMeta.intro ?: "",
@@ -100,7 +102,7 @@ object AvanteFeedAssembler {
                         var finalAuthor = summary.author
 
                         val needsImage = finalImage == "LOCAL_SYMBOL" || finalImage == null
-                        val needsAuthor = finalAuthor == "Redacção"
+                        val needsAuthor = finalAuthor == DEFAULT_ARTICLE_AUTHOR
 
                         if (needsImage || needsAuthor) {
                             try {

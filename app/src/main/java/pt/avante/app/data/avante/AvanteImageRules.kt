@@ -6,10 +6,10 @@ object AvanteImageRules {
      * Retorna null se a imagem for placeholder/logo.
      * 
      * @param imageUrl URL da imagem a normalizar (pode ser null)
-     * @param baseUrl URL base a usar para URLs relativas (default: https://avante.pt)
+     * @param baseUrl URL base a usar para URLs relativas (default: [AvanteSite.BASE_URL])
      * @return URL absoluta normalizada ou null se for placeholder
      */
-    fun normalizeImageUrl(imageUrl: String?, baseUrl: String = "https://avante.pt"): String? {
+    fun normalizeImageUrl(imageUrl: String?, baseUrl: String = AvanteSite.BASE_URL): String? {
         if (imageUrl == null) return null
         if (isPlaceholderImage(imageUrl)) return null
         

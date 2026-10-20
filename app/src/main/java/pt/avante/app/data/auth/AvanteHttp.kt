@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import pt.avante.app.data.avante.AvanteSite
 
 /**
  * Ponto central de fetching HTTP para o avante.pt.
@@ -17,7 +18,6 @@ import org.jsoup.nodes.Document
  */
 object AvanteHttp {
 
-    private const val PAYWALL_MARKER = "O artigo completo está disponível"
     private const val TIMEOUT_MS = 15_000
 
     @Volatile
@@ -33,7 +33,7 @@ object AvanteHttp {
         val repository = auth
         var doc = fetch(url, repository?.cookies.orEmpty())
 
-        if (repository != null && repository.hasStoredPassword && doc.html().contains(PAYWALL_MARKER)) {
+        if (repository != null && repository.hasStoredPassword && doc.html().contains(AvanteSite.PAYWALL_MARKER)) {
             if (repository.reloginSilently()) {
                 doc = fetch(url, repository.cookies)
             }

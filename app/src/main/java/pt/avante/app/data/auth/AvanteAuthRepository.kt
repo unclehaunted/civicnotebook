@@ -9,6 +9,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import pt.avante.app.data.avante.AvanteSite
 
 enum class AuthState {
     /** Sem sessão. */
@@ -84,12 +85,12 @@ class AvanteAuthRepository(private val store: SessionStore) {
         try {
             // O login exige uma sessão pré-existente: sem o PHPSESSID do GET inicial,
             // o POST é sempre rejeitado (redirect para /auth), mesmo com credenciais corretas.
-            val getResponse = Jsoup.connect(AUTH_URL)
+            val getResponse = Jsoup.connect(AvanteSite.AUTH_URL)
                 .method(Connection.Method.GET)
                 .timeout(TIMEOUT_MS)
                 .execute()
 
-            val response = Jsoup.connect(AUTH_URL)
+            val response = Jsoup.connect(AvanteSite.AUTH_URL)
                 .cookies(getResponse.cookies())
                 .data("email", WEEKLY_USERNAME)
                 .data("password", password)
@@ -120,7 +121,6 @@ class AvanteAuthRepository(private val store: SessionStore) {
     }
 
     companion object {
-        private const val AUTH_URL = "https://avante.pt/auth"
         private const val WEEKLY_USERNAME = "leitor"
         private const val TIMEOUT_MS = 15_000
         private const val RELOGIN_THROTTLE_MS = 60_000L

@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.NoteAdd
@@ -59,7 +59,7 @@ fun ReaderFloatingActions(
             onClick = onBackClick,
             modifier = Modifier.background(Color.Black.copy(alpha = 0.4f), CircleShape)
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = Color.White)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.White)
         }
     }
 

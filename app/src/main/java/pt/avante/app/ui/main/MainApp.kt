@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleSummary
+import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.AppDatabase
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextSecondary
@@ -45,6 +46,7 @@ fun MainApp(
     var viewingArticleId by rememberSaveable { mutableStateOf<String?>(null) }
     var viewingArticleEdition by rememberSaveable { mutableStateOf<String>("") }
     var editingNoteId by rememberSaveable { mutableStateOf<String?>(null) }
+    var editingNewNote by rememberSaveable { mutableStateOf(false) }
     var showMenuSheet by rememberSaveable { mutableStateOf(false) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
 
@@ -73,6 +75,24 @@ fun MainApp(
     }
 
     val isFullScreen = viewingArticleUrl != null || viewingArticleId != null || editingNoteId != null || showSettings
+
+    // Voltar no leitor: sai primeiro do Modo de Anotação, depois do artigo.
+    fun exitReader() {
+        val wasAnnotating = readerViewModel.readerMode.value == ReaderMode.ANNOTATION_MODE
+        readerViewModel.resetReaderState()
+        if (!wasAnnotating) {
+            viewingArticleUrl = null
+            viewingArticleId = null
+            viewingArticleEdition = ""
+        }
+    }
+
+    // Sair do editor por qualquer caminho: o NoteViewModel descarta uma Nova Nota que ficou vazia.
+    fun closeEditor() {
+        noteViewModel.closeNote()
+        editingNoteId = null
+        editingNewNote = false
+    }
 
     AdaptiveAppScaffold(
         bottomBar = {
@@ -183,16 +203,9 @@ fun MainApp(
                 } else if (showSettings) {
                     showSettings = false
                 } else if (editingNoteId != null) {
-                    editingNoteId = null
+                    closeEditor()
                 } else if (viewingArticleUrl != null || viewingArticleId != null) {
-                    if (readerViewModel.readerMode.value == pt.avante.app.viewmodel.ReaderMode.ANNOTATION_MODE) {
-                        readerViewModel.resetReaderState()
-                    } else {
-                        readerViewModel.resetReaderState()
-                        viewingArticleUrl = null
-                        viewingArticleId = null
-                        viewingArticleEdition = ""
-                    }
+                    exitReader()
                 }
             }
 
@@ -205,12 +218,13 @@ fun MainApp(
             } else if (editingNoteId != null) {
                 NoteEditorScreen(
                     noteId = editingNoteId!!,
+                    isNewNote = editingNewNote,
                     viewModel = noteViewModel,
-                    onBackClick = { editingNoteId = null },
-                    onOpenArticle = { 
+                    onBackClick = { closeEditor() },
+                    onOpenArticle = {
                         viewingArticleUrl = null
-                        viewingArticleId = it 
-                        editingNoteId = null 
+                        viewingArticleId = it
+                        closeEditor()
                     }
                 )
             } else if (viewingArticleUrl != null || viewingArticleId != null) {
@@ -219,16 +233,7 @@ fun MainApp(
                     articleId = viewingArticleId,
                     currentIssueNumber = viewingArticleEdition,
                     viewModel = readerViewModel,
-                    onBackClick = { 
-                        if (readerViewModel.readerMode.value == pt.avante.app.viewmodel.ReaderMode.ANNOTATION_MODE) {
-                            readerViewModel.resetReaderState()
-                        } else {
-                            readerViewModel.resetReaderState()
-                            viewingArticleUrl = null
-                            viewingArticleId = null
-                            viewingArticleEdition = ""
-                        }
-                    },
+                    onBackClick = { exitReader() },
                     onOpenNote = { editingNoteId = it }
                 )
             } else {
@@ -246,7 +251,11 @@ fun MainApp(
                     )
                     MainDestination.CADERNO -> CadernoScreen(
                         viewModel = cadernoViewModel,
-                        onNoteClick = { editingNoteId = it.noteId }
+                        onNoteClick = { editingNoteId = it },
+                        onNewNote = {
+                            editingNewNote = true
+                            editingNoteId = it
+                        }
                     )
                     MainDestination.ARQUIVO -> ArquivoScreen(isSubscriber = false, isOnline = false)
                     MainDestination.PESQUISA -> {
@@ -286,7 +295,7 @@ fun MainApp(
                     leadingContent = { Icon(Icons.Default.Star, contentDescription = null) },
                     modifier = Modifier.clickable { 
                         showMenuSheet = false 
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://editorial-avante.pcp.pt/avante.html"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AvanteSite.SUBSCRIPTION_URL))
                         context.startActivity(intent)
                     }
                 )

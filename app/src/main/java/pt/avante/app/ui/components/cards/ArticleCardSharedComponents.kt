@@ -82,7 +82,7 @@ fun ArticleCardFooter(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-            val displayAuthor = if (author.isNotBlank()) author else "Redacção"
+            val displayAuthor = author.ifBlank { pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR }
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = pt.avante.app.theme.WarmPaper

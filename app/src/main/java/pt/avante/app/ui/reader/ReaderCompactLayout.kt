@@ -2,7 +2,6 @@ package pt.avante.app.ui.reader
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -76,39 +75,13 @@ fun ReaderCompactLayout(
             }
         )
 
-        androidx.compose.animation.AnimatedVisibility(
+        AnnotationModeBanner(
             visible = readerMode == ReaderMode.ANNOTATION_MODE,
-            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.expandVertically(),
-            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.shrinkVertically(),
+            topOffset = 80.dp, // abaixo dos botões flutuantes
             modifier = Modifier
                 .align(androidx.compose.ui.Alignment.TopCenter)
-                .padding(top = 80.dp) // Pushed down to clear the floating actions
                 .fillMaxWidth(0.9f)
-        ) {
-            androidx.compose.material3.Surface(
-                color = androidx.compose.ui.graphics.Color(0xFFFDECEA),
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, pt.avante.app.theme.OriginalRed),
-                shadowElevation = 4.dp
-            ) {
-                androidx.compose.foundation.layout.Column(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-                ) {
-                    androidx.compose.material3.Text(
-                        text = "Modo de Anotação Activo",
-                        style = androidx.compose.material3.MaterialTheme.typography.labelLarge,
-                        color = pt.avante.app.theme.OriginalRed,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                    )
-                    androidx.compose.material3.Text(
-                        text = "Seleccione um excerto para criar uma nota",
-                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
-                        color = pt.avante.app.theme.TextSecondary
-                    )
-                }
-            }
-        }
+        )
 
         ReaderFloatingActions(
             article = article,

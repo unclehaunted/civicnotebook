@@ -2,9 +2,13 @@ package pt.avante.app.data
 
 import kotlinx.serialization.Serializable
 
-enum class Publication {
-    AVANTE, OMILITANTE
+enum class Publication(val displayName: String) {
+    AVANTE("Avante!"),
+    OMILITANTE("O Militante")
 }
+
+/** Autor que o jornal assume quando o artigo não traz assinatura. */
+const val DEFAULT_ARTICLE_AUTHOR = "Redacção"
 
 object PublicationMapper {
     fun map(raw: String?): Publication {

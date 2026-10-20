@@ -50,7 +50,6 @@ fun HomeHeader(
             AvanteMasthead(
                 onMenuClick = onMenuClick,
                 onSearchClick = onSearchClick,
-                publicationSubtitle = "Órgão Central do Partido Comunista Português",
                 isCompact = isCompact
             )
             
