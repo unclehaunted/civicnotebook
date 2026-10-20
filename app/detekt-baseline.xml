@@ -1,0 +1,372 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
+    <ID>CyclomaticComplexMethod:AvanteBodyParser.kt:AvanteBodyParser$fun parseBodyContainer: List&lt;ArticleBlock&gt;</ID>
+    <ID>CyclomaticComplexMethod:AvanteFeedAssembler.kt:AvanteFeedAssembler$suspend fun fetchHomeFeed: HomeFeed?</ID>
+    <ID>CyclomaticComplexMethod:AvanteIndexParser.kt:AvanteIndexParser$suspend fun fetchIndexInventory: Map&lt;String, IndexMetadata&gt;</ID>
+    <ID>CyclomaticComplexMethod:CategoryWeightResolver.kt:CategoryWeightResolver$fun resolveWeight: Int</ID>
+    <ID>CyclomaticComplexMethod:HomeViewModel.kt:HomeViewModel$fun loadFeed</ID>
+    <ID>CyclomaticComplexMethod:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
+    <ID>CyclomaticComplexMethod:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
+    <ID>CyclomaticComplexMethod:ReaderViewModel.kt:ReaderViewModel$fun loadArticle</ID>
+    <ID>EmptyFunctionBlock:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;${}</ID>
+    <ID>EmptyFunctionBlock:SelectableArticleText.kt:&lt;no name provided&gt;${}</ID>
+    <ID>ForbiddenComment:ArquivoScreen.kt:/* TODO: Subscribe */</ID>
+    <ID>ForbiddenComment:ArticleCardSharedComponents.kt:/* TODO: Guardar artigo */</ID>
+    <ID>FunctionNaming:AdaptiveAppScaffold.kt:@Composable fun AdaptiveAppScaffold</ID>
+    <ID>FunctionNaming:AdaptiveContent.kt:@Composable fun AdaptiveContent</ID>
+    <ID>FunctionNaming:AnnotationActionRow.kt:@Composable fun AnnotationActionRow</ID>
+    <ID>FunctionNaming:AppViewport.kt:@Composable fun ProvideAppViewport</ID>
+    <ID>FunctionNaming:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
+    <ID>FunctionNaming:ArticleBlockRenderer.kt:@Composable fun ArticleBlockRenderer</ID>
+    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun ArticleCardFooter</ID>
+    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun ArticleThumbnail</ID>
+    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun NotesBookmarkOverlay</ID>
+    <ID>FunctionNaming:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
+    <ID>FunctionNaming:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
+    <ID>FunctionNaming:AvanteMasthead.kt:@Composable fun AvanteMasthead</ID>
+    <ID>FunctionNaming:CadernoScreen.kt:@Composable fun NoteCard</ID>
+    <ID>FunctionNaming:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
+    <ID>FunctionNaming:CategoryRubricPill.kt:@Composable fun CategoryRubricPill</ID>
+    <ID>FunctionNaming:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
+    <ID>FunctionNaming:DefinicoesScreen.kt:@Composable private fun SectionHeader</ID>
+    <ID>FunctionNaming:DefinicoesScreen.kt:@Composable private fun SettingLabel</ID>
+    <ID>FunctionNaming:DefinicoesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DefinicoesScreen</ID>
+    <ID>FunctionNaming:GridImageArticleCard.kt:@Composable fun GridImageArticleCard</ID>
+    <ID>FunctionNaming:GridTextArticleCard.kt:@Composable fun GridTextArticleCard</ID>
+    <ID>FunctionNaming:HomeFeedLayouts.kt:@Composable fun ArticleGridLayout</ID>
+    <ID>FunctionNaming:HomeFeedLayouts.kt:@Composable fun ArticleListLayout</ID>
+    <ID>FunctionNaming:HomeFeedLayouts.kt:@OptIn(ExperimentalFoundationApi::class) @Composable fun ArticleStackPager</ID>
+    <ID>FunctionNaming:HomeFeedScreen.kt:@Composable fun HomeFeedScreen</ID>
+    <ID>FunctionNaming:HomeHeader.kt:@Composable fun HomeHeader</ID>
+    <ID>FunctionNaming:HomeHeader.kt:@Composable fun SegmentedIconButton</ID>
+    <ID>FunctionNaming:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
+    <ID>FunctionNaming:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
+    <ID>FunctionNaming:MediumArticleCard.kt:@Composable fun MediumArticleCard</ID>
+    <ID>FunctionNaming:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
+    <ID>FunctionNaming:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
+    <ID>FunctionNaming:ReaderActionRail.kt:@Composable fun ReaderActionRail</ID>
+    <ID>FunctionNaming:ReaderAnnotationSheets.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ReaderAnnotationSheets</ID>
+    <ID>FunctionNaming:ReaderBody.kt:@Composable fun ReaderBody</ID>
+    <ID>FunctionNaming:ReaderCompactLayout.kt:@Composable fun ReaderCompactLayout</ID>
+    <ID>FunctionNaming:ReaderEndMark.kt:@Composable fun ReaderEndMark</ID>
+    <ID>FunctionNaming:ReaderErrorContent.kt:@Composable fun ReaderErrorContent</ID>
+    <ID>FunctionNaming:ReaderFloatingActions.kt:@Composable fun ReaderFloatingActions</ID>
+    <ID>FunctionNaming:ReaderHero.kt:@Composable fun ReaderHero</ID>
+    <ID>FunctionNaming:ReaderProvenance.kt:@Composable fun ReaderProvenance</ID>
+    <ID>FunctionNaming:ReaderWideLayout.kt:@Composable fun ReaderWideLayout</ID>
+    <ID>FunctionNaming:SelectableArticleText.kt:@Composable fun SelectableArticleText</ID>
+    <ID>FunctionNaming:Theme.kt:@Composable fun OriginalTheme</ID>
+    <ID>LongMethod:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
+    <ID>LongMethod:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
+    <ID>LongMethod:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
+    <ID>LongMethod:CadernoScreen.kt:@Composable fun NoteCard</ID>
+    <ID>LongMethod:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
+    <ID>LongMethod:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
+    <ID>LongMethod:DefinicoesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DefinicoesScreen</ID>
+    <ID>LongMethod:GridImageArticleCard.kt:@Composable fun GridImageArticleCard</ID>
+    <ID>LongMethod:HomeFeedLayouts.kt:@OptIn(ExperimentalFoundationApi::class) @Composable fun ArticleStackPager</ID>
+    <ID>LongMethod:HomeFeedScreen.kt:@Composable fun HomeFeedScreen</ID>
+    <ID>LongMethod:HomeHeader.kt:@Composable fun HomeHeader</ID>
+    <ID>LongMethod:HomeViewModel.kt:HomeViewModel$fun loadFeed</ID>
+    <ID>LongMethod:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
+    <ID>LongMethod:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
+    <ID>LongMethod:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
+    <ID>LongMethod:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
+    <ID>LongMethod:ReaderAnnotationSheets.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ReaderAnnotationSheets</ID>
+    <ID>LongMethod:ReaderBody.kt:@Composable fun ReaderBody</ID>
+    <ID>LongMethod:ReaderCompactLayout.kt:@Composable fun ReaderCompactLayout</ID>
+    <ID>LongMethod:ReaderFloatingActions.kt:@Composable fun ReaderFloatingActions</ID>
+    <ID>LongMethod:ReaderViewModel.kt:ReaderViewModel$fun loadArticle</ID>
+    <ID>LongMethod:ReaderWideLayout.kt:@Composable fun ReaderWideLayout</ID>
+    <ID>LoopWithTooManyJumpStatements:AvanteBodyParser.kt:AvanteBodyParser$for</ID>
+    <ID>LoopWithTooManyJumpStatements:AvanteBodyParserGoldenTest.kt:AvanteBodyParserGoldenTest$for</ID>
+    <ID>LoopWithTooManyJumpStatements:AvanteHomepageOverlayParser.kt:AvanteHomepageOverlayParser$for</ID>
+    <ID>MagicNumber:ArquivoScreen.kt:0.7f</ID>
+    <ID>MagicNumber:ArquivoScreen.kt:4</ID>
+    <ID>MagicNumber:ArticleBlockRenderer.kt:0.8f</ID>
+    <ID>MagicNumber:ArticleCardSharedComponents.kt:0.6f</ID>
+    <ID>MagicNumber:ArticleCardSharedComponents.kt:0xFF5D4037</ID>
+    <ID>MagicNumber:ArticleCardSharedComponents.kt:0xFFFFD54F</ID>
+    <ID>MagicNumber:ArticleIdentity.kt:ArticleIdentity$16</ID>
+    <ID>MagicNumber:AvanteCategoryRules.kt:AvanteCategoryRules$50</ID>
+    <ID>MagicNumber:AvanteIndexParser.kt:AvanteIndexParser$60</ID>
+    <ID>MagicNumber:CadernoScreen.kt:0xFF2196F3</ID>
+    <ID>MagicNumber:CadernoScreen.kt:0xFF9C27B0</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$10</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$100</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$20</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$25</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$30</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$35</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$40</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$50</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$60</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$62</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$64</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$66</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$68</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$70</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$75</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$80</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$85</ID>
+    <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$90</ID>
+    <ID>MagicNumber:DefinicoesScreen.kt:0xFF2F4F46</ID>
+    <ID>MagicNumber:GridImageArticleCard.kt:1.6f</ID>
+    <ID>MagicNumber:HomeFeedLayouts.kt:0.86f</ID>
+    <ID>MagicNumber:HomeFeedLayouts.kt:16f</ID>
+    <ID>MagicNumber:HomeFeedLayouts.kt:9f</ID>
+    <ID>MagicNumber:NoteViewModel.kt:NoteViewModel$300</ID>
+    <ID>MagicNumber:NoteViewModel.kt:NoteViewModel$800</ID>
+    <ID>MagicNumber:ReaderActionRail.kt:0xFF4A7C77</ID>
+    <ID>MagicNumber:ReaderBody.kt:0xFFB97A00</ID>
+    <ID>MagicNumber:ReaderCompactLayout.kt:0.9f</ID>
+    <ID>MagicNumber:ReaderCompactLayout.kt:0xFFFDECEA</ID>
+    <ID>MagicNumber:ReaderEndMark.kt:0.67f</ID>
+    <ID>MagicNumber:ReaderFloatingActions.kt:0xFF4A7C77</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderFontSize.LARGE$21f</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderFontSize.MEDIUM$18f</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderFontSize.SMALL$16f</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderFontSize.XLARGE$24f</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.DARK$0xFF1B1B1B</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.DARK$0xFF2A2A2A</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.DARK$0xFF454545</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.DARK$0xFFA8A29A</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.DARK$0xFFE3E0DB</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.PAPER$0xFF333333</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.PAPER$0xFF59534A</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.PAPER$0xFFD9D0C3</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.PAPER$0xFFF6F1E9</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.PAPER$0xFFFCFBF8</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.SEPIA$0xFF43382C</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.SEPIA$0xFF6B5D4F</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.SEPIA$0xFFD8C9A8</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.SEPIA$0xFFEDE3CB</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.SEPIA$0xFFF4ECD8</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFF333333</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFF59534A</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFE0E0E0</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFF5F5F5</ID>
+    <ID>MagicNumber:ReaderSettings.kt:ReaderTheme.WHITE$0xFFFFFFFF</ID>
+    <ID>MagicNumber:ReaderWideLayout.kt:0xFFFDECEA</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:0.85f</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:1.4f</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:178</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:214</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:90</ID>
+    <ID>MagicNumber:SelectableArticleText.kt:94</ID>
+    <ID>MatchingDeclarationName:HomeHeader.kt:HomeLayoutMode</ID>
+    <ID>MaxLineLength:AppDatabase.kt:ArticleDao$@Query("SELECT * FROM notes WHERE title LIKE '%' || :query || '%' OR bodyMarkdown LIKE '%' || :query || '%' ORDER BY updatedAt DESC")</ID>
+    <ID>MaxLineLength:AppDatabase.kt:ArticleDao$@Query("UPDATE article_sources SET heroImageUrl = null WHERE heroImageUrl LIKE '%ImageId=49919%' OR heroImageUrl = 'LOCAL_SYMBOL'")</ID>
+    <ID>MaxLineLength:AppDatabase.kt:ArticleDao$abstract</ID>
+    <ID>MaxLineLength:ArquivoScreen.kt:Box(modifier = Modifier.weight(1f).aspectRatio(0.7f).background(Color.LightGray, RoundedCornerShape(8.dp)))</ID>
+    <ID>MaxLineLength:ArquivoScreen.kt:Icon(Icons.Default.WifiOff, contentDescription = "Offline", tint = TextSecondary, modifier = Modifier.size(64.dp))</ID>
+    <ID>MaxLineLength:ArticleBlockRenderer.kt:androidx.compose.material3.Text("Assinar o Avante!", color = androidx.compose.ui.graphics.Color.White, style = androidx.compose.material3.MaterialTheme.typography.labelLarge)</ID>
+    <ID>MaxLineLength:ArticleBlockRenderer.kt:val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://editorial-avante.pcp.pt/avante.html"))</ID>
+    <ID>MaxLineLength:ArticleBlockRendererTest.kt:ArticleBlockRendererTest$fun</ID>
+    <ID>MaxLineLength:ArticleImageFrequencyAnalyzerTest.kt:ArticleImageFrequencyAnalyzerTest$private</ID>
+    <ID>MaxLineLength:ArticlePresentationResolver.kt:ArticlePresentationResolver$variant = if (hasRemoteImage) ArticlePresentationVariant.GRID_IMAGE_TILE else ArticlePresentationVariant.GRID_TEXT_TILE</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:onHighlightPassage = { text, index, start, end -&gt; viewModel.highlightPassage(text, index, start, end) }</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:rememberLazyListState(initialFirstVisibleItemIndex = savedPos.first, initialFirstVisibleItemScrollOffset = savedPos.second)</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:val noteId = viewModel.createArticleNote("Excerto — ${article.title.take(30)}...", "## Excerto\n\n&gt; $selectedPassageText\n\n## Reflexão\n\n")</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:val scrollOffset = if (listState.firstVisibleItemIndex &gt; 0) 600f else listState.firstVisibleItemScrollOffset.toFloat()</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:val showShareFab = (listState.firstVisibleItemIndex &gt; 0 || listState.firstVisibleItemScrollOffset &gt; 200) &amp;&amp; readerMode == ReaderMode.READ_MODE</ID>
+    <ID>MaxLineLength:ArticleReaderScreen.kt:val stableId = pt.avante.app.data.ArticleIdentity.generateStableId(article.canonicalUrl ?: articleSummary?.url ?: "")</ID>
+    <ID>MaxLineLength:AvanteArticleParser.kt:AvanteArticleParser$suspend</ID>
+    <ID>MaxLineLength:AvanteArticleParser.kt:AvanteArticleParser$val</ID>
+    <ID>MaxLineLength:AvanteBodyParserTest.kt:AvanteBodyParserTest$val blocks = parse("&lt;p&gt;&lt;strong&gt;Que consequências terá?&lt;br /&gt;&lt;/strong&gt;Os despejos passam a ser mais rápidos.&lt;/p&gt;")</ID>
+    <ID>MaxLineLength:AvanteFeedAssembler.kt:AvanteFeedAssembler$var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")</ID>
+    <ID>MaxLineLength:AvanteIndexParser.kt:AvanteIndexParser$val contentArea = doc.select("#grid-indice, .content-indice, main, .main-content").firstOrNull() ?: doc.body()</ID>
+    <ID>MaxLineLength:AvanteMasthead.kt:style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelMedium</ID>
+    <ID>MaxLineLength:AvanteMasthead.kt:style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelSmall</ID>
+    <ID>MaxLineLength:CadernoScreen.kt:Icon(Icons.Default.MoreVert, contentDescription = "Mais opções", tint = TextSecondary, modifier = Modifier.size(20.dp))</ID>
+    <ID>MaxLineLength:CompactRowArticleCard.kt:Row</ID>
+    <ID>MaxLineLength:CompactRowArticleCard.kt:colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.White)</ID>
+    <ID>MaxLineLength:CurrentIssueStore.kt:CurrentIssueStore$kotlinx.serialization.json.Json.decodeFromString(pt.avante.app.data.FeedPresentationSnapshot.serializer(), json)</ID>
+    <ID>MaxLineLength:CurrentIssueStore.kt:CurrentIssueStore$private val prefs: SharedPreferences = context.getSharedPreferences("pt.avante.app.current_issue", Context.MODE_PRIVATE)</ID>
+    <ID>MaxLineLength:CurrentIssueStore.kt:CurrentIssueStore$val json = kotlinx.serialization.json.Json.encodeToString(pt.avante.app.data.FeedPresentationSnapshot.serializer(), value)</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:androidx.compose.material3</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:androidx.compose.material3.Text(text = (uiState as HomeUiState.Error).message, color = androidx.compose.ui.graphics.Color.Black)</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:editionText = if (uiState is HomeUiState.Success) (uiState as HomeUiState.Success).feed.editionText else ""</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:snapshotFlow { gridState.firstVisibleItemIndex to gridState.firstVisibleItemScrollOffset }</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:val gridState = rememberLazyStaggeredGridState(initialFirstVisibleItemIndex = gridSaved.first, initialFirstVisibleItemScrollOffset = gridSaved.second)</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:val listState = rememberLazyListState(initialFirstVisibleItemIndex = listSaved.first, initialFirstVisibleItemScrollOffset = listSaved.second)</ID>
+    <ID>MaxLineLength:HomeFeedScreen.kt:val pagerState = rememberPagerState(initialPage = stackSaved.first, pageCount = { articles.size })</ID>
+    <ID>MaxLineLength:HomeHeader.kt:fun</ID>
+    <ID>MaxLineLength:HomeHeader.kt:style = if (isCompact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium</ID>
+    <ID>MaxLineLength:HomeViewModel.kt:HomeViewModel$val feed = HomeFeed(editionText = snapshot.editionLabel, editionNumber = knownIssue, articles = summaries)</ID>
+    <ID>MaxLineLength:HomeViewModel.kt:HomeViewModel$val resolvedArticles = pt.avante.app.ui.presentation.ArticleImageFrequencyAnalyzer.resolveFeedImages(fetchedFeedRaw.articles)</ID>
+    <ID>MaxLineLength:MainActivity.kt:MainActivity$MainApp(db, homeViewModel, pesquisaViewModel, cadernoViewModel, readerViewModel, noteViewModel, readerSettingsStore, authRepository)</ID>
+    <ID>MaxLineLength:MainApp.kt:Text("Menu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))</ID>
+    <ID>MaxLineLength:MainApp.kt:val backEnabled = showMenuSheet || showSettings || editingNoteId != null || viewingArticleUrl != null || viewingArticleId != null</ID>
+    <ID>MaxLineLength:MainApp.kt:val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://editorial-avante.pcp.pt/avante.html"))</ID>
+    <ID>MaxLineLength:MainApp.kt:var isNavExpanded by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO article_sources (articleId, canonicalUrl, title, publication, accessTier) VALUES ('art1', 'http1', 'Title1', 'Avante!', 'FREE')")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO cached_article_contents (articleId, blocksJson, fetchedAt, isOfflineCopy, contentLicenseStatus) VALUES ('art1', '[]', 1000, 0, 'TEMPORARY')")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO highlight_comments (commentId, highlightId, body, createdAt, updatedAt) VALUES ('hc1', 'hl1', 'comment', 4000, 4000)")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO highlights (highlightId, articleId, selectedText, createdAt) VALUES ('hl1', 'art1', 'text', 3000)")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO note_sources (noteId, articleId, relationType) VALUES ('note1', 'art1', 'DIRECT_ATTACHMENT')")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest$v3Db.execSQL("INSERT INTO notes (noteId, title, bodyMarkdown, createdAt, updatedAt, noteType) VALUES ('note1', 'Note Title', 'Note Body', 2000, 2000, 'USER_CREATED')")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `article_sources` (`articleId` TEXT NOT NULL, `canonicalUrl` TEXT NOT NULL, `title` TEXT NOT NULL, `author` TEXT, `publication` TEXT NOT NULL, `issueNumber` TEXT, `publishedAt` TEXT, `accessTier` TEXT NOT NULL, `summary` TEXT, `heroImageUrl` TEXT, PRIMARY KEY(`articleId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `cached_article_contents` (`articleId` TEXT NOT NULL, `blocksJson` TEXT NOT NULL, `plainText` TEXT, `fetchedAt` INTEGER NOT NULL, `isOfflineCopy` INTEGER NOT NULL, `contentLicenseStatus` TEXT NOT NULL, PRIMARY KEY(`articleId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `highlight_comments` (`commentId` TEXT NOT NULL, `highlightId` TEXT NOT NULL, `noteId` TEXT, `body` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, PRIMARY KEY(`commentId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `highlights` (`highlightId` TEXT NOT NULL, `articleId` TEXT NOT NULL, `selectedText` TEXT NOT NULL, `textBefore` TEXT, `textAfter` TEXT, `blockIndex` INTEGER, `startOffset` INTEGER, `endOffset` INTEGER, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`highlightId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `note_sources` (`noteId` TEXT NOT NULL, `articleId` TEXT NOT NULL, `relationType` TEXT NOT NULL, PRIMARY KEY(`noteId`, `articleId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `notes` (`noteId` TEXT NOT NULL, `title` TEXT NOT NULL, `bodyMarkdown` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `noteType` TEXT NOT NULL, PRIMARY KEY(`noteId`))")</ID>
+    <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")</ID>
+    <ID>MaxLineLength:NoteEditorScreen.kt:Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = TextPrimary)</ID>
+    <ID>MaxLineLength:NoteEditorScreen.kt:modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }</ID>
+    <ID>MaxLineLength:NoteEditorScreen.kt:textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel)</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:placeholder = { Text(if (searchScope == 0) "Pesquisar na edição atual..." else "Pesquisar no caderno...", color = TextSecondary) }</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual."</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual."</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno."</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:title = { Text("Pesquisa", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = TextPrimary) }</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:var searchScope by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) } // 0 = Edição atual, 1 = Caderno</ID>
+    <ID>MaxLineLength:PesquisaScreen.kt:variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW</ID>
+    <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$val formattedAuthor = author?.let { pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(it) }?.takeIf { it.isNotBlank() }</ID>
+    <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$withStyle</ID>
+    <ID>MaxLineLength:ReaderAnnotationSheets.kt:Column</ID>
+    <ID>MaxLineLength:ReaderCompactLayout.kt:val maxHeaderHeight = if (viewport.isLandscape &amp;&amp; viewport.isCompactHeight) 180.dp else androidx.compose.ui.unit.max(360.dp, viewport.height * 0.55f)</ID>
+    <ID>MaxLineLength:ReaderFloatingActions.kt:val buttonBorderModifier = if (isRolledUp) Modifier.border(1.dp, OriginalRed.copy(alpha = 0.5f), CircleShape) else Modifier</ID>
+    <ID>MaxLineLength:ReaderSettings.kt:ReaderFont$ATKINSON_HYPERLEGIBLE : ReaderFont</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$// If we're already loading or have successfully loaded THIS specific article, do nothing to prevent re-fetching.</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$// Once cached content is displayed, we don't fetch from network in this pass (as per Phase B cache-first).</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$categoryLabel = existing?.categoryLabel?.takeIf { it.isNotBlank() } ?: articleSummary.categoryLabel</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$categoryLabel = source.categoryLabel?.takeIf { it.isNotBlank() } ?: articleSummary.categoryLabel</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$if</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$subcategoryLabel = existing?.subcategoryLabel?.takeIf { it.isNotBlank() } ?: articleSummary.subcategoryLabel</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$subcategoryLabel = source.subcategoryLabel?.takeIf { it.isNotBlank() } ?: articleSummary.subcategoryLabel</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$val resolvedIssueNumber = existing?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }</ID>
+    <ID>MaxLineLength:ReaderViewModel.kt:ReaderViewModel$val resolvedIssueNumber = source?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }</ID>
+    <ID>MaxLineLength:ReaderWideLayout.kt:BoxWithConstraints</ID>
+    <ID>MaxLineLength:ReaderWideLayout.kt:modifier = if (!displayImage.isNullOrBlank()) Modifier.heightIn(max = 400.dp) else Modifier</ID>
+    <ID>MaxLineLength:SelectableArticleText.kt:&lt;no name provided&gt;$override</ID>
+    <ID>MaxLineLength:SelectableArticleText.kt:&lt;no name provided&gt;$override fun onPrepareActionMode: Boolean</ID>
+    <ID>MayBeConstant:ArticleCardMetrics.kt:ArticleCardMetrics$val gridTitleMaxLines = 4</ID>
+    <ID>MayBeConstant:ArticleCardMetrics.kt:ArticleCardMetrics$val mediumTitleMaxLines = 3</ID>
+    <ID>ReturnCount:AvanteBodyParser.kt:AvanteBodyParser$private fun boldLineBreakLead: BoldLineBreakLead?</ID>
+    <ID>ReturnCount:AvanteBodyParser.kt:AvanteBodyParser$private fun splitInterviewQuestion: InterviewExchange?</ID>
+    <ID>ReturnCount:AvanteCategoryRules.kt:AvanteCategoryRules$fun canonicalCategoryLabel: String?</ID>
+    <ID>ReturnCount:AvanteImageRules.kt:AvanteImageRules$fun normalizeImageUrl: String?</ID>
+    <ID>ReturnCount:AvanteIndexParser.kt:AvanteIndexParser$internal fun extractArticleFromIndexElement</ID>
+    <ID>ReturnCount:AvanteIndexParser.kt:AvanteIndexParser$private fun extractCategoryFromSectionDiv: String?</ID>
+    <ID>ReturnCount:ReaderErrorReason.kt:fun Throwable.toReaderErrorReason: ReaderErrorReason</ID>
+    <ID>ReturnCount:SelectableArticleText.kt:&lt;no name provided&gt;$override fun onActionItemClicked: Boolean</ID>
+    <ID>SwallowedException:AvanteAuthRepository.kt:AvanteAuthRepository$e: Exception</ID>
+    <ID>SwallowedException:AvanteIndexParser.kt:AvanteIndexParser$e: Exception</ID>
+    <ID>SwallowedException:CurrentIssueStore.kt:CurrentIssueStore$e: Exception</ID>
+    <ID>SwallowedException:RetryOnTimeout.kt:e: SocketTimeoutException</ID>
+    <ID>SwallowedException:SessionStore.kt:SessionStore.Companion$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ArticleParser.kt:ArticleBlockSerializer$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AvanteAuthRepository.kt:AvanteAuthRepository$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AvanteFeedAssembler.kt:AvanteFeedAssembler$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AvanteIndexParser.kt:AvanteIndexParser$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:CurrentIssueStore.kt:CurrentIssueStore$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NoteViewModel.kt:NoteViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ReaderViewModel.kt:ReaderViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SessionStore.kt:SessionStore.Companion$e: Exception</ID>
+    <ID>TooManyFunctions:AppDatabase.kt:ArticleDao</ID>
+    <ID>TooManyFunctions:ReaderViewModel.kt:ReaderViewModel : ViewModel</ID>
+    <ID>UnusedParameter:ArticleBlockRenderer.kt:isSelected: Boolean</ID>
+    <ID>UnusedParameter:ArticleSummaryCard.kt:repeatedImages: Set&lt;String&gt; = emptySet()</ID>
+    <ID>UnusedParameter:CardTreatmentResolver.kt:CardTreatmentResolver$subcategoryLabel: String?</ID>
+    <ID>UnusedParameter:HomeFeedScreen.kt:onFeedLoaded: (String) -&gt; Unit</ID>
+    <ID>UnusedParameter:HomeViewModel.kt:HomeViewModel$isExplicitRefresh: Boolean = false</ID>
+    <ID>UnusedParameter:MainApp.kt:db: AppDatabase</ID>
+    <ID>UnusedParameter:ProvenanceFormatter.kt:ProvenanceFormatter$hasHighlights: Boolean = false</ID>
+    <ID>UnusedParameter:ProvenanceFormatter.kt:ProvenanceFormatter$hasNotes: Boolean = false</ID>
+    <ID>UnusedParameter:ProvenanceFormatter.kt:ProvenanceFormatter$subcategory: String? = null</ID>
+    <ID>UnusedParameter:ReaderBody.kt:scrollOffset: Float</ID>
+    <ID>UnusedParameter:ReaderFloatingActions.kt:article: Article?</ID>
+    <ID>UnusedParameter:ReaderFloatingActions.kt:articleUrl: String</ID>
+    <ID>UnusedParameter:ReaderHero.kt:author: String</ID>
+    <ID>UnusedParameter:ReaderHero.kt:currentIssueNumber: String?</ID>
+    <ID>UnusedParameter:ReaderHero.kt:issueNumber: String?</ID>
+    <ID>UnusedParameter:ReaderHero.kt:publication: Publication</ID>
+    <ID>UnusedParameter:ReaderWideLayout.kt:articleSummary: ArticleSummary?</ID>
+    <ID>WildcardImport:AnnotationActionRow.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:AnnotationActionRow.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ArquivoScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ArquivoScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ArticleBlockRenderer.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ArticleBlockRenderer.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ArticleCardSharedComponents.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ArticleCardSharedComponents.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ArticleCardSharedComponents.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:ArticleReaderScreen.kt:import androidx.compose.animation.*</ID>
+    <ID>WildcardImport:ArticleReaderScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ArticleReaderScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ArticleReaderScreen.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:ArticleSummaryCard.kt:import pt.avante.app.ui.presentation.*</ID>
+    <ID>WildcardImport:AvanteMasthead.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:AvanteMasthead.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:CadernoScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:CadernoScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:CadernoScreen.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:CadernoScreen.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:CompactRowArticleCard.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:CompactRowArticleCard.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:CompactRowArticleCard.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:DefinicoesScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:DefinicoesScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:DefinicoesScreen.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:GridImageArticleCard.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:GridImageArticleCard.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:GridImageArticleCard.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:GridTextArticleCard.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:GridTextArticleCard.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:GridTextArticleCard.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:HomeFeedLayouts.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:HomeHeader.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:LeadArticleCard.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:LeadArticleCard.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:LeadArticleCard.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import pt.avante.app.ui.components.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import pt.avante.app.ui.reader.*</ID>
+    <ID>WildcardImport:MainActivity.kt:import pt.avante.app.ui.screens.*</ID>
+    <ID>WildcardImport:MainApp.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:MainApp.kt:import androidx.compose.material.icons.automirrored.filled.*</ID>
+    <ID>WildcardImport:MainApp.kt:import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:MainApp.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:MainApp.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:MainApp.kt:import pt.avante.app.ui.components.*</ID>
+    <ID>WildcardImport:MainApp.kt:import pt.avante.app.ui.screens.*</ID>
+    <ID>WildcardImport:MainApp.kt:import pt.avante.app.viewmodel.*</ID>
+    <ID>WildcardImport:MappingTest.kt:import org.junit.Assert.*</ID>
+    <ID>WildcardImport:MediumArticleCard.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:MediumArticleCard.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:MediumArticleCard.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:MigrationTest.kt:import org.junit.Assert.*</ID>
+    <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:NoteEditorScreen.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:PesquisaScreen.kt:import pt.avante.app.ui.components.*</ID>
+    <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:ReaderAnnotationSheets.kt:import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ReaderAnnotationSheets.kt:import pt.avante.app.theme.*</ID>
+    <ID>WildcardImport:ReaderBody.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderEndMark.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderFloatingActions.kt:import androidx.compose.animation.*</ID>
+    <ID>WildcardImport:ReaderFloatingActions.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderHero.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderWideLayout.kt:import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ReaderWideLayout.kt:import androidx.compose.runtime.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

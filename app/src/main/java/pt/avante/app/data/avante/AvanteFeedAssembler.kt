@@ -1,5 +1,6 @@
 package pt.avante.app.data.avante
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -78,6 +79,7 @@ object AvanteFeedAssembler {
                 articles = articles
             )
         } catch (e: Exception) {
+            Log.w("AvanteFeedAssembler", "Falha ao montar o feed da edição", e)
             null
         }
     }
@@ -114,6 +116,7 @@ object AvanteFeedAssembler {
                                     }
                                 }
                             } catch (e: Exception) {
+                                Log.w("AvanteFeedAssembler", "Falha ao completar ${summary.url}", e)
                             }
                         }
                         summary.copy(heroImageUrl = finalImage, author = finalAuthor)

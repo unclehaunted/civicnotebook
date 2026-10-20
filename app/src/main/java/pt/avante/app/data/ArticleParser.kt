@@ -1,5 +1,6 @@
 package pt.avante.app.data
 
+import android.util.Log
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -41,6 +42,7 @@ object ArticleBlockSerializer {
                 format.decodeFromString(jsonString)
             }
         } catch (e: Exception) {
+            Log.w("ArticleBlockSerializer", "JSON de blocos inválido, a devolver lista vazia", e)
             emptyList()
         }
     }

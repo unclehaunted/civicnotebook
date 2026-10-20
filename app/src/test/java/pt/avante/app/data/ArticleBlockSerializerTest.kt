@@ -43,4 +43,9 @@ class ArticleBlockSerializerTest {
             ArticleBlockSerializer.deserialize(jsonEmCache)
         )
     }
+
+    @Test
+    fun jsonMalformado_devolveListaVazia() {
+        assertEquals(emptyList<ArticleBlock>(), ArticleBlockSerializer.deserialize("[{\"type\": nao e json"))
+    }
 }

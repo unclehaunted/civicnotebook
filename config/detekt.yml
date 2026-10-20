@@ -1,0 +1,10 @@
+# Sobrepõe-se à configuração por omissão do detekt (buildUponDefaultConfig = true).
+# Só se declara aqui o que difere do padrão.
+
+empty-blocks:
+  EmptyCatchBlock:
+    active: true
+
+exceptions:
+  SwallowedException:
+    active: true
