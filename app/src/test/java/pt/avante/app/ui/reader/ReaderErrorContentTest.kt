@@ -74,6 +74,15 @@ class ReaderErrorContentTest {
     }
 
     @Test
+    fun `sem texto diz que o avante pt so tem o titulo e nao fala em offline`() {
+        show(ReaderErrorReason.NO_TEXT)
+
+        composeRule.onNodeWithText("Texto ainda não publicado").assertIsDisplayed()
+        composeRule.onNodeWithText("só o título deste artigo", substring = true).assertIsDisplayed()
+        assertNotShown("offline")
+    }
+
+    @Test
     fun `tentar de novo chama o callback de repetir`() {
         var retries = 0
         show(ReaderErrorReason.TIMEOUT, onRetry = { retries++ })

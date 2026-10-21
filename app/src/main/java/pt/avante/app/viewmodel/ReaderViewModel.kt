@@ -113,7 +113,11 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                 val cachedIsPaywalled = localContent?.let {
                     ArticleBlockSerializer.deserialize(it.blocksJson).any { block -> block is ArticleBlock.PaywallCTA }
                 } ?: false
-                val skipCache = cachedIsPaywalled && pt.avante.app.data.auth.AvanteHttp.isLoggedIn
+                // Um artigo guardado sem texto (de antes de o avante.pt o publicar) volta à rede
+                val cachedIsEmpty = localContent?.let {
+                    ArticleBlockSerializer.deserialize(it.blocksJson).isEmpty()
+                } ?: false
+                val skipCache = (cachedIsPaywalled && pt.avante.app.data.auth.AvanteHttp.isLoggedIn) || cachedIsEmpty
 
                 if (localContent != null && !skipCache) {
                     val blocks = ArticleBlockSerializer.deserialize(localContent.blocksJson)
@@ -160,7 +164,10 @@ class ReaderViewModel(private val db: AppDatabase) : ViewModel() {
                         section = articleSummary.section,
                         heroImageFromFeed = articleSummary.heroImageUrl
                     )
-                    if (fetched != null) {
+                    if (fetched != null && fetched.blocks.isEmpty()) {
+                        // Só o título no avante.pt: não se guarda, para o texto aparecer quando chegar
+                        _uiState.value = ReaderUiState.Error(ReaderErrorReason.NO_TEXT)
+                    } else if (fetched != null) {
                         val existing = db.articleDao().getSource(articleId)
                         val resolvedIssueNumber = existing?.issueNumber?.takeIf { it.isNotBlank() } ?: editionNumber.takeIf { it.isNotBlank() }
                         // Ensure we use the stable ID

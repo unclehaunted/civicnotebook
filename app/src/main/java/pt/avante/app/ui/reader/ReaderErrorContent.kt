@@ -29,6 +29,7 @@ internal fun ReaderErrorReason.title(): String = when (this) {
     ReaderErrorReason.NOT_CACHED -> "Artigo indisponível offline"
     ReaderErrorReason.TIMEOUT -> "O servidor demorou a responder"
     ReaderErrorReason.SERVER -> "Não foi possível carregar o artigo"
+    ReaderErrorReason.NO_TEXT -> "Texto ainda não publicado"
 }
 
 internal fun ReaderErrorReason.message(): String = when (this) {
@@ -40,6 +41,8 @@ internal fun ReaderErrorReason.message(): String = when (this) {
         "A ligação está lenta ou instável.\nTente de novo dentro de momentos."
     ReaderErrorReason.SERVER ->
         "Ocorreu um problema ao obter o artigo.\nTente de novo ou volte mais tarde."
+    ReaderErrorReason.NO_TEXT ->
+        "O avante.pt tem, por agora, só o título deste artigo.\nTente de novo mais tarde."
 }
 
 @Composable

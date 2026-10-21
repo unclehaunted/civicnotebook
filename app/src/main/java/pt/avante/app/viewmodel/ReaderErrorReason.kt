@@ -17,7 +17,10 @@ enum class ReaderErrorReason {
     SERVER,
 
     /** O artigo não está guardado neste dispositivo (abertura a partir das notas, sem rede). */
-    NOT_CACHED
+    NOT_CACHED,
+
+    /** O avante.pt publicou o artigo só com o título; o texto pode chegar mais tarde. */
+    NO_TEXT
 }
 
 private const val MAX_CAUSE_DEPTH = 10
