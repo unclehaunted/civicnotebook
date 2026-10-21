@@ -41,10 +41,20 @@ object AvanteHttp {
         return doc
     }
 
-    private suspend fun fetch(url: String, cookies: Map<String, String>): Document =
+    /**
+     * Um pedido sem sessão, para as páginas que só dizem a verdade a um leitor anónimo: com sessão,
+     * o Índice perde o marcador «Artigo de acesso livre» (docs/avante-source.md).
+     */
+    suspend fun getAnonymous(url: String): Document = fetch(url, emptyMap())
+
+    /** O pedido em si; os testes trocam-no para ver que cookies cada página leva. */
+    internal var transporte: suspend (url: String, cookies: Map<String, String>) -> Document = { url, cookies ->
         withContext(Dispatchers.IO) {
             val connection = Jsoup.connect(url).timeout(TIMEOUT_MS)
             if (cookies.isNotEmpty()) connection.cookies(cookies)
             connection.get()
         }
+    }
+
+    private suspend fun fetch(url: String, cookies: Map<String, String>): Document = transporte(url, cookies)
 }
