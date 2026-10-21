@@ -120,17 +120,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                         NoteType.COMMENTARY -> "Comentário" to OriginalRed // Red
                     }
 
-                    Surface(
-                        color = pillColor.copy(alpha = 0.1f),
-                        shape = MaterialTheme.shapes.extraSmall
-                    ) {
-                        Text(
-                            text = pillText,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = pillColor,
-                            modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
-                        )
-                    }
+                    Pill(text = pillText, containerColor = pillColor.copy(alpha = 0.1f), contentColor = pillColor)
                     Spacer(modifier = Modifier.width(Spacing.xs))
                     Text(
                         text = "•  $dateString",
@@ -216,17 +206,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 Spacer(modifier = Modifier.height(Spacing.xs))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
                     items(tags) { tag ->
-                        Surface(
-                            color = WarmPaper,
-                            shape = MaterialTheme.shapes.extraSmall
-                        ) {
-                            Text(
-                                text = tag,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary,
-                                modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
-                            )
-                        }
+                        Pill(text = tag, containerColor = WarmPaper, contentColor = TextSecondary)
                     }
                 }
             }

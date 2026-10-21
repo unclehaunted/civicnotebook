@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import pt.avante.app.R
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.theme.*
+import pt.avante.app.ui.components.Pill
 import pt.avante.app.ui.presentation.ArticleImagePolicy
 import pt.avante.app.ui.presentation.ArticleCardMetrics
 import pt.avante.app.ui.settings.LocalReaderSettings
@@ -81,19 +81,12 @@ fun ArticleCardFooter(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             val displayAuthor = author.ifBlank { pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR }
-            Surface(
-                shape = MaterialTheme.shapes.extraSmall,
-                color = pt.avante.app.theme.WarmPaper
-            ) {
-                Text(
-                    text = displayAuthor,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = pt.avante.app.theme.TextSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xxs)
-                )
-            }
+            Pill(
+                text = displayAuthor,
+                containerColor = WarmPaper,
+                contentColor = TextSecondary,
+                horizontalPadding = Spacing.s
+            )
         }
 
         Row(
