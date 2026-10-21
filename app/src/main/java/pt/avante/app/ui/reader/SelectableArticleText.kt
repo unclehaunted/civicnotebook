@@ -166,12 +166,12 @@ fun SelectableArticleText(
         update = { view ->
             // Aplicar preferências de leitura (Definições)
             // Itálico e negrito vêm de ficheiros desenhados (#6), nunca de um estilo sintetizado.
-            // Por agora todo o artigo usa a face de texto dos Tipos de letra; a de display chega com #13.
-            val face = settings.tiposDeLetra.texto
+            // Citações na face de display; corpo e Perguntas na face de texto (#13).
+            val tipos = settings.tiposDeLetra
             val faceResId = when {
-                isQuote -> face.italicFontResId
-                isBold -> face.boldFontResId
-                else -> face.regularFontResId
+                isQuote -> tipos.display.italicFontResId
+                isBold -> tipos.texto.boldFontResId
+                else -> tipos.texto.regularFontResId
             }
             view.typeface = ResourcesCompat.getFont(view.context, faceResId)
             val escala = escalaDoArtigo(settings.fontSize)

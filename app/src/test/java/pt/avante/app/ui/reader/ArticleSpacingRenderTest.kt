@@ -8,7 +8,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -136,6 +138,59 @@ class ArticleSpacingRenderTest {
 
         val difference = gap(before, quote) - gap(quote, after)
         assertEquals(spToPx(38.4f * 0.04f), difference.toFloat(), PX_TOLERANCE) // parágrafo 24 × 1,6 × 1
+    }
+
+    // #13, story 9: sem caixa nem borda, o espaço à volta da Citação é só o do Espaçamento.
+    @Test
+    fun `antes da Citação 1,02 parágrafos e depois 0,98`() {
+        val (before, quote, after) = renderAll(
+            listOf(ArticleBlock.Text("Antes."), ArticleBlock.Quote("A luta continua."), ArticleBlock.Text("Depois.")),
+            ReaderSettings()
+        )
+
+        assertEquals(spToPx(20.655f), gap(before, quote).toFloat(), PX_TOLERANCE) // 20,25 × 1,02
+        assertEquals(spToPx(19.845f), gap(quote, after).toFloat(), PX_TOLERANCE) // 20,25 × 0,98
+    }
+
+    // #13, story 9: a Citação marca-se pelo recuo de 1,5 em à esquerda; à direita alinha com o corpo.
+    @Test
+    fun `a Citação recua 1,5 vezes o corpo à esquerda e acaba onde acaba o corpo`() {
+        val (text, quote) = renderAll(
+            // Textos de várias linhas, para os dois ocuparem a largura que têm.
+            listOf(ArticleBlock.Text(LONG_TEXT), ArticleBlock.Quote(LONG_TEXT)),
+            ReaderSettings(fontSize = ReaderFontSize.LARGE)
+        )
+
+        val textBox = IntArray(2).also { text.getLocationInWindow(it) }
+        val quoteBox = IntArray(2).also { quote.getLocationInWindow(it) }
+        assertEquals(spToPx(31.5f), (quoteBox[0] - textBox[0]).toFloat(), PX_TOLERANCE) // 21 × 1,5
+        assertEquals(textBox[0] + text.width, quoteBox[0] + quote.width)
+    }
+
+    // #13: o subtítulo pertence ao texto que abre. Antes dele, o parágrafo do bloco anterior e
+    // mais um; depois, um parágrafo (como no protótipo aprovado em #7). Segue o Espaçamento.
+    @Test
+    fun `antes do subtítulo dois parágrafos e depois um`() {
+        val settings = ReaderSettings(fontSize = ReaderFontSize.SMALL, spacing = ReaderSpacing.AIRY)
+
+        val (before, after) = renderAll(
+            listOf(ArticleBlock.Text("Antes."), ArticleBlock.Subheading("Subtítulo"), ArticleBlock.Text("Depois.")),
+            settings
+        )
+
+        // O subtítulo é texto Compose: os seus limites vêm na raiz Compose, em dp; passam-se a px
+        // da janela para comparar com os TextViews.
+        val subheading = composeRule.onNodeWithText("Subtítulo").getBoundsInRoot()
+        val content = composeRule.activity.findViewById<View>(android.R.id.content)
+        val rootTop = IntArray(2).also { content.getLocationInWindow(it) }[1]
+        val density = composeRule.activity.resources.displayMetrics.density
+        val top = rootTop + subheading.top.value * density
+        val bottom = rootTop + subheading.bottom.value * density
+        val beforeBottom = IntArray(2).also { before.getLocationInWindow(it) }[1] + before.height
+        val afterTop = IntArray(2).also { after.getLocationInWindow(it) }[1]
+
+        assertEquals(spToPx(52.8f), top - beforeBottom, PX_TOLERANCE) // 2 × 16 × 1,65 × 1
+        assertEquals(spToPx(26.4f), afterTop - bottom, PX_TOLERANCE) // 16 × 1,65 × 1
     }
 
     /** Renderiza um artigo inteiro, como o leitor o mostra, e devolve o TextView do corpo. */

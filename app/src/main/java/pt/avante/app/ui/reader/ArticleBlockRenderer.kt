@@ -3,19 +3,15 @@ package pt.avante.app.ui.reader
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.ArticleSpacing
@@ -26,7 +22,6 @@ import pt.avante.app.ui.settings.LocalOpenSettings
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.escalaDoArtigo
-import pt.avante.app.theme.naEscalaDoArtigo
 
 @Composable
 fun ArticleBlockRenderer(
@@ -72,19 +67,16 @@ fun ArticleBlockRenderer(
         // Margem inferior menor, para a pergunta ficar colada à resposta.
         is ArticleBlock.Question ->
             selectable(block.content, modifier.padding(bottom = gaps.afterQuestion), isBold = true)
-        is ArticleBlock.Subheading -> ArticleSubheading(block.text, modifier)
-        is ArticleBlock.Quote -> {
-            Surface(
-                color = Cores.superficie,
-                shape = MaterialTheme.shapes.small,
-                border = androidx.compose.foundation.BorderStroke(2.dp, Cores.divisor),
-                modifier = modifier.fillMaxWidth().padding(top = gaps.extraBeforeQuote, bottom = gaps.afterQuote)
-            ) {
-                Box(modifier = Modifier.padding(Spacing.m)) {
-                    selectable(block.content, isQuote = true)
-                }
-            }
-        }
+        is ArticleBlock.Subheading -> ArticleSubheading(
+            block.text,
+            modifier.padding(top = gaps.extraBeforeSubheading, bottom = gaps.afterSubheading)
+        )
+        // Citação (#13, story 9): itálico da face de display, cor própria e recuo, sem caixa nem borda.
+        is ArticleBlock.Quote -> selectable(
+            block.content,
+            modifier.padding(start = gaps.quoteIndent, top = gaps.extraBeforeQuote, bottom = gaps.afterQuote),
+            isQuote = true
+        )
         is ArticleBlock.PaywallCTA -> {
             Column(
                 modifier = modifier
@@ -133,7 +125,11 @@ private class ArticleBlockGaps(
      * chegar ao espaço antes dela (veredito de #7).
      */
     val extraBeforeQuote: Dp,
-    val afterQuote: Dp
+    val afterQuote: Dp,
+    val quoteIndent: Dp,
+    /** Como na Citação: o bloco anterior já deixa um parágrafo; o subtítulo junta o resto. */
+    val extraBeforeSubheading: Dp,
+    val afterSubheading: Dp
 )
 
 @Composable
@@ -145,21 +141,22 @@ private fun articleBlockGaps(): ArticleBlockGaps {
             paragraph = spacing.paragraphSp.sp.toDp(),
             afterQuestion = spacing.afterQuestionSp.sp.toDp(),
             extraBeforeQuote = (spacing.beforeQuoteSp - spacing.paragraphSp).sp.toDp(),
-            afterQuote = spacing.afterQuoteSp.sp.toDp()
+            afterQuote = spacing.afterQuoteSp.sp.toDp(),
+            quoteIndent = spacing.quoteIndentSp.sp.toDp(),
+            extraBeforeSubheading = (spacing.beforeSubheadingSp - spacing.paragraphSp).sp.toDp(),
+            afterSubheading = spacing.afterSubheadingSp.sp.toDp()
         )
     }
 }
 
-/** Subtítulo do artigo: um degrau acima do corpo na escala do Tamanho. */
+/** Subtítulo do artigo: face de display a negrito, um degrau acima do corpo na escala do Tamanho. */
 @Composable
 private fun ArticleSubheading(text: String, modifier: Modifier = Modifier) {
     val settings = LocalReaderSettings.current
     Text(
         text = text,
-        style = MaterialTheme.typography.headlineMedium
-            .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).subtitulo)
-            .copy(lineHeight = ArticleSpacing.HEADING_LINE_HEIGHT.em),
+        style = articleHeadingStyle(escalaDoArtigo(settings.fontSize).subtitulo),
         color = Cores.textoPrimario,
-        modifier = modifier.padding(top = Spacing.m, bottom = Spacing.s)
+        modifier = modifier
     )
 }

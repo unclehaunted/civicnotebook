@@ -13,7 +13,13 @@ import androidx.activity.ComponentActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertSame
@@ -34,6 +40,8 @@ import pt.avante.app.data.ReaderSettings
 import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.TiposDeLetra
 import pt.avante.app.data.paleta
+import pt.avante.app.theme.Bitter
+import pt.avante.app.theme.LibreFranklin
 import pt.avante.app.theme.OriginalTheme
 import pt.avante.app.ui.settings.LocalReaderSettings
 
@@ -212,15 +220,21 @@ class ArticleBlockRendererTest {
     @Test
     fun question_withLibreFranklin_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.CLASSICO, R.font.libre_franklin_bold)
 
-    // #6, story 1: a Citação usa o itálico desenhado da fonte, não o regular inclinado.
+    // #6 e #13, story 1: a Citação usa o itálico desenhado da face de display, não o regular inclinado.
     @Test
-    fun quote_withAtkinson_usesItsItalicFile() = assertUsesItalicFile(TiposDeLetra.LEGIVEL, R.font.atkinson_hyperlegible_italic)
+    fun quote_inLegivel_usesAtkinsonItalicFile() = assertUsesItalicFile(TiposDeLetra.LEGIVEL, R.font.atkinson_hyperlegible_italic)
 
     @Test
-    fun quote_withBitter_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.LIVRO, R.font.bitter_italic)
+    fun quote_inLivro_usesBitterItalic() = assertUsesItalicFile(TiposDeLetra.LIVRO, R.font.bitter_italic)
 
+    // Clássico: corpo em Libre Franklin, mas a Citação é da face de display, o Bitter.
     @Test
-    fun quote_withLibreFranklin_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.CLASSICO, R.font.libre_franklin_italic)
+    fun quote_inClassico_usesTheDisplayFaceBitterItalic() = assertUsesItalicFile(TiposDeLetra.CLASSICO, R.font.bitter_italic)
+
+    // Moderno: corpo em Source Sans 4, Citação no itálico do Libre Franklin.
+    @Test
+    fun quote_inModerno_usesTheDisplayFaceLibreFranklinItalic() =
+        assertUsesItalicFile(TiposDeLetra.MODERNO, R.font.libre_franklin_italic)
 
     private fun assertUsesItalicFile(tiposDeLetra: TiposDeLetra, italicRes: Int) {
         val settings = ReaderSettings(tiposDeLetra = tiposDeLetra)
@@ -247,7 +261,8 @@ class ArticleBlockRendererTest {
         )
 
         assertTrue(ink(text.typeface) > ink(font(R.font.libre_franklin_vf)) * 1.5f)
-        assertTrue(ink(quote.typeface) > ink(font(R.font.libre_franklin_italic_vf)) * 1.5f)
+        // A Citação de Clássico é o itálico do Bitter (face de display), também no peso do texto.
+        assertTrue(ink(quote.typeface) > ink(font(R.font.bitter_italic_vf)) * 1.5f)
         assertTrue(ink(question.typeface) > ink(text.typeface) * 1.2f)
     }
 
@@ -268,8 +283,46 @@ class ArticleBlockRendererTest {
     @Test
     fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.MODERNO, R.font.source_sans_4_bold)
 
+    /** O estilo com que o subtítulo foi composto, como o Compose o desenhou. */
+    private fun renderedSubheadingStyle(settings: ReaderSettings): TextStyle {
+        renderAll(listOf(ArticleBlock.Subheading("Uma vitória que não acaba no papel")), settings)
+        val results = mutableListOf<TextLayoutResult>()
+        composeRule.onNodeWithText("Uma vitória que não acaba no papel")
+            .performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(results) }
+        return results.single().layoutInput.style
+    }
+
+    // #13: o subtítulo é da face de display, a negrito, como no protótipo aprovado em #7.
     @Test
-    fun quote_withSourceSans_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.MODERNO, R.font.source_sans_4_italic)
+    fun subheading_inClassico_isTheDisplayFaceBitterBold() {
+        val style = renderedSubheadingStyle(ReaderSettings(tiposDeLetra = TiposDeLetra.CLASSICO))
+
+        assertEquals(Bitter, style.fontFamily)
+        assertEquals(FontWeight.Bold, style.fontWeight)
+    }
+
+    @Test
+    fun subheading_inModerno_isTheDisplayFaceLibreFranklinBold() {
+        val style = renderedSubheadingStyle(ReaderSettings(tiposDeLetra = TiposDeLetra.MODERNO))
+
+        assertEquals(LibreFranklin, style.fontFamily)
+        assertEquals(FontWeight.Bold, style.fontWeight)
+    }
+
+    // Story 5: o subtítulo cresce com o Tamanho, um degrau (× 1,25) acima do corpo.
+    @Test
+    fun subheading_inPequeno_is20sp() {
+        val style = renderedSubheadingStyle(ReaderSettings(fontSize = ReaderFontSize.SMALL))
+
+        assertEquals(20f, style.fontSize.value, 0.01f)
+    }
+
+    @Test
+    fun subheading_inExtraGrande_is30sp() {
+        val style = renderedSubheadingStyle(ReaderSettings(fontSize = ReaderFontSize.XLARGE))
+
+        assertEquals(30f, style.fontSize.value, 0.01f)
+    }
 
     @Test
     fun sourceSans_textIsTheRegularWeightAndQuestionIsHeavier() {
@@ -279,7 +332,8 @@ class ArticleBlockRendererTest {
         )
 
         assertTrue(ink(text.typeface) > ink(font(R.font.source_sans_vf)) * 1.5f)
-        assertTrue(ink(quote.typeface) > ink(font(R.font.source_sans_italic_vf)) * 1.5f)
+        // A Citação de Moderno é o itálico do Libre Franklin (face de display).
+        assertTrue(ink(quote.typeface) > ink(font(R.font.libre_franklin_italic_vf)) * 1.5f)
         assertTrue(ink(question.typeface) > ink(text.typeface) * 1.2f)
     }
 }

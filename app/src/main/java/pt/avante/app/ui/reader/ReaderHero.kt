@@ -2,7 +2,6 @@ package pt.avante.app.ui.reader
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,9 +14,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import coil.compose.AsyncImage
-import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.Publication
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
@@ -26,7 +23,6 @@ import pt.avante.app.theme.Cores
 import pt.avante.app.theme.SobreImagem
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.escalaDoArtigo
-import pt.avante.app.theme.naEscalaDoArtigo
 
 @Composable
 fun ReaderHero(
@@ -87,9 +83,7 @@ fun ReaderHero(
             }
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineLarge
-                    .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).titulo)
-                    .copy(lineHeight = ArticleSpacing.HEADING_LINE_HEIGHT.em),
+                style = articleHeadingStyle(escalaDoArtigo(settings.fontSize).titulo),
                 color = if (hasImage) SobreImagem.texto else Cores.textoPrimario,
                 modifier = Modifier.padding(bottom = Spacing.xs)
             )

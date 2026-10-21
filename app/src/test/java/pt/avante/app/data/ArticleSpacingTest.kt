@@ -75,6 +75,35 @@ class ArticleSpacingTest {
         assertEquals(37.632f, extraGrandeArejado.afterQuoteSp, DELTA)
     }
 
+    // #13 e veredito de #7: a Citação recua 1,5 em, que segue o Tamanho e não o Espaçamento.
+    @Test
+    fun `a Citação recua 1,5 vezes o corpo em cada Tamanho`() {
+        val expected = mapOf(
+            ReaderFontSize.SMALL to 24f,
+            ReaderFontSize.MEDIUM to 27f,
+            ReaderFontSize.LARGE to 31.5f,
+            ReaderFontSize.XLARGE to 36f
+        )
+        assertEquals(ReaderFontSize.entries.toSet(), expected.keys)
+        expected.forEach { (size, indentSp) ->
+            ReaderSpacing.entries.forEach { spacing ->
+                assertEquals("$size $spacing", indentSp, resolve(size, spacing).quoteIndentSp, DELTA)
+            }
+        }
+    }
+
+    // #13, como no protótipo aprovado em #7: dois parágrafos antes do subtítulo, um depois.
+    @Test
+    fun `o subtítulo tem dois parágrafos antes e um depois`() {
+        val medioNormal = resolve(ReaderFontSize.MEDIUM, ReaderSpacing.NORMAL) // parágrafo 20,25
+        assertEquals(40.5f, medioNormal.beforeSubheadingSp, DELTA)
+        assertEquals(20.25f, medioNormal.afterSubheadingSp, DELTA)
+
+        val pequenoCompacto = resolve(ReaderFontSize.SMALL, ReaderSpacing.COMPACT) // parágrafo 10,8
+        assertEquals(21.6f, pequenoCompacto.beforeSubheadingSp, DELTA)
+        assertEquals(10.8f, pequenoCompacto.afterSubheadingSp, DELTA)
+    }
+
     @Test
     fun `depois da Pergunta fica meio espaço de parágrafo, colado à resposta`() {
         assertEquals(10.125f, resolve(ReaderFontSize.MEDIUM, ReaderSpacing.NORMAL).afterQuestionSp, DELTA)

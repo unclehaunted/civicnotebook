@@ -36,8 +36,14 @@ data class ArticleSpacing(
     val beforeQuoteSp: Float,
     /** Espaço entre a Citação e o bloco seguinte, em sp. */
     val afterQuoteSp: Float,
+    /** Espaço entre o bloco anterior e o subtítulo, em sp. */
+    val beforeSubheadingSp: Float,
+    /** Espaço entre o subtítulo e o texto que ele abre, em sp. */
+    val afterSubheadingSp: Float,
     /** Largura máxima da coluna de texto, em sp (cerca de 66 caracteres por linha). */
-    val columnMaxWidthSp: Float
+    val columnMaxWidthSp: Float,
+    /** Recuo à esquerda da Citação, em sp: a sua única marca além do itálico e da cor (#13). */
+    val quoteIndentSp: Float
 ) {
     companion object {
         /** Nos Tamanhos grandes a linha já é longa em altura: a entrelinha desce 0,05. */
@@ -46,6 +52,9 @@ data class ArticleSpacing(
 
         /** Largura máxima da coluna em múltiplos do corpo: 33 em dão cerca de 66 caracteres. */
         private const val COLUMN_WIDTH_IN_BODY_SIZES = 33f
+
+        /** Recuo da Citação em múltiplos do corpo: 1,5 em, proposto no protótipo e confirmado em #7. */
+        private const val QUOTE_INDENT_IN_BODY_SIZES = 1.5f
 
         /**
          * Entrelinha do título e dos subtítulos, em múltiplos do seu tamanho: não segue o
@@ -64,6 +73,13 @@ data class ArticleSpacing(
         const val BEFORE_QUOTE_IN_PARAGRAPHS = 1.02f
         const val AFTER_QUOTE_IN_PARAGRAPHS = 0.98f
 
+        /*
+         * O subtítulo pertence ao texto que abre: o dobro do espaço antes do que depois.
+         * Valores do protótipo aprovado em #7 (dois parágrafos antes, um depois).
+         */
+        private const val BEFORE_SUBHEADING_IN_PARAGRAPHS = 2f
+        private const val AFTER_SUBHEADING_IN_PARAGRAPHS = 1f
+
         fun resolve(fontSize: ReaderFontSize, spacing: ReaderSpacing): ArticleSpacing {
             val body = fontSize.spValue
             val lineHeight = spacing.lineHeight - if (fontSize in LARGE_SIZES) LARGE_SIZE_LINE_HEIGHT_DROP else 0f
@@ -74,7 +90,10 @@ data class ArticleSpacing(
                 afterQuestionSp = paragraph * AFTER_QUESTION_IN_PARAGRAPHS,
                 beforeQuoteSp = paragraph * BEFORE_QUOTE_IN_PARAGRAPHS,
                 afterQuoteSp = paragraph * AFTER_QUOTE_IN_PARAGRAPHS,
-                columnMaxWidthSp = body * COLUMN_WIDTH_IN_BODY_SIZES
+                beforeSubheadingSp = paragraph * BEFORE_SUBHEADING_IN_PARAGRAPHS,
+                afterSubheadingSp = paragraph * AFTER_SUBHEADING_IN_PARAGRAPHS,
+                columnMaxWidthSp = body * COLUMN_WIDTH_IN_BODY_SIZES,
+                quoteIndentSp = body * QUOTE_INDENT_IN_BODY_SIZES
             )
         }
     }
