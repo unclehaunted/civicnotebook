@@ -45,6 +45,11 @@
     <ID>FunctionNaming:HomeHeader.kt:@Composable fun SegmentedIconButton</ID>
     <ID>FunctionNaming:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
     <ID>FunctionNaming:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
+    <ID>FunctionNaming:MainBottomBar.kt:@Composable fun MainBottomBar</ID>
+    <ID>FunctionNaming:MainMenu.kt:@Composable fun MainMenu</ID>
+    <ID>FunctionNaming:SobreScreen.kt:@Composable fun SobreScreen</ID>
+    <ID>FunctionNaming:SobreScreen.kt:@Composable private fun SobreBody</ID>
+    <ID>FunctionNaming:SobreScreen.kt:@Composable private fun SobreHeader</ID>
     <ID>FunctionNaming:MediumArticleCard.kt:@Composable fun MediumArticleCard</ID>
     <ID>FunctionNaming:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
     <ID>FunctionNaming:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>

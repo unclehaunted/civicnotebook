@@ -2,21 +2,14 @@ package pt.avante.app.ui.main
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.animation.animateContentSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import pt.avante.app.BuildConfig
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.AppDatabase
@@ -49,6 +42,7 @@ fun MainApp(
     var editingNewNote by rememberSaveable { mutableStateOf(false) }
     var showMenuSheet by rememberSaveable { mutableStateOf(false) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showAbout by rememberSaveable { mutableStateOf(false) }
 
     val homeUiState by homeViewModel.uiState.collectAsState()
     
@@ -58,23 +52,8 @@ fun MainApp(
         else (homeUiState as? HomeUiState.Success)?.feed?.articles?.find { it.url == viewingArticleUrl }
     }
 
-    val tabs = listOf(
-        MainDestination.EDICAO to Icons.AutoMirrored.Filled.MenuBook,
-        MainDestination.CADERNO to Icons.AutoMirrored.Filled.Note,
-        MainDestination.ARQUIVO to Icons.Default.Folder,
-        MainDestination.PESQUISA to Icons.Default.Search
-    )
-
-    val getTitle = { dest: MainDestination ->
-        when (dest) {
-            MainDestination.EDICAO -> "Edição"
-            MainDestination.CADERNO -> "Caderno"
-            MainDestination.ARQUIVO -> "Arquivo"
-            MainDestination.PESQUISA -> "Pesquisa"
-        }
-    }
-
-    val isFullScreen = viewingArticleUrl != null || viewingArticleId != null || editingNoteId != null || showSettings
+    val isReading = viewingArticleUrl != null || viewingArticleId != null
+    val isFullScreen = isReading || editingNoteId != null || showSettings || showAbout
 
     // Voltar no leitor: sai primeiro do Modo de Anotação, depois do artigo.
     fun exitReader() {
@@ -97,70 +76,7 @@ fun MainApp(
     AdaptiveAppScaffold(
         bottomBar = {
             if (!isFullScreen) {
-                var isNavExpanded by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-                Surface(
-                    color = Color.White,
-                    shadowElevation = 16.dp,
-                    modifier = Modifier.animateContentSize()
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        if (isNavExpanded) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { isNavExpanded = false }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ExpandMore,
-                                    contentDescription = "Recolher",
-                                    tint = TextSecondary,
-                                    modifier = Modifier.align(Alignment.Center).padding(8.dp)
-                                )
-                            }
-                            NavigationBar(containerColor = Color.White) {
-                                tabs.forEach { (dest, icon) ->
-                                    NavigationBarItem(
-                                        icon = { Icon(icon, contentDescription = getTitle(dest)) },
-                                        label = { Text(getTitle(dest)) },
-                                        selected = currentTab == dest,
-                                        onClick = { 
-                                            currentTab = dest
-                                            isNavExpanded = false
-                                        },
-                                        colors = NavigationBarItemDefaults.colors(
-                                            selectedIconColor = OriginalRed,
-                                            selectedTextColor = OriginalRed,
-                                            indicatorColor = OriginalRed.copy(alpha = 0.1f),
-                                            unselectedIconColor = TextSecondary,
-                                            unselectedTextColor = TextSecondary
-                                        )
-                                    )
-                                }
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { isNavExpanded = true }
-                                    .padding(vertical = 12.dp)
-                            ) {
-                                val currentIcon = tabs.find { it.first == currentTab }?.second ?: Icons.Default.Home
-                                Icon(
-                                    imageVector = Icons.Default.ExpandLess,
-                                    contentDescription = "Expandir menu",
-                                    tint = TextSecondary,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                                Icon(
-                                    imageVector = currentIcon,
-                                    contentDescription = null,
-                                    tint = OriginalRed,
-                                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 24.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+                MainBottomBar(currentTab = currentTab, onTabSelected = { currentTab = it })
             }
         },
         navigationRail = {
@@ -172,10 +88,10 @@ fun MainApp(
                         // Optional header content like a logo
                     }
                 ) {
-                    tabs.forEach { (dest, icon) ->
+                    MainDestination.entries.forEach { dest ->
                         NavigationRailItem(
-                            icon = { Icon(icon, contentDescription = getTitle(dest)) },
-                            label = { Text(getTitle(dest)) },
+                            icon = { Icon(dest.icon, contentDescription = null) },
+                            label = { Text(dest.label) },
                             selected = currentTab == dest,
                             onClick = { currentTab = dest },
                             colors = NavigationRailItemDefaults.colors(
@@ -196,20 +112,27 @@ fun MainApp(
       ) {
         Box(modifier = Modifier.padding(innerPadding)) {
             // Back handler hierarchy
-            val backEnabled = showMenuSheet || showSettings || editingNoteId != null || viewingArticleUrl != null || viewingArticleId != null
+            val backEnabled = showMenuSheet || isFullScreen
             androidx.activity.compose.BackHandler(enabled = backEnabled) {
                 if (showMenuSheet) {
                     showMenuSheet = false
+                } else if (showAbout) {
+                    showAbout = false
                 } else if (showSettings) {
                     showSettings = false
                 } else if (editingNoteId != null) {
                     closeEditor()
-                } else if (viewingArticleUrl != null || viewingArticleId != null) {
+                } else if (isReading) {
                     exitReader()
                 }
             }
 
-            if (showSettings) {
+            if (showAbout) {
+                SobreScreen(
+                    versionName = BuildConfig.VERSION_NAME,
+                    onBackClick = { showAbout = false }
+                )
+            } else if (showSettings) {
                 DefinicoesScreen(
                     settingsStore = readerSettingsStore,
                     authRepository = authRepository,
@@ -227,7 +150,7 @@ fun MainApp(
                         closeEditor()
                     }
                 )
-            } else if (viewingArticleUrl != null || viewingArticleId != null) {
+            } else if (isReading) {
                 ArticleReaderScreen(
                     articleSummary = viewingArticle,
                     articleId = viewingArticleId,
@@ -282,38 +205,21 @@ fun MainApp(
             containerColor = Color.White
         ) {
             val context = LocalContext.current
-            Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))
-                
-                ListItem(
-                    headlineContent = { Text("Exportar notas") },
-                    leadingContent = { Icon(Icons.Default.Download, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
-                )
-                ListItem(
-                    headlineContent = { Text("Assinatura") },
-                    leadingContent = { Icon(Icons.Default.Star, contentDescription = null) },
-                    modifier = Modifier.clickable { 
-                        showMenuSheet = false 
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AvanteSite.SUBSCRIPTION_URL))
-                        context.startActivity(intent)
-                    }
-                )
-                ListItem(
-                    headlineContent = { Text("Definições") },
-                    leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) },
-                    modifier = Modifier.clickable {
-                        showMenuSheet = false
-                        showSettings = true
-                    }
-                )
-                ListItem(
-                    headlineContent = { Text("Sobre") },
-                    leadingContent = { Icon(Icons.Default.Info, contentDescription = null) },
-                    modifier = Modifier.clickable { showMenuSheet = false }
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-            }
+            MainMenu(
+                onSubscription = {
+                    showMenuSheet = false
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AvanteSite.SUBSCRIPTION_URL))
+                    context.startActivity(intent)
+                },
+                onSettings = {
+                    showMenuSheet = false
+                    showSettings = true
+                },
+                onAbout = {
+                    showMenuSheet = false
+                    showAbout = true
+                }
+            )
         }
     }
 }
