@@ -5,10 +5,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import pt.avante.app.data.Paleta
 import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.paleta
 
@@ -34,6 +38,42 @@ class OriginalThemeTest {
 
         assertEquals(Color(0xFF1B1B1B), fundoDoChrome)
         assertEquals(fundoDoChrome, fundoDoArtigo)
+    }
+
+    // #5: a Automática segue o modo escuro do sistema, no chrome e na barra de estado.
+    @Test
+    fun aAutomatica_comOSistemaClaro_eAPapel() {
+        val lida = paletaEm(ReaderTheme.AUTOMATIC)
+
+        assertEquals(Color(0xFFFCFBF8), Color(lida.fundo))
+        assertFalse(lida.escura)
+    }
+
+    @Test
+    @Config(qualifiers = "night")
+    fun aAutomatica_comOSistemaEscuro_eAEscura() {
+        val lida = paletaEm(ReaderTheme.AUTOMATIC)
+
+        assertEquals(Color(0xFF1B1B1B), Color(lida.fundo))
+        assertTrue(lida.escura)
+    }
+
+    // Uma Aparência escolhida pelo Leitor não muda com o sistema.
+    @Test
+    @Config(qualifiers = "night")
+    fun papelEscolhido_ficaClaro_comOSistemaEscuro() {
+        assertEquals(Color(0xFFFCFBF8), Color(paletaEm(ReaderTheme.PAPER).fundo))
+    }
+
+    private fun paletaEm(aparencia: ReaderTheme): Paleta {
+        var lida: Paleta? = null
+        rule.setContent {
+            OriginalTheme(aparencia = aparencia) {
+                lida = LocalPaleta.current
+            }
+        }
+        rule.waitForIdle()
+        return checkNotNull(lida)
     }
 
     // Cada papel chega à UI com o valor do resolver, em cada Aparência.

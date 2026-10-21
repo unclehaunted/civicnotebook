@@ -1,6 +1,7 @@
 package pt.avante.app.theme
 
 import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -101,14 +102,15 @@ private fun esquemaMaterial(p: Paleta): ColorScheme {
 
 /**
  * O tema da app inteira, na Aparência escolhida nas Definições (ADR 0001). As cores dinâmicas
- * do sistema ficam de fora: apagariam a identidade do jornal.
+ * do sistema ficam de fora: apagariam a identidade do jornal. Do sistema só se lê o modo escuro,
+ * para a Automática.
  */
 @Composable
 fun OriginalTheme(
     aparencia: ReaderTheme = ReaderTheme.PAPER,
     content: @Composable () -> Unit,
 ) {
-    val paleta = paleta(aparencia)
+    val paleta = paleta(aparencia, sistemaEscuro = isSystemInDarkTheme())
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

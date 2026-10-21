@@ -142,8 +142,13 @@ private val ESCURO = Paleta(
     escura = true
 )
 
-/** Resolve todos os papéis de cor de uma Aparência. */
-fun paleta(aparencia: ReaderTheme): Paleta = when (aparencia) {
+/**
+ * Resolve todos os papéis de cor de uma Aparência. A Automática não tem cores próprias: é Papel
+ * ou, com [sistemaEscuro], Escuro. O modo do sistema lê-se na fronteira do Compose (`OriginalTheme`);
+ * as outras Aparências ignoram-no.
+ */
+fun paleta(aparencia: ReaderTheme, sistemaEscuro: Boolean = false): Paleta = when (aparencia) {
+    ReaderTheme.AUTOMATIC -> if (sistemaEscuro) ESCURO else PAPEL
     ReaderTheme.PAPER -> PAPEL
     ReaderTheme.WHITE -> BRANCO
     ReaderTheme.SEPIA -> SEPIA

@@ -10,7 +10,7 @@ class PaletaTest {
 
     @Test
     fun cadaAparencia_defineCadaPapel_comUmaCorOpaca() {
-        for (aparencia in ReaderTheme.entries) {
+        for (aparencia in APARENCIAS_CONCRETAS) {
             val paleta = paleta(aparencia)
             for (papel in PapelDeCor.entries) {
                 val alfa = paleta.cor(papel) ushr 24
@@ -22,7 +22,7 @@ class PaletaTest {
     // Veredito da #7: a Citação tem cor própria, um vermelho da família do acento.
     @Test
     fun aCitacao_eVermelha_ediferenteDoTextoPrimario() {
-        for (aparencia in ReaderTheme.entries) {
+        for (aparencia in APARENCIAS_CONCRETAS) {
             val paleta = paleta(aparencia)
             assertNotEquals("$aparencia", paleta.textoPrimario, paleta.citacao)
             assertTrue("$aparencia: Citação vermelha (${paleta.citacao.toString(16)})", vermelho(paleta.citacao))
@@ -61,7 +61,7 @@ class PaletaTest {
     // ADR 0001: o esquema escuro genérico (#121212) e o Escuro de leitura (#1B1B1B) são um só.
     @Test
     fun soOEscuro_eUmaAparenciaEscura_comOFundoDeLeitura() {
-        assertEquals(listOf(ReaderTheme.DARK), ReaderTheme.entries.filter { paleta(it).escura })
+        assertEquals(listOf(ReaderTheme.DARK), APARENCIAS_CONCRETAS.filter { paleta(it).escura })
         assertEquals(0xFF1B1B1B, paleta(ReaderTheme.DARK).fundo)
     }
 
@@ -70,7 +70,7 @@ class PaletaTest {
     // ficam cobertos. O divisor é decorativo e fica de fora.
     @Test
     fun cadaParDeTextoSobreFundo_cumpreAA_emCadaAparencia() {
-        val falhas = ReaderTheme.entries.flatMap { aparencia ->
+        val falhas = APARENCIAS_CONCRETAS.flatMap { aparencia ->
             val paleta = paleta(aparencia)
             PARES_DE_TEXTO.mapNotNull { (texto, fundo) ->
                 val razao = contraste(paleta.cor(texto), paleta.cor(fundo))
@@ -84,7 +84,7 @@ class PaletaTest {
     // que o identifica, por isso fica a 3:1 de cada fundo em cada Aparência.
     @Test
     fun oContornoDosComponentes_cumpre3para1_emCadaAparencia() {
-        val falhas = ReaderTheme.entries.flatMap { aparencia ->
+        val falhas = APARENCIAS_CONCRETAS.flatMap { aparencia ->
             val paleta = paleta(aparencia)
             listOf("contorno" to paleta.contorno, "contorno com foco" to paleta.acento).flatMap { (nome, cor) ->
                 FUNDOS_DE_TEXTO.mapNotNull { fundo ->
@@ -98,8 +98,28 @@ class PaletaTest {
 
     @Test
     fun oContorno_eOpaco_emCadaAparencia() {
-        for (aparencia in ReaderTheme.entries) {
+        for (aparencia in APARENCIAS_CONCRETAS) {
             assertEquals("$aparencia", 0xFFL, paleta(aparencia).contorno ushr 24)
+        }
+    }
+
+    // Decisão do maintainer na #5: Automática segue o modo escuro do sistema, Papel de dia e
+    // Escuro de noite, com as cores dessas duas e nenhuma própria.
+    @Test
+    fun aAutomatica_ePapelDeDia_eEscuroDeNoite() {
+        assertEquals(paleta(ReaderTheme.PAPER), paleta(ReaderTheme.AUTOMATIC, sistemaEscuro = false))
+        assertEquals(paleta(ReaderTheme.DARK), paleta(ReaderTheme.AUTOMATIC, sistemaEscuro = true))
+    }
+
+    // O modo do sistema só conta para a Automática: uma Aparência escolhida fica a mesma.
+    @Test
+    fun umaAparenciaEscolhida_ignoraOModoDoSistema() {
+        for (aparencia in APARENCIAS_CONCRETAS) {
+            assertEquals(
+                "$aparencia",
+                paleta(aparencia, sistemaEscuro = false),
+                paleta(aparencia, sistemaEscuro = true)
+            )
         }
     }
 
@@ -131,6 +151,9 @@ class PaletaTest {
     private fun soma(argb: Long) = canais(argb).let { (r, g, b) -> r + g + b }
 
     private companion object {
+        /** As que têm cores próprias; a Automática empresta as de Papel ou de Escuro. */
+        val APARENCIAS_CONCRETAS = ReaderTheme.entries - ReaderTheme.AUTOMATIC
+
         const val AA_TEXTO = 4.5
 
         /** Elementos gráficos e contornos de componentes (WCAG 1.4.11). */

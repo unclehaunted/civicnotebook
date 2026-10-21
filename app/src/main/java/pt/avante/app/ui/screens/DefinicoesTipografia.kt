@@ -26,7 +26,7 @@ import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.readerFontFamily
 
 /** Alvo de toque mínimo de cada opção (48dp), com o rádio desenhado mais pequeno. */
-private val AlvoMinimo = 48.dp
+internal val AlvoMinimo = 48.dp
 
 /**
  * Tipos de letra (#10): cada opção mostra o nome na sua face de display e, por baixo,

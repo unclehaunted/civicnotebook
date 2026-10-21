@@ -21,7 +21,7 @@ class ReaderSettingsStore(context: Context) {
             tiposDeLetra = loadTiposDeLetra(),
             escrita = prefs.getString(KEY_ESCRITA, null).toEnumOrDefault(Escrita.IA_WRITER_DUO),
             fontSize = prefs.getString(KEY_FONT_SIZE, null).toEnumOrDefault(ReaderFontSize.MEDIUM),
-            theme = prefs.getString(KEY_THEME, null).toEnumOrDefault(ReaderTheme.PAPER),
+            theme = prefs.getString(KEY_THEME, null).toEnumOrDefault(ReaderTheme.AUTOMATIC),
             showImages = prefs.getBoolean(KEY_SHOW_IMAGES, true),
             spacing = prefs.getString(KEY_SPACING, null).toEnumOrDefault(ReaderSpacing.NORMAL)
         )

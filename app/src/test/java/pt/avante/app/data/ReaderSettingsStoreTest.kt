@@ -76,6 +76,27 @@ class ReaderSettingsStoreTest {
         assertEquals(Escrita.IA_WRITER_DUO, reabrir().escrita)
     }
 
+    // #5: uma instalação nova segue o modo do sistema.
+    @Test
+    fun semAparenciaGuardada_abreEmAutomatica() {
+        assertEquals(ReaderTheme.AUTOMATIC, reabrir().theme)
+    }
+
+    // Quem já escolheu uma Aparência antes da Automática existir reencontra-a.
+    @Test
+    fun aparenciaGuardada_ficaAMesma() {
+        prefs.edit().putString("reader_theme", "SEPIA").commit()
+
+        assertEquals(ReaderTheme.SEPIA, reabrir().theme)
+    }
+
+    @Test
+    fun aparenciaGuardadaDesconhecida_abreEmAutomatica() {
+        prefs.edit().putString("reader_theme", "NEON").commit()
+
+        assertEquals(ReaderTheme.AUTOMATIC, reabrir().theme)
+    }
+
     // #12: o Espaçamento escolhido sobrevive a reabrir a app.
     @Test
     fun chosenSpacing_survivesReopening() {

@@ -52,8 +52,12 @@ enum class ReaderFontSize(val label: String, val spValue: Float) {
     XLARGE("Extra grande", 24f)
 }
 
-/** A Aparência (glossário). As cores de cada uma resolvem-se em [paleta] (`Paleta.kt`). */
+/**
+ * A Aparência (glossário). As cores de cada uma resolvem-se em [paleta] (`Paleta.kt`).
+ * [AUTOMATIC] segue o modo escuro do sistema: é Papel de dia e Escuro de noite (#5).
+ */
 enum class ReaderTheme(val label: String) {
+    AUTOMATIC("Automática"),
     PAPER("Papel"),
     WHITE("Branco"),
     SEPIA("Sépia"),
@@ -64,7 +68,7 @@ data class ReaderSettings(
     val tiposDeLetra: TiposDeLetra = TiposDeLetra.CLASSICO,
     val escrita: Escrita = Escrita.IA_WRITER_DUO,
     val fontSize: ReaderFontSize = ReaderFontSize.MEDIUM,
-    val theme: ReaderTheme = ReaderTheme.PAPER,
+    val theme: ReaderTheme = ReaderTheme.AUTOMATIC,
     val showImages: Boolean = true,
     val spacing: ReaderSpacing = ReaderSpacing.NORMAL
 )

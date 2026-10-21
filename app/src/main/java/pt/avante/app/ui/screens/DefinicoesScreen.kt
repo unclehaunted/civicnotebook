@@ -2,19 +2,14 @@ package pt.avante.app.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -23,10 +18,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import pt.avante.app.data.ReaderFontSize
 import pt.avante.app.data.ReaderSettingsStore
-import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.auth.AuthState
 import pt.avante.app.data.auth.AvanteAuthRepository
-import pt.avante.app.data.paleta
 import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.emMaiusculas
@@ -123,49 +116,8 @@ fun DefinicoesScreen(
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 
-                // Aparência: as cores da app inteira, não só do artigo (#8)
                 SettingLabel("Aparência")
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.m)
-                ) {
-                    ReaderTheme.entries.forEach { theme ->
-                        val selected = settings.theme == theme
-                        // Cada amostra mostra o fundo e o acento da sua própria Aparência.
-                        val amostra = paleta(theme)
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable { settingsStore.setTheme(theme) }
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .background(Color(amostra.fundo), CircleShape)
-                                    .border(
-                                        width = if (selected) 2.5.dp else 1.dp,
-                                        color = if (selected) Cores.acento else Cores.divisor,
-                                        shape = CircleShape
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                if (selected) {
-                                    Icon(
-                                        Icons.Default.Check,
-                                        contentDescription = null,
-                                        tint = Color(amostra.acento),
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            }
-                            Spacer(modifier = Modifier.height(Spacing.xxs))
-                            Text(
-                                text = theme.label,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (selected) Cores.acento else Cores.textoSecundario
-                            )
-                        }
-                    }
-                }
+                AparenciaOpcoes(settings.theme, settingsStore::setTheme)
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 

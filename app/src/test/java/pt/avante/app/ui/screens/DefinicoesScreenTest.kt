@@ -15,6 +15,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.GraphicsMode
 import pt.avante.app.data.Escrita
 import pt.avante.app.data.ReaderSettingsStore
+import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.TiposDeLetra
 import pt.avante.app.data.auth.AvanteAuthRepository
 import pt.avante.app.data.auth.SessionStore
@@ -62,6 +63,29 @@ class DefinicoesScreenTest {
         composeRule.onNodeWithText("Livro").assertIsSelected()
         composeRule.onNodeWithText("Clássico").assertIsNotSelected()
         assertEquals(TiposDeLetra.LIVRO, reabrir().tiposDeLetra)
+    }
+
+    // #5: a Aparência de uma instalação nova é a Automática, a primeira das cinco.
+    @Test
+    fun `mostra as cinco Aparencias com Automatica escolhida`() {
+        show()
+
+        composeRule.onNodeWithText("Automática").performScrollTo().assertIsSelected()
+        listOf("Papel", "Branco", "Sépia", "Escuro").forEach {
+            composeRule.onNodeWithText(it).performScrollTo().assertIsNotSelected()
+        }
+    }
+
+    @Test
+    fun `escolher Automatica depois de Papel fica guardado`() {
+        ReaderSettingsStore(composeRule.activity).setTheme(ReaderTheme.PAPER)
+        show()
+
+        composeRule.onNodeWithText("Automática").performScrollTo().performClick()
+
+        composeRule.onNodeWithText("Automática").assertIsSelected()
+        composeRule.onNodeWithText("Papel").assertIsNotSelected()
+        assertEquals(ReaderTheme.AUTOMATIC, reabrir().theme)
     }
 
     @Test
