@@ -16,18 +16,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.theme.Cores
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
+import pt.avante.app.theme.ExcertosDoJornal
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.escalaDoArtigo
-import pt.avante.app.theme.naEscalaDoArtigo
-import pt.avante.app.ui.settings.LocalReaderSettings
-import pt.avante.app.ui.components.DuasVozes
-import pt.avante.app.ui.components.ExcertosDoJornal
+import pt.avante.app.theme.tipografiaDoArtigo
 import pt.avante.app.ui.components.TitleBar
-import pt.avante.app.ui.reader.articleHeadingStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,18 +94,14 @@ internal fun NoteEditorFields(
     onTitleChange: (String) -> Unit,
     onBodyChange: (String) -> Unit
 ) {
-    val settings = LocalReaderSettings.current
     // O editor segue o Tamanho e o Espaçamento, como o artigo.
-    val escala = escalaDoArtigo(settings.fontSize)
-    val espacamento = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
+    val tipografia = tipografiaDoArtigo()
     // O título da Nota: a face de display dos Tipos de letra, como os títulos do artigo, um
     // degrau abaixo do título de um artigo.
-    val estiloDoTitulo = articleHeadingStyle(escala.tituloDaNota)
+    val estiloDoTitulo = tipografia.tituloDaNota
     // As palavras do Leitor: a face da Escrita, no corpo e na entrelinha do Tamanho e do Espaçamento.
-    val estiloDoCorpo = MaterialTheme.typography.bodyLarge
-        .naEscalaDoArtigo(escala.corpo)
-        .copy(fontFamily = DuasVozes.escrita, lineHeight = (escala.corpo * espacamento.lineHeight).sp)
-    val largura = larguraDoCampo(espacamento.columnMaxWidthSp)
+    val estiloDoCorpo = tipografia.corpoDaNota
+    val largura = larguraDoCampo(tipografia.espacamento.columnMaxWidthSp)
     val semFundo = TextFieldDefaults.colors(
         focusedContainerColor = Color.Transparent,
         unfocusedContainerColor = Color.Transparent,
@@ -142,7 +133,7 @@ internal fun NoteEditorFields(
             colors = semFundo,
             textStyle = estiloDoCorpo.copy(color = Cores.escrita),
             // As palavras do jornal (`>`): o itálico da face de display, com a marca à vista.
-            visualTransformation = ExcertosDoJornal(DuasVozes.excerto, Cores.textoSecundario)
+            visualTransformation = ExcertosDoJornal(tipografia.excerto, Cores.textoSecundario)
         )
     }
 }

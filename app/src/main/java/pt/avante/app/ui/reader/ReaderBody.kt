@@ -20,11 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
-import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
-import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.tipografiaDoArtigo
 
 /** Altura livre no fim do artigo para o botão flutuante não tapar o último parágrafo: um tamanho, não espaçamento. */
 private val FabClearance = 96.dp
@@ -47,11 +46,9 @@ fun ReaderBody(
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val viewportHeight = maxHeight
         val density = LocalDensity.current.density
-        val readerSettings = LocalReaderSettings.current
         // Largura do texto em ems do corpo (#12): cresce com o Tamanho e com o tamanho do sistema.
-        val columnMaxWidth = with(LocalDensity.current) {
-            ArticleSpacing.resolve(readerSettings.fontSize, readerSettings.spacing).columnMaxWidthSp.sp.toDp()
-        }
+        val columnMaxWidthSp = tipografiaDoArtigo().espacamento.columnMaxWidthSp
+        val columnMaxWidth = with(LocalDensity.current) { columnMaxWidthSp.sp.toDp() }
         val backgroundColor = Cores.fundo
 
         LazyColumn(

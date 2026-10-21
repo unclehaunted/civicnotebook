@@ -13,15 +13,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.avante.app.data.ArticleBlock
-import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.Cores
 import pt.avante.app.theme.PapelDoTexto
 import pt.avante.app.ui.settings.LocalOpenSettings
-import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.escalaDoArtigo
+import pt.avante.app.theme.tipografiaDoArtigo
 
 @Composable
 fun ArticleBlockRenderer(
@@ -60,8 +58,7 @@ fun ArticleBlockRenderer(
 
     // Espaço entre blocos do Espaçamento (#12), em sp para crescer com o texto. Cada bloco
     // leva por baixo o espaço até ao seguinte, que depende do par (ArticleSpacing.gapSp).
-    val settings = LocalReaderSettings.current
-    val spacing = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
+    val spacing = tipografiaDoArtigo().espacamento
     val (gapBelow, quoteIndent) = with(LocalDensity.current) {
         spacing.gapSp(block, next).sp.toDp() to spacing.quoteIndentSp.sp.toDp()
     }
@@ -115,10 +112,9 @@ fun ArticleBlockRenderer(
 /** Subtítulo do artigo: face de display a negrito, um degrau acima do corpo na escala do Tamanho. */
 @Composable
 private fun ArticleSubheading(text: String, modifier: Modifier = Modifier) {
-    val settings = LocalReaderSettings.current
     Text(
         text = text,
-        style = articleHeadingStyle(escalaDoArtigo(settings.fontSize).subtitulo),
+        style = tipografiaDoArtigo().subtitulo,
         color = Cores.textoPrimario,
         modifier = modifier
     )

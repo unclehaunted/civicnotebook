@@ -15,12 +15,10 @@ import androidx.core.widget.TextViewCompat
 import java.util.Locale
 import kotlin.math.roundToInt
 import pt.avante.app.data.ArticleBlock
-import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.LocalPaleta
 import pt.avante.app.theme.PapelDoTexto
-import pt.avante.app.theme.escalaDoArtigo
-import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.tipografiaDoArtigo
 
 /** Ids dos itens do menu de seleção de texto ("Realçar" / "Criar Nota"). */
 const val SELECTION_MENU_HIGHLIGHT = 1
@@ -102,7 +100,7 @@ fun SelectableArticleText(
     onCreateNote: (String, Int, Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val settings = LocalReaderSettings.current
+    val tipografia = tipografiaDoArtigo()
     val paleta = LocalPaleta.current
     val corDoTexto = paleta.cor(papel.cor).toInt()
 
@@ -164,11 +162,11 @@ fun SelectableArticleText(
         },
         update = { view ->
             // Aplicar preferências de leitura (Definições): face e tamanho do papel do bloco.
-            view.typeface = ResourcesCompat.getFont(view.context, papel.faceResId(settings.tiposDeLetra))
-            view.textSize = papel.tamanhoSp(escalaDoArtigo(settings.fontSize))
+            view.typeface = ResourcesCompat.getFont(view.context, tipografia.faceResId(papel))
+            view.textSize = tipografia.tamanhoSp(papel)
             // Entrelinha do Espaçamento, em múltiplos do tamanho do texto (não da altura natural
             // da fonte, que varia de face para face).
-            val lineHeight = ArticleSpacing.resolve(settings.fontSize, settings.spacing).lineHeight
+            val lineHeight = tipografia.espacamento.lineHeight
             TextViewCompat.setLineHeight(view, (view.textSize * lineHeight).roundToInt())
             view.setTextColor(corDoTexto)
 

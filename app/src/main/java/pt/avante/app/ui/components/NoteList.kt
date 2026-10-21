@@ -44,6 +44,7 @@ import pt.avante.app.data.db.NoteEntity
 import pt.avante.app.data.db.NoteType
 import pt.avante.app.data.db.summary
 import pt.avante.app.theme.Cores
+import pt.avante.app.theme.DuasVozes
 import pt.avante.app.theme.Spacing
 import java.text.SimpleDateFormat
 import java.util.Date

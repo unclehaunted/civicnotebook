@@ -22,7 +22,7 @@ import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Cores
 import pt.avante.app.theme.SobreImagem
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.escalaDoArtigo
+import pt.avante.app.theme.tipografiaDoArtigo
 
 @Composable
 fun ReaderHero(
@@ -83,7 +83,7 @@ fun ReaderHero(
             }
             Text(
                 text = title,
-                style = articleHeadingStyle(escalaDoArtigo(settings.fontSize).titulo),
+                style = tipografiaDoArtigo().titulo,
                 color = if (hasImage) SobreImagem.texto else Cores.textoPrimario,
                 modifier = Modifier.padding(bottom = Spacing.xs)
             )
