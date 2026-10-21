@@ -30,8 +30,13 @@ rule() {
 rule cores-literais 0 '#8' 'Color\(0x' ui
 # Estilo sintetizado: itálico/negrito vêm de ficheiros desenhados ou do eixo wght.
 rule estilo-sintetizado 0 '#6' 'setTypeface\(\s*\w+\s*,' .
+# As proporções do masthead (identidade da publicação, #20) foram fixadas pelo
+# mantenedor em 2026-10-21 nas do commit a8bf011 e ficam fora das escalas: os
+# valores vivem todos em MastheadMetrics.kt (ver o KDoc dele e
+# CODING_STANDARDS.md, "Ecrãs e componentes").
+masthead='MastheadMetrics.kt'
 # Texto abaixo de 12sp.
-rule texto-abaixo-de-12sp 0 '#11' 'fontSize\s*=\s*([0-9]|1[01])(\.[0-9]+)?\.sp' .
+rule texto-abaixo-de-12sp 0 '#11' 'fontSize\s*=\s*([0-9]|1[01])(\.[0-9]+)?\.sp' . "$masthead"
 
 # O ecrã do Arquivo é maqueta (#35, #40): fica fora das regras de layout.
 maqueta='ArquivoScreen.kt'

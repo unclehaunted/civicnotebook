@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.ViewCarousel
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.Cores
 import pt.avante.app.ui.components.AvanteMasthead
-import pt.avante.app.theme.Spacing
+import pt.avante.app.ui.components.MastheadMetrics
 
 enum class HomeLayoutMode {
     STACK, GRID, LIST
@@ -40,6 +39,7 @@ fun HomeHeader(
 ) {
     val viewport = pt.avante.app.ui.layout.LocalAppViewport.current
     val isCompact = viewport.isCompactWidth
+    val medidas = MastheadMetrics.de(isCompact)
 
     Surface(
         shadowElevation = 2.dp,
@@ -56,7 +56,7 @@ fun HomeHeader(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = Spacing.m, vertical = Spacing.xs),
+                        .padding(horizontal = medidas.margemLateral, vertical = medidas.margemVerticalDaEdicao),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -68,12 +68,12 @@ fun HomeHeader(
                             Icons.Default.CalendarToday,
                             contentDescription = null,
                             tint = Cores.acento.copy(alpha = if (isCompact) 0.8f else 1f),
-                            modifier = Modifier.size(if (isCompact) 12.dp else 14.dp)
+                            modifier = Modifier.size(medidas.iconeDaEdicao)
                         )
-                        Spacer(modifier = Modifier.width(Spacing.xs))
+                        Spacer(modifier = Modifier.width(medidas.folgaDoIconeDaEdicao))
                         Text(
                             text = editionText,
-                            style = if (isCompact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
+                            style = medidas.edicao,
                             color = if (isCompact) Cores.textoPrimario.copy(alpha = 0.8f) else Cores.textoPrimario,
                             fontWeight = FontWeight.Medium
                         )
@@ -114,10 +114,11 @@ fun HomeHeader(
 
 @Composable
 fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Unit, isFirst: Boolean = false, isLast: Boolean = false, isCompact: Boolean = false) {
+    val medidas = MastheadMetrics.de(isCompact)
+    val canto = medidas.cantoDoSegmento
     val shape = when {
-        // Pontas totalmente redondas e sem cantos no meio: formas, não raios.
-        isFirst -> RoundedCornerShape(topStartPercent = 50, bottomStartPercent = 50)
-        isLast -> RoundedCornerShape(topEndPercent = 50, bottomEndPercent = 50)
+        isFirst -> RoundedCornerShape(topStart = canto, bottomStart = canto)
+        isLast -> RoundedCornerShape(topEnd = canto, bottomEnd = canto)
         else -> RectangleShape
     }
     
@@ -133,10 +134,10 @@ fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Uni
             tint = if (selected) Cores.sobreAcento else Cores.acento,
             modifier = Modifier
                 .padding(
-                    horizontal = if (isCompact) Spacing.xs else Spacing.s,
-                    vertical = Spacing.xxs
+                    horizontal = medidas.folgaLateralDoSegmento,
+                    vertical = medidas.folgaVerticalDoSegmento
                 )
-                .size(if (isCompact) 16.dp else 18.dp)
+                .size(medidas.iconeDoSegmento)
         )
     }
 }

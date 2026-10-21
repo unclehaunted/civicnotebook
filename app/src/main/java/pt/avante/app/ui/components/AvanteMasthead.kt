@@ -12,13 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import pt.avante.app.R
 import pt.avante.app.data.Publication
 import pt.avante.app.theme.Cores
-import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.emMaiusculas
 
+/** O masthead da publicação, nas proporções fixas de [MastheadMetrics]. */
 @Composable
 fun AvanteMasthead(
     onMenuClick: () -> Unit,
@@ -27,35 +25,36 @@ fun AvanteMasthead(
     isCompact: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val medidas = MastheadMetrics.de(isCompact)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = Spacing.m, vertical = if (isCompact) Spacing.xxs else Spacing.xs),
+            .padding(horizontal = medidas.margemLateral, vertical = medidas.margemVerticalDoMasthead),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Tagline
         Text(
             text = "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!",
-            style = MaterialTheme.typography.labelSmall.emMaiusculas(),
+            style = medidas.divisa,
             fontWeight = FontWeight.Bold,
             color = Cores.acento.copy(alpha = if (isCompact) 0.8f else 1f),
-            modifier = Modifier.padding(bottom = if (isCompact) Spacing.xxs else Spacing.xs)
+            modifier = Modifier.padding(bottom = medidas.folgaSobDivisa)
         )
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            IconButton(onClick = onMenuClick, modifier = Modifier.width(48.dp)) {
+            IconButton(onClick = onMenuClick, modifier = Modifier.width(medidas.larguraDoBotaoDeIcone)) {
                 Icon(Icons.Default.Menu, contentDescription = "Menu")
             }
-            
+
             // Logo
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(if (isCompact) 60.dp else 56.dp),
+                    .height(medidas.alturaDoLogotipo),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -65,21 +64,21 @@ fun AvanteMasthead(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            
-            IconButton(onClick = onSearchClick, modifier = Modifier.width(48.dp)) {
+
+            IconButton(onClick = onSearchClick, modifier = Modifier.width(medidas.larguraDoBotaoDeIcone)) {
                 Icon(Icons.Default.Search, contentDescription = "Pesquisar")
             }
         }
-        
+
         // Publication Subtitle
         Text(
             text = publicationSubtitle,
-            style = MaterialTheme.typography.labelMedium,
+            style = medidas.subtitulo,
             color = Cores.textoSecundario,
-            modifier = Modifier.padding(top = Spacing.xxs)
+            modifier = Modifier.padding(top = medidas.folgaSobreSubtitulo)
         )
-        
-        Spacer(modifier = Modifier.height(if (isCompact) Spacing.xxs else Spacing.xs))
-        Divider(color = Cores.acento.copy(alpha = 0.2f), thickness = 2.dp)
+
+        Spacer(modifier = Modifier.height(medidas.folgaSobSubtitulo))
+        Divider(color = Cores.acento.copy(alpha = 0.2f), thickness = medidas.espessuraDoFilete)
     }
 }
