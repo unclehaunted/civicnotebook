@@ -101,6 +101,8 @@ data class HighlightCommentEntity(
     val updatedAt: Long
 )
 
+// Room 2.6 com KSP2: cada função suspend devolve um valor (Unit falha com "unexpected jvm signature V")
+// e `@Transaction open suspend fun` não compila; as transações vivem em extensões (ver DeletedNote.kt, #53).
 @Dao
 abstract class ArticleDao {
 

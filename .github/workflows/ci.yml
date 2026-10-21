@@ -19,11 +19,9 @@ jobs:
       # não há local.properties no CI.
       - uses: gradle/actions/setup-gradle@v6
 
-      - name: Tokens de design
-        run: scripts/check-design-tokens.sh
-
-      - name: Testes unitários, detekt e lint
-        run: ./gradlew testDebugUnitTest detekt lintDebug --stacktrace
+      # Tokens de design, testes unitários, detekt e lint: o mesmo script que corre antes de cada commit.
+      - name: Verificar
+        run: scripts/verify.sh --stacktrace
 
       - name: Relatórios
         if: failure()

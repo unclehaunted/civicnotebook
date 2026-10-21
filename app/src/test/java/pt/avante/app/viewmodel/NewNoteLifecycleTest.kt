@@ -1,6 +1,5 @@
 package pt.avante.app.viewmodel
 
-import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -15,8 +14,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import pt.avante.app.data.db.AppDatabase
+import pt.avante.app.data.db.inMemoryDatabase
 import pt.avante.app.data.db.NoteEntity
 import pt.avante.app.data.db.NoteType
 
@@ -33,9 +32,7 @@ class NewNoteLifecycleTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(dispatcher)
-        db = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.getApplication(), AppDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
+        db = inMemoryDatabase()
         caderno = CadernoViewModel(db)
         editor = NoteViewModel(db)
     }

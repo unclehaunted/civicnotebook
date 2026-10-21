@@ -1,6 +1,5 @@
 package pt.avante.app.data.db
 
-import androidx.room.Room
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -10,7 +9,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 /**
  * Eliminar uma Nota e anular a eliminação, contra uma Room em memória.
@@ -37,9 +35,7 @@ class NoteDeletionTest {
 
     @Before
     fun setUp() = runTest {
-        db = Room.inMemoryDatabaseBuilder(RuntimeEnvironment.getApplication(), AppDatabase::class.java)
-            .allowMainThreadQueries()
-            .build()
+        db = inMemoryDatabase()
         dao = db.articleDao()
         dao.insertNote(note)
         sources.forEach { dao.insertNoteSource(it) }
