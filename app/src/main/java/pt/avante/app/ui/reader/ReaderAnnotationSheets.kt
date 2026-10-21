@@ -103,7 +103,8 @@ fun ReaderAnnotationSheets(
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"${selectedHighlight.selectedText}\"",
-                            style = MaterialTheme.typography.bodyMedium,
+                            // As palavras do jornal: o itálico desenhado da face de display.
+                            style = MaterialTheme.typography.bodyMedium.merge(DuasVozes.excerto),
                             color = Cores.textoSecundario,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis

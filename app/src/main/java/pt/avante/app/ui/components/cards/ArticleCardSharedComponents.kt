@@ -122,14 +122,15 @@ fun NotesBookmarkOverlay(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.semantics { contentDescription = "Artigo com notas" },
         shape = MaterialTheme.shapes.medium.copy(topStart = ZeroCornerSize, bottomEnd = ZeroCornerSize),
-        // O amarelo do Destaque: a fita diz que o Leitor anotou este artigo.
-        color = Cores.destaque,
+        // Neutra, como a pílula do tipo de Nota: o amarelo fica para o Destaque e o vermelho
+        // para o acento, as duas únicas cores com função (spec #5).
+        color = Cores.superficie,
         shadowElevation = 2.dp
     ) {
         Icon(
             imageVector = androidx.compose.material.icons.Icons.Default.Edit,
             contentDescription = null, // Semantics already on Surface
-            tint = Cores.textoPrimario,
+            tint = Cores.textoSecundario,
             modifier = Modifier.padding(Spacing.xs).size(16.dp)
         )
     }
