@@ -33,6 +33,7 @@ import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
 import pt.avante.app.theme.readerFontFamily
 import pt.avante.app.theme.Spacing
+import pt.avante.app.theme.emMaiusculas
 import pt.avante.app.ui.components.TitleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +134,7 @@ fun DefinicoesScreen(
                                 inactiveContentColor = TextSecondary
                             )
                         ) {
-                            Text(size.label, fontSize = 12.sp, maxLines = 1)
+                            Text(size.label, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                         }
                     }
                 }
@@ -331,7 +332,7 @@ private fun SectionHeader(title: String) {
     ) {
         Text(
             text = title.uppercase(),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge.emMaiusculas(),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xs)

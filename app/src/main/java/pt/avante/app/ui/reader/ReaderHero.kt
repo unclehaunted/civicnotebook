@@ -21,6 +21,8 @@ import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
+import pt.avante.app.theme.escalaDoArtigo
+import pt.avante.app.theme.naEscalaDoArtigo
 
 @Composable
 fun ReaderHero(
@@ -81,7 +83,8 @@ fun ReaderHero(
             }
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineLarge
+                    .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).titulo),
                 color = if (hasImage) Color.White else Color(settings.theme.textColor),
                 modifier = Modifier.padding(bottom = Spacing.xs)
             )

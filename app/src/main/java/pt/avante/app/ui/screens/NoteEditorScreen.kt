@@ -20,6 +20,9 @@ import pt.avante.app.theme.WarmPaper
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
 import pt.avante.app.theme.Spacing
+import pt.avante.app.theme.escalaDoArtigo
+import pt.avante.app.theme.naEscalaDoArtigo
+import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.ui.components.TitleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,6 +36,11 @@ fun NoteEditorScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
+    // O editor segue o Tamanho como o artigo; o título da Nota fica um degrau abaixo do de um artigo.
+    val escala = escalaDoArtigo(LocalReaderSettings.current.fontSize)
+    val estiloDoTitulo = MaterialTheme.typography.titleLarge
+        .naEscalaDoArtigo(escala.tituloDaNota)
+        .copy(fontWeight = FontWeight.Bold)
 
     LaunchedEffect(noteId) {
         viewModel.loadNote(noteId, isNewNote)
@@ -76,7 +84,7 @@ fun NoteEditorScreen(
                         TextField(
                             value = note.title,
                             onValueChange = { viewModel.updateTitle(it) },
-                            placeholder = { Text("Título da Nota", style = MaterialTheme.typography.titleLarge) },
+                            placeholder = { Text("Título da Nota", style = estiloDoTitulo) },
                             modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m, vertical = Spacing.xs),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
@@ -84,7 +92,7 @@ fun NoteEditorScreen(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
-                            textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
+                            textStyle = estiloDoTitulo.copy(color = TextPrimary)
                         )
     
                         HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = Spacing.m))
@@ -122,7 +130,9 @@ fun NoteEditorScreen(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(color = TextPrimary)
+                            textStyle = MaterialTheme.typography.bodyLarge
+                                .naEscalaDoArtigo(escala.corpo)
+                                .copy(color = TextPrimary)
                         )
                     }
                 }

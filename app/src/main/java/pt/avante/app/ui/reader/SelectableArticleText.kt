@@ -12,6 +12,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
+import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.ui.settings.LocalReaderSettings
 
 /** Ids dos itens do menu de seleção de texto ("Realçar" / "Criar Nota"). */
@@ -149,7 +150,12 @@ fun SelectableArticleText(
                 else -> settings.font.regularFontResId
             }
             view.typeface = ResourcesCompat.getFont(view.context, faceResId)
-            view.textSize = settings.fontSize.spValue
+            val escala = escalaDoArtigo(settings.fontSize)
+            view.textSize = when {
+                isQuote -> escala.citacao
+                isBold -> escala.pergunta
+                else -> escala.corpo
+            }
             view.setTextColor(settings.theme.textColor.toInt())
 
             if (view.tag != spannableText) {

@@ -23,6 +23,8 @@ import pt.avante.app.theme.TextPrimary
 import pt.avante.app.ui.settings.LocalOpenSettings
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
+import pt.avante.app.theme.escalaDoArtigo
+import pt.avante.app.theme.naEscalaDoArtigo
 
 @Composable
 fun ArticleBlockRenderer(
@@ -65,14 +67,7 @@ fun ArticleBlockRenderer(
         // Mesma margem superior de um parágrafo (nenhuma; o espaço vem do bloco anterior)
         // e margem inferior menor, para a pergunta ficar colada à resposta.
         is ArticleBlock.Question -> selectable(block.content, modifier.padding(bottom = Spacing.xs), isBold = true)
-        is ArticleBlock.Subheading -> {
-            Text(
-                text = block.text,
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color(readerTheme.textColor),
-                modifier = modifier.padding(top = Spacing.m, bottom = Spacing.s)
-            )
-        }
+        is ArticleBlock.Subheading -> ArticleSubheading(block.text, modifier)
         is ArticleBlock.Quote -> {
             Surface(
                 color = Color(readerTheme.quoteSurfaceColor),
@@ -118,4 +113,16 @@ fun ArticleBlockRenderer(
             // Future media handling
         }
     }
+}
+
+/** Subtítulo do artigo: um degrau acima do corpo na escala do Tamanho. */
+@Composable
+private fun ArticleSubheading(text: String, modifier: Modifier = Modifier) {
+    val settings = LocalReaderSettings.current
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineMedium.naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).subtitulo),
+        color = Color(settings.theme.textColor),
+        modifier = modifier.padding(top = Spacing.m, bottom = Spacing.s)
+    )
 }
