@@ -153,7 +153,9 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
             Text(
                 text = note.title,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                // O título da Nota: a face de display dos Tipos de letra, no tamanho do chrome.
+                style = MaterialTheme.typography.titleMedium
+                    .copy(fontFamily = DuasVozes.display, fontWeight = FontWeight.Bold),
                 color = Cores.textoPrimario,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -176,7 +178,8 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"$excerpt\"",
-                            style = MaterialTheme.typography.bodyMedium,
+                            // As palavras do jornal: o itálico desenhado da face de display.
+                            style = MaterialTheme.typography.bodyMedium.merge(DuasVozes.excerto),
                             color = Cores.textoSecundario,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
@@ -188,8 +191,8 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
             if (firstLine != null) {
                 Text(
                     text = firstLine,
-                    style = MaterialTheme.typography.bodyMedium,
-                    // As palavras do Leitor: o papel Escrita.
+                    // As palavras do Leitor: a face e o papel de cor da Escrita.
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = DuasVozes.escrita),
                     color = Cores.escrita,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,

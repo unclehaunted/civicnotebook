@@ -11,8 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.theme.Cores
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
@@ -20,7 +24,10 @@ import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.theme.naEscalaDoArtigo
 import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.ui.components.DuasVozes
+import pt.avante.app.ui.components.ExcertosDoJornal
 import pt.avante.app.ui.components.TitleBar
+import pt.avante.app.ui.reader.articleHeadingStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,12 +40,6 @@ fun NoteEditorScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
-    // O editor segue o Tamanho como o artigo; o título da Nota fica um degrau abaixo do de um artigo.
-    val escala = escalaDoArtigo(LocalReaderSettings.current.fontSize)
-    val estiloDoTitulo = MaterialTheme.typography.titleLarge
-        .naEscalaDoArtigo(escala.tituloDaNota)
-        .copy(fontWeight = FontWeight.Bold)
-
     LaunchedEffect(noteId) {
         viewModel.loadNote(noteId, isNewNote)
     }
@@ -77,64 +78,102 @@ fun NoteEditorScreen(
     
                         HorizontalDivider(color = Cores.divisor)
     
-                        // Title Field
-                        TextField(
-                            value = note.title,
-                            onValueChange = { viewModel.updateTitle(it) },
-                            placeholder = { Text("Título da Nota", style = estiloDoTitulo) },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m, vertical = Spacing.xs),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            textStyle = estiloDoTitulo.copy(color = Cores.textoPrimario)
-                        )
-    
-                        HorizontalDivider(color = Cores.divisor, modifier = Modifier.padding(horizontal = Spacing.m))
-    
-                        // Markdown Toolbar (Simple for now)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Cores.superficie)
-                                .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
-                            horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
-                        ) {
-                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "**Negrito**") }) {
-                                Icon(Icons.Default.FormatBold, contentDescription = "Negrito")
-                            }
-                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "*Itálico*") }) {
-                                Icon(Icons.Default.FormatItalic, contentDescription = "Itálico")
-                            }
-                            IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "\n> Citação") }) {
-                                Icon(Icons.Default.FormatQuote, contentDescription = "Citação")
-                            }
-                        }
-    
-                        HorizontalDivider(color = Cores.divisor)
-    
-                        // Body Field
-                        TextField(
-                            value = note.bodyMarkdown,
-                            onValueChange = { viewModel.updateBody(it) },
-                            placeholder = { Text("Comece a escrever em Markdown...") },
-                            modifier = Modifier.fillMaxSize().padding(Spacing.m),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            textStyle = MaterialTheme.typography.bodyLarge
-                                .naEscalaDoArtigo(escala.corpo)
-                                // As palavras do Leitor: o papel Escrita da Aparência.
-                                .copy(color = Cores.escrita)
+                        NoteEditorFields(
+                            title = note.title,
+                            body = note.bodyMarkdown,
+                            onTitleChange = viewModel::updateTitle,
+                            onBodyChange = viewModel::updateBody
                         )
                     }
                 }
             }
+        }
+    }
+}
+
+/** O título, a barra de markdown e o corpo de uma Nota, sem estado: o ecrã liga-os ao ViewModel. */
+@Composable
+internal fun NoteEditorFields(
+    title: String,
+    body: String,
+    onTitleChange: (String) -> Unit,
+    onBodyChange: (String) -> Unit
+) {
+    val settings = LocalReaderSettings.current
+    // O editor segue o Tamanho e o Espaçamento, como o artigo.
+    val escala = escalaDoArtigo(settings.fontSize)
+    val espacamento = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
+    // O título da Nota: a face de display dos Tipos de letra, como os títulos do artigo, um
+    // degrau abaixo do título de um artigo.
+    val estiloDoTitulo = articleHeadingStyle(escala.tituloDaNota)
+    // As palavras do Leitor: a face da Escrita, no corpo e na entrelinha do Tamanho e do Espaçamento.
+    val estiloDoCorpo = MaterialTheme.typography.bodyLarge
+        .naEscalaDoArtigo(escala.corpo)
+        .copy(fontFamily = DuasVozes.escrita, lineHeight = (escala.corpo * espacamento.lineHeight).sp)
+    val largura = larguraDoCampo(espacamento.columnMaxWidthSp)
+    val semFundo = TextFieldDefaults.colors(
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent
+    )
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        TextField(
+            value = title,
+            onValueChange = onTitleChange,
+            placeholder = { Text("Título da Nota", style = estiloDoTitulo) },
+            modifier = Modifier
+                .padding(horizontal = Spacing.m, vertical = Spacing.xs)
+                .widthIn(max = largura)
+                .fillMaxWidth(),
+            colors = semFundo,
+            textStyle = estiloDoTitulo.copy(color = Cores.textoPrimario)
+        )
+        HorizontalDivider(color = Cores.divisor, modifier = Modifier.padding(horizontal = Spacing.m))
+        BarraDeMarkdown(onInsert = { onBodyChange(body + it) })
+        HorizontalDivider(color = Cores.divisor)
+        TextField(
+            value = body,
+            onValueChange = onBodyChange,
+            placeholder = {
+                Text("Comece a escrever em Markdown...", style = estiloDoCorpo, color = Cores.textoSecundario)
+            },
+            modifier = Modifier.padding(Spacing.m).widthIn(max = largura).fillMaxSize(),
+            colors = semFundo,
+            textStyle = estiloDoCorpo.copy(color = Cores.escrita),
+            // As palavras do jornal (`>`): o itálico da face de display, com a marca à vista.
+            visualTransformation = ExcertosDoJornal(DuasVozes.excerto, Cores.textoSecundario)
+        )
+    }
+}
+
+/** Largura de um campo cujo texto para nos [colunaSp] do artigo: soma-lhe o recuo interno do campo. */
+@Composable
+private fun larguraDoCampo(colunaSp: Float): Dp {
+    val recuo = TextFieldDefaults.contentPaddingWithoutLabel()
+    return with(LocalDensity.current) { colunaSp.sp.toDp() } +
+        recuo.calculateLeftPadding(LayoutDirection.Ltr) +
+        recuo.calculateRightPadding(LayoutDirection.Ltr)
+}
+
+/** Botões que acrescentam markdown ao fim do corpo. */
+@Composable
+private fun BarraDeMarkdown(onInsert: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Cores.superficie)
+            .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
+    ) {
+        IconButton(onClick = { onInsert("**Negrito**") }) {
+            Icon(Icons.Default.FormatBold, contentDescription = "Negrito")
+        }
+        IconButton(onClick = { onInsert("*Itálico*") }) {
+            Icon(Icons.Default.FormatItalic, contentDescription = "Itálico")
+        }
+        IconButton(onClick = { onInsert("\n> Citação") }) {
+            Icon(Icons.Default.FormatQuote, contentDescription = "Citação")
         }
     }
 }
