@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.db.NoteEntity
 import pt.avante.app.data.db.NoteType
+import pt.avante.app.data.db.summary
 import pt.avante.app.theme.AnnotationYellow
 import pt.avante.app.theme.MutedGreen
 import pt.avante.app.theme.OriginalRed
@@ -90,14 +91,10 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
     var expanded by remember { mutableStateOf(false) }
 
-    // Parsing for preview
-    val tags = Regex("""#[\p{L}\p{N}_-]+""").findAll(note.bodyMarkdown).map { it.value }.distinct().toList()
-    val lines = note.bodyMarkdown.split("\n")
-    val excerptLines = lines.filter { it.startsWith(">") }.map { it.removePrefix(">").trim() }
-    val reflectionLines = lines.filter { !it.startsWith(">") && !it.startsWith("#") && it.isNotBlank() }
-
-    val previewExcerpt = excerptLines.firstOrNull()
-    val previewReflection = reflectionLines.firstOrNull()
+    val summary = remember(note.bodyMarkdown) { note.summary() }
+    val excerpt = summary.excerpt
+    val firstLine = summary.firstLine
+    val tags = summary.tags
 
     Surface(
         shape = MaterialTheme.shapes.medium,
@@ -167,7 +164,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
             Spacer(modifier = Modifier.height(Spacing.xs))
 
-            if (previewExcerpt != null) {
+            if (excerpt != null) {
                 Surface(
                     color = WarmPaper,
                     shape = MaterialTheme.shapes.small,
@@ -181,7 +178,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                         )
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
-                            text = "\"$previewExcerpt\"",
+                            text = "\"$excerpt\"",
                             style = MaterialTheme.typography.bodyMedium,
                             color = TextSecondary,
                             maxLines = 2,
@@ -191,9 +188,9 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 }
             }
 
-            if (previewReflection != null) {
+            if (firstLine != null) {
                 Text(
-                    text = previewReflection,
+                    text = firstLine,
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextPrimary,
                     maxLines = 3,
