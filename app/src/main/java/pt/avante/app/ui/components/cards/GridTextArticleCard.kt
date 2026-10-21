@@ -3,7 +3,6 @@ package pt.avante.app.ui.components.cards
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,18 +28,18 @@ fun GridTextArticleCard(
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = WarmPaper),
         border = BorderStroke(1.dp, SoftDivider),
-        shape = RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
+        shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(Spacing.m)
             ) {
                 if (formattedTaxonomy != null) {
                     pt.avante.app.ui.components.CategoryRubricPill(formattedTaxonomy)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Spacing.xs))
                 }
                 
                 Text(
@@ -53,7 +52,7 @@ fun GridTextArticleCard(
                 
                 if (presentation.showFooter || presentation.showFavourite) {
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Spacing.s))
                     ArticleCardFooter(
                         article = article,
                         author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),

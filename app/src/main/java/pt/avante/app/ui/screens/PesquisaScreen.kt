@@ -46,6 +46,7 @@ import pt.avante.app.theme.WarmPaper
 import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
 import pt.avante.app.viewmodel.HomeUiState
 import pt.avante.app.viewmodel.PesquisaViewModel
+import pt.avante.app.theme.Spacing
 
 /** Onde a Pesquisa procura; a ordem é a dos separadores. */
 private enum class SearchScope(val label: String, val placeholder: String) {
@@ -103,7 +104,7 @@ fun PesquisaScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(Spacing.m),
                 placeholder = { Text(searchScope.placeholder, color = TextSecondary) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Pesquisar") },
                 singleLine = true,
@@ -135,7 +136,7 @@ fun PesquisaScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(32.dp)
+                                modifier = Modifier.padding(Spacing.xl)
                             )
                         }
                     } else {
@@ -146,14 +147,16 @@ fun PesquisaScreen(
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = TextPrimary,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(32.dp)
+                                    modifier = Modifier.padding(Spacing.xl)
                                 )
                             }
                         } else {
                             val bookmarkedArticles by viewModel.bookmarkedArticles.collectAsState()
-                            LazyColumn(contentPadding = PaddingValues(bottom = 20.dp, start = 16.dp, end = 16.dp)) {
+                            LazyColumn(
+                                contentPadding = PaddingValues(bottom = Spacing.l, start = Spacing.m, end = Spacing.m)
+                            ) {
                                 items(editionResults) { article ->
-                                    Box(modifier = Modifier.padding(bottom = 16.dp)) {
+                                    Box(modifier = Modifier.padding(bottom = Spacing.m)) {
                                         val presentation = pt.avante.app.ui.presentation.ArticleCardPresentation(
                                             variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW,
                                             spanPolicy = pt.avante.app.ui.presentation.ArticleGridSpanPolicy.FULL_WIDTH,
@@ -184,12 +187,12 @@ fun PesquisaScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = TextPrimary,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(32.dp)
+                                modifier = Modifier.padding(Spacing.xl)
                             )
                         }
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(bottom = 20.dp)
+                            contentPadding = PaddingValues(bottom = Spacing.l)
                         ) {
                             items(noteResults, key = { it.noteId }) { note ->
                                 NoteCard(

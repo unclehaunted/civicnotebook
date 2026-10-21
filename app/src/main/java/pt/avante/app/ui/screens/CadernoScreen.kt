@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -101,8 +100,8 @@ fun CadernoScreen(
                     is CadernoUiState.Success -> {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            contentPadding = PaddingValues(Spacing.m),
+                            verticalArrangement = Arrangement.spacedBy(Spacing.s)
                         ) {
                             items(state.notes, key = { it.noteId }) { note ->
                                 NoteCard(
@@ -136,12 +135,12 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
     val previewReflection = reflectionLines.firstOrNull()
 
     Surface(
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.medium,
         color = Color.White,
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Spacing.m)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -158,16 +157,16 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                     
                     Surface(
                         color = pillColor.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(4.dp)
+                        shape = MaterialTheme.shapes.extraSmall
                     ) {
                         Text(
                             text = pillText,
                             style = MaterialTheme.typography.labelSmall,
                             color = pillColor,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Spacing.xs))
                     Text(
                         text = "•  $dateString",
                         style = MaterialTheme.typography.labelMedium,
@@ -195,7 +194,7 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.s))
             
             Text(
                 text = note.title,
@@ -205,17 +204,17 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                 overflow = TextOverflow.Ellipsis
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             if (previewExcerpt != null) {
                 Surface(
                     color = WarmPaper,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.xs)
                 ) {
-                    Row(modifier = Modifier.padding(12.dp)) {
+                    Row(modifier = Modifier.padding(Spacing.s)) {
                         Box(modifier = Modifier.width(4.dp).height(48.dp).background(OriginalRed))
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"$previewExcerpt\"",
                             style = MaterialTheme.typography.bodyMedium,
@@ -234,23 +233,23 @@ fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Unit) {
                     color = TextPrimary,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = Spacing.xs)
                 )
             }
             
             if (tags.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Spacer(modifier = Modifier.height(Spacing.xs))
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
                     items(tags) { tag ->
                         Surface(
                             color = WarmPaper,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = MaterialTheme.shapes.extraSmall
                         ) {
                             Text(
                                 text = tag,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TextSecondary,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
                             )
                         }
                     }

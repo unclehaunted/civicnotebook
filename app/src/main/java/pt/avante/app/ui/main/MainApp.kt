@@ -28,6 +28,7 @@ import pt.avante.app.ui.layout.LocalAppViewport
 import pt.avante.app.ui.reader.ArticleReaderScreen
 import pt.avante.app.ui.screens.*
 import pt.avante.app.viewmodel.*
+import pt.avante.app.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,7 +115,7 @@ fun MainApp(
                                     imageVector = Icons.Default.ExpandMore,
                                     contentDescription = "Recolher",
                                     tint = TextSecondary,
-                                    modifier = Modifier.align(Alignment.Center).padding(8.dp)
+                                    modifier = Modifier.align(Alignment.Center).padding(Spacing.xs)
                                 )
                             }
                             NavigationBar(containerColor = Color.White) {
@@ -142,7 +143,7 @@ fun MainApp(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { isNavExpanded = true }
-                                    .padding(vertical = 12.dp)
+                                    .padding(vertical = Spacing.s)
                             ) {
                                 val currentIcon = tabs.find { it.first == currentTab }?.second ?: Icons.Default.Home
                                 Icon(
@@ -155,7 +156,7 @@ fun MainApp(
                                     imageVector = currentIcon,
                                     contentDescription = null,
                                     tint = OriginalRed,
-                                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 24.dp)
+                                    modifier = Modifier.align(Alignment.CenterStart).padding(start = Spacing.l)
                                 )
                             }
                         }
@@ -282,8 +283,13 @@ fun MainApp(
             containerColor = Color.White
         ) {
             val context = LocalContext.current
-            Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
-                Text("Menu", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))
+            Column(modifier = Modifier.padding(Spacing.m).fillMaxWidth()) {
+                Text(
+                    "Menu",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = Spacing.m)
+                )
                 
                 ListItem(
                     headlineContent = { Text("Exportar notas") },
@@ -312,7 +318,7 @@ fun MainApp(
                     leadingContent = { Icon(Icons.Default.Info, contentDescription = null) },
                     modifier = Modifier.clickable { showMenuSheet = false }
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Spacing.xl))
             }
         }
     }

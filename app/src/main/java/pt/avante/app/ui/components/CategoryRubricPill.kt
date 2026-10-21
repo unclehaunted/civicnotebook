@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun CategoryRubricPill(
@@ -29,7 +30,7 @@ fun CategoryRubricPill(
             text = formattedTaxonomy,
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
             color = Color.White,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xxs),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

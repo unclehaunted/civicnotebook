@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -31,6 +30,7 @@ import pt.avante.app.data.Article
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.viewmodel.ReaderMode
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ReaderFloatingActions(
@@ -52,7 +52,7 @@ fun ReaderFloatingActions(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 48.dp, start = 16.dp),
+            .padding(top = Spacing.xxl, start = Spacing.m),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
@@ -68,8 +68,8 @@ fun ReaderFloatingActions(
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 48.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(top = Spacing.xxl, end = Spacing.m),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.s)
         ) {
             if (readerMode == ReaderMode.READ_MODE) {
                 IconButton(
@@ -125,7 +125,7 @@ fun ReaderFloatingActions(
                 IconButton(
                     onClick = onShareClick,
                     modifier = Modifier
-                        .padding(bottom = 32.dp)
+                        .padding(bottom = Spacing.xl)
                         .size(48.dp)
                         .background(Color(0xFF4A7C77), CircleShape) // Muted blue-green
                 ) {

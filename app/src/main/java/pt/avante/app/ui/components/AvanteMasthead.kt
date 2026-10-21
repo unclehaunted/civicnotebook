@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import pt.avante.app.R
 import pt.avante.app.data.Publication
 import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun AvanteMasthead(
@@ -30,7 +31,7 @@ fun AvanteMasthead(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = if (isCompact) 4.dp else 8.dp),
+            .padding(horizontal = Spacing.m, vertical = if (isCompact) Spacing.xxs else Spacing.xs),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Tagline
@@ -39,7 +40,7 @@ fun AvanteMasthead(
             style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
-            modifier = Modifier.padding(bottom = if (isCompact) 2.dp else 8.dp)
+            modifier = Modifier.padding(bottom = if (isCompact) Spacing.xxs else Spacing.xs)
         )
         
         Row(
@@ -76,10 +77,10 @@ fun AvanteMasthead(
             text = publicationSubtitle,
             style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelMedium,
             color = Color.Gray,
-            modifier = Modifier.padding(top = 4.dp)
+            modifier = Modifier.padding(top = Spacing.xxs)
         )
         
-        Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 8.dp))
+        Spacer(modifier = Modifier.height(if (isCompact) Spacing.xxs else Spacing.xs))
         Divider(color = OriginalRed.copy(alpha = 0.2f), thickness = 2.dp)
     }
 }
