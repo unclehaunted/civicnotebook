@@ -71,5 +71,6 @@ data class ReaderSettings(
     val escrita: Escrita = Escrita.IA_WRITER_DUO,
     val fontSize: ReaderFontSize = ReaderFontSize.MEDIUM,
     val theme: ReaderTheme = ReaderTheme.PAPER,
-    val showImages: Boolean = true
+    val showImages: Boolean = true,
+    val spacing: ReaderSpacing = ReaderSpacing.NORMAL
 )

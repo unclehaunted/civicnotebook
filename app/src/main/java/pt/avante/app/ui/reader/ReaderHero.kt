@@ -15,7 +15,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import coil.compose.AsyncImage
+import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.Publication
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
@@ -84,7 +86,8 @@ fun ReaderHero(
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineLarge
-                    .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).titulo),
+                    .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).titulo)
+                    .copy(lineHeight = ArticleSpacing.HEADING_LINE_HEIGHT.em),
                 color = if (hasImage) Color.White else Color(settings.theme.textColor),
                 modifier = Modifier.padding(bottom = Spacing.xs)
             )

@@ -17,8 +17,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
+import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
@@ -44,7 +46,12 @@ fun ReaderBody(
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val viewportHeight = maxHeight
         val density = LocalDensity.current.density
-        val readerTheme = LocalReaderSettings.current.theme
+        val readerSettings = LocalReaderSettings.current
+        val readerTheme = readerSettings.theme
+        // Largura do texto em ems do corpo (#12): cresce com o Tamanho e com o tamanho do sistema.
+        val columnMaxWidth = with(LocalDensity.current) {
+            ArticleSpacing.resolve(readerSettings.fontSize, readerSettings.spacing).columnMaxWidthSp.sp.toDp()
+        }
         val backgroundColor = androidx.compose.ui.graphics.Color(readerTheme.backgroundColor)
 
         LazyColumn(
@@ -73,7 +80,7 @@ fun ReaderBody(
                     .padding(top = Spacing.xl),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Column(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
+                Column(modifier = Modifier.articleColumn(columnMaxWidth)) {
                     ReaderProvenance(
                         publication = article.publication,
                         issueNumber = article.issueNumber,
@@ -129,7 +136,7 @@ fun ReaderBody(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
+                Box(modifier = Modifier.articleColumn(columnMaxWidth)) {
                     ArticleBlockRenderer(
                         block = block,
                         index = index,
@@ -150,7 +157,7 @@ fun ReaderBody(
                     modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.xl),
                     contentAlignment = androidx.compose.ui.Alignment.Center
                 ) {
-                    Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
+                    Box(modifier = Modifier.articleColumn(columnMaxWidth)) {
                         ReaderEndMark()
                     }
                 }
@@ -159,6 +166,10 @@ fun ReaderBody(
     }
 }
 }
+
+/** A coluna do artigo: o texto mede no máximo [maxTextWidth], com a margem lateral por fora. */
+private fun Modifier.articleColumn(maxTextWidth: Dp): Modifier =
+    widthIn(max = maxTextWidth + Spacing.l * 2).padding(horizontal = Spacing.l)
 
 /**
  * Índice do bloco que leva a marca de fim do artigo: o último bloco de texto selecionável
