@@ -24,6 +24,7 @@ import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.viewmodel.ReaderMode
 import pt.avante.app.ui.layout.LocalAppViewport
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ReaderActionRail(
@@ -35,12 +36,12 @@ fun ReaderActionRail(
     modifier: Modifier = Modifier
 ) {
     val isCompactHeight = LocalAppViewport.current.isCompactHeight
-    val spacing = if (isCompactHeight) 16.dp else 24.dp
+    val spacing = if (isCompactHeight) Spacing.m else Spacing.l
 
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .padding(vertical = spacing, horizontal = 8.dp),
+            .padding(vertical = spacing, horizontal = Spacing.xs),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(spacing)
     ) {

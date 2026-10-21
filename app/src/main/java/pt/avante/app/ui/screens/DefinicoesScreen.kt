@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -34,6 +33,7 @@ import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
 import pt.avante.app.theme.readerFontFamily
+import pt.avante.app.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +53,7 @@ fun DefinicoesScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 48.dp, start = 8.dp, end = 16.dp, bottom = 8.dp),
+                    .padding(top = Spacing.xxl, start = Spacing.xs, end = Spacing.m, bottom = Spacing.xs),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
@@ -75,8 +75,8 @@ fun DefinicoesScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 48.dp)
+                    .padding(horizontal = Spacing.l)
+                    .padding(bottom = Spacing.xxl)
             ) {
                 // ==================== LEITURA ====================
                 SectionHeader("Leitura")
@@ -84,11 +84,11 @@ fun DefinicoesScreen(
                 // Preview ao vivo
                 Surface(
                     color = Color(settings.theme.backgroundColor),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = MaterialTheme.shapes.medium,
                     border = BorderStroke(1.dp, SoftDivider),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(Spacing.m)) {
                         Text(
                             text = "Proletários de todos os países, uni-vos!",
                             fontFamily = readerFontFamily(settings.font),
@@ -96,7 +96,7 @@ fun DefinicoesScreen(
                             fontSize = settings.fontSize.spValue.sp,
                             color = Color(settings.theme.textColor)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Spacing.xs))
                         Text(
                             text = "O Avante! é o Órgão Central do Partido Comunista Português. " +
                                     "Assim se apresenta, semanalmente, aos seus leitores desde 1931.",
@@ -108,7 +108,7 @@ fun DefinicoesScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(Spacing.l))
 
                 // Tipo de letra
                 SettingLabel("Tipo de letra")
@@ -117,7 +117,7 @@ fun DefinicoesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { settingsStore.setFont(font) }
-                            .padding(vertical = 10.dp),
+                            .padding(vertical = Spacing.s),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -134,7 +134,7 @@ fun DefinicoesScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
 
                 // Tamanho do texto
                 SettingLabel("Tamanho do texto")
@@ -158,13 +158,13 @@ fun DefinicoesScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
 
                 // Cor de fundo
                 SettingLabel("Cor de fundo")
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.m)
                 ) {
                     ReaderTheme.entries.forEach { theme ->
                         val selected = settings.theme == theme
@@ -192,7 +192,7 @@ fun DefinicoesScreen(
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(Spacing.xxs))
                             Text(
                                 text = theme.label,
                                 style = MaterialTheme.typography.labelSmall,
@@ -202,7 +202,7 @@ fun DefinicoesScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
 
                 // Imagens
                 Row(
@@ -232,9 +232,9 @@ fun DefinicoesScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Spacing.xl))
                 HorizontalDivider(color = SoftDivider)
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(Spacing.l))
 
                 // ==================== ACESSO AO ARQUIVO ====================
                 SectionHeader("Acesso ao arquivo")
@@ -246,7 +246,7 @@ fun DefinicoesScreen(
                     color = TextSecondary
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
 
                 when (authState) {
                     AuthState.LOGGED_IN -> {
@@ -256,7 +256,7 @@ fun DefinicoesScreen(
                                     .size(10.dp)
                                     .background(Color(0xFF2F4F46), CircleShape)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(Spacing.xs))
                             Text(
                                 text = "Acesso ativo",
                                 style = MaterialTheme.typography.bodyLarge,
@@ -264,14 +264,14 @@ fun DefinicoesScreen(
                                 fontWeight = FontWeight.Medium
                             )
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Spacing.xs))
                         Text(
                             text = "Se os artigos voltarem a aparecer bloqueados, introduza a nova " +
                                     "palavra-passe publicada no número mais recente.",
                             style = MaterialTheme.typography.bodySmall,
                             color = TextSecondary
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Spacing.m))
                         OutlinedButton(
                             onClick = { authRepository.logout() },
                             border = BorderStroke(1.dp, OriginalRed)
@@ -299,7 +299,7 @@ fun DefinicoesScreen(
                         )
 
                         if (authState == AuthState.PASSWORD_REJECTED) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(Spacing.xs))
                             Text(
                                 text = "Palavra-passe recusada. Confirme que está a usar a publicada " +
                                         "no número mais recente do jornal.",
@@ -308,7 +308,7 @@ fun DefinicoesScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Spacing.m))
 
                         Button(
                             onClick = {
@@ -319,7 +319,7 @@ fun DefinicoesScreen(
                             },
                             enabled = password.isNotBlank() && !loginInProgress,
                             colors = ButtonDefaults.buttonColors(containerColor = OriginalRed),
-                            shape = RoundedCornerShape(8.dp),
+                            shape = MaterialTheme.shapes.small,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             if (loginInProgress) {
@@ -343,17 +343,17 @@ fun DefinicoesScreen(
 private fun SectionHeader(title: String) {
     Surface(
         color = OriginalRed,
-        shape = RoundedCornerShape(6.dp),
+        shape = MaterialTheme.shapes.extraSmall,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp)
+            .padding(bottom = Spacing.s)
     ) {
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelLarge,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+            modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xs)
         )
     }
 }
@@ -364,6 +364,6 @@ private fun SettingLabel(title: String) {
         text = title,
         style = MaterialTheme.typography.labelLarge,
         color = TextSecondary,
-        modifier = Modifier.padding(bottom = 8.dp)
+        modifier = Modifier.padding(bottom = Spacing.xs)
     )
 }

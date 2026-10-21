@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -46,6 +45,7 @@ import pt.avante.app.data.db.NoteType
 import pt.avante.app.theme.AnnotationYellow
 import pt.avante.app.theme.MutedGreen
 import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
@@ -67,8 +67,8 @@ fun NoteList(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        contentPadding = PaddingValues(Spacing.m),
+        verticalArrangement = Arrangement.spacedBy(Spacing.s)
     ) {
         items(notes, key = { it.noteId }) { note ->
             NoteCard(
@@ -100,12 +100,12 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
     val previewReflection = reflectionLines.firstOrNull()
 
     Surface(
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.medium,
         color = Color.White,
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Spacing.m)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -122,16 +122,16 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
                     Surface(
                         color = pillColor.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(4.dp)
+                        shape = MaterialTheme.shapes.extraSmall
                     ) {
                         Text(
                             text = pillText,
                             style = MaterialTheme.typography.labelSmall,
                             color = pillColor,
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Spacing.xs))
                     Text(
                         text = "•  $dateString",
                         style = MaterialTheme.typography.labelMedium,
@@ -165,7 +165,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Spacing.s))
 
             Text(
                 text = note.title,
@@ -175,21 +175,21 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.xs))
 
             if (previewExcerpt != null) {
                 Surface(
                     color = WarmPaper,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.xs)
                 ) {
                     // A altura intrínseca da linha é a do texto; a barra estica até ela.
-                    Row(modifier = Modifier.padding(12.dp).height(IntrinsicSize.Min)) {
+                    Row(modifier = Modifier.padding(Spacing.s).height(IntrinsicSize.Min)) {
                         Box(
                             modifier = Modifier.width(4.dp).fillMaxHeight().background(OriginalRed)
                                 .testTag(EXCERPT_BAR_TAG)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"$previewExcerpt\"",
                             style = MaterialTheme.typography.bodyMedium,
@@ -208,23 +208,23 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                     color = TextPrimary,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = Spacing.xs)
                 )
             }
 
             if (tags.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Spacer(modifier = Modifier.height(Spacing.xs))
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
                     items(tags) { tag ->
                         Surface(
                             color = WarmPaper,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = MaterialTheme.shapes.extraSmall
                         ) {
                             Text(
                                 text = tag,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = TextSecondary,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                modifier = Modifier.padding(horizontal = Spacing.xs, vertical = Spacing.xxs)
                             )
                         }
                     }

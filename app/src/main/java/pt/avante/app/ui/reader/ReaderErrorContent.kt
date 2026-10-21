@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.viewmodel.ReaderErrorReason
+import pt.avante.app.theme.Spacing
 
 /** Título e explicação, em português, de cada motivo de falha. "Offline" só para rede/não guardado. */
 internal fun ReaderErrorReason.title(): String = when (this) {
@@ -57,7 +58,7 @@ fun ReaderErrorContent(
     Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(Spacing.l),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -66,15 +67,15 @@ fun ReaderErrorContent(
                     color = readerTextPrimary,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
                 Text(
                     text = reason.message(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = readerTextSecondary,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(32.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Spacer(modifier = Modifier.height(Spacing.xl))
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.m)) {
                     OutlinedButton(onClick = onBackClick) {
                         Text("Voltar", color = readerTextPrimary)
                     }

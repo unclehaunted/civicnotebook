@@ -27,6 +27,7 @@ import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.viewmodel.ReaderMode
 import pt.avante.app.viewmodel.ReaderUiState
 import pt.avante.app.viewmodel.ReaderViewModel
+import pt.avante.app.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +85,7 @@ fun ArticleReaderScreen(
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                verticalArrangement = Arrangement.spacedBy(Spacing.m)
                             ) {
                                 CircularProgressIndicator(color = OriginalRed, modifier = Modifier.size(32.dp))
                                 Text(

@@ -20,6 +20,7 @@ import pt.avante.app.data.Publication
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ReaderHero(
@@ -66,8 +67,8 @@ fun ReaderHero(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(horizontal = 24.dp)
-                .padding(top = 48.dp, bottom = 32.dp)
+                .padding(horizontal = Spacing.l)
+                .padding(top = Spacing.xxl, bottom = Spacing.xl)
         ) {
             if (!categoryLabel.isNullOrBlank()) {
                 CategoryRubricPill(
@@ -75,14 +76,14 @@ fun ReaderHero(
                         categoryLabel = categoryLabel,
                         subcategoryLabel = subcategoryLabel
                     ),
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = Spacing.xs)
                 )
             }
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineLarge,
                 color = if (hasImage) Color.White else Color(settings.theme.textColor),
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = Spacing.xs)
             )
         }
     }

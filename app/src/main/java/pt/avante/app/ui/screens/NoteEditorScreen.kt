@@ -19,10 +19,10 @@ import pt.avante.app.theme.SoftDivider
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
+import pt.avante.app.theme.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,14 +81,16 @@ fun NoteEditorScreen(
                                 if (state.articleSourceId != null) {
                                     Surface(
                                         color = OriginalRed.copy(alpha = 0.1f),
-                                        shape = RoundedCornerShape(16.dp),
-                                        modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                        modifier = Modifier
+                                            .padding(end = Spacing.m)
+                                            .clickable { onOpenArticle(state.articleSourceId) }
                                     ) {
                                         Text(
                                             "Ver Artigo", 
                                             color = OriginalRed, 
                                             style = MaterialTheme.typography.labelMedium,
-                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                            modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xs)
                                         )
                                     }
                                 }
@@ -103,7 +105,7 @@ fun NoteEditorScreen(
                             value = note.title,
                             onValueChange = { viewModel.updateTitle(it) },
                             placeholder = { Text("Título da Nota", style = MaterialTheme.typography.titleLarge) },
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.m, vertical = Spacing.xs),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
@@ -113,15 +115,15 @@ fun NoteEditorScreen(
                             textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)
                         )
     
-                        HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = 16.dp))
+                        HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = Spacing.m))
     
                         // Markdown Toolbar (Simple for now)
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(Color.White)
-                                .padding(horizontal = 8.dp, vertical = 4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
                         ) {
                             IconButton(onClick = { viewModel.updateBody(note.bodyMarkdown + "**Negrito**") }) {
                                 Icon(Icons.Default.FormatBold, contentDescription = "Negrito")
@@ -141,7 +143,7 @@ fun NoteEditorScreen(
                             value = note.bodyMarkdown,
                             onValueChange = { viewModel.updateBody(it) },
                             placeholder = { Text("Comece a escrever em Markdown...") },
-                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            modifier = Modifier.fillMaxSize().padding(Spacing.m),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,

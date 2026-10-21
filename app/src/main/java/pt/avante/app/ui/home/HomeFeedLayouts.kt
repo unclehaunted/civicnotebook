@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +36,7 @@ import pt.avante.app.ui.presentation.ArticleImageFrequencyAnalyzer
 import pt.avante.app.ui.presentation.ArticlePresentationResolver
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.ui.presentation.FeedViewMode
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ArticleListLayout(
@@ -47,7 +47,7 @@ fun ArticleListLayout(
 ) {
     LazyColumn(
         state = listState,
-        contentPadding = PaddingValues(bottom = 20.dp)
+        contentPadding = PaddingValues(bottom = Spacing.l)
     ) {
         items(articles.size) { index ->
             val summary = articles[index]
@@ -75,8 +75,8 @@ fun ArticleStackPager(
     Box(Modifier.fillMaxSize()) {
         HorizontalPager(
             state = pagerState,
-            contentPadding = PaddingValues(horizontal = 22.dp),
-            pageSpacing = 14.dp
+            contentPadding = PaddingValues(horizontal = Spacing.l),
+            pageSpacing = Spacing.m
         ) { page ->
             val article = articles[page]
             val articleId = pt.avante.app.data.ArticleIdentity.generateStableId(article.url)
@@ -87,7 +87,7 @@ fun ArticleStackPager(
                     .fillMaxWidth()
                     .fillMaxHeight(0.86f)
                     .clickable { onArticleClick(article) },
-                shape = RoundedCornerShape(28.dp),
+                shape = MaterialTheme.shapes.medium,
                 color = Color.White,
                 shadowElevation = 8.dp,
                 border = BorderStroke(1.dp, SoftDivider)
@@ -104,7 +104,7 @@ fun ArticleStackPager(
                                 .heightIn(max = 350.dp)
                         )
 
-                        Column(Modifier.padding(22.dp)) {
+                        Column(Modifier.padding(Spacing.l)) {
                             CategoryRubricPill(
                                 formattedTaxonomy = ArticleTaxonomyFormatter.formatPillText(
                                     categoryLabel = article.categoryLabel,
@@ -112,7 +112,7 @@ fun ArticleStackPager(
                                 )
                             )
 
-                            Spacer(Modifier.height(10.dp))
+                            Spacer(Modifier.height(Spacing.s))
 
                             Text(
                                 text = article.title,
@@ -122,7 +122,7 @@ fun ArticleStackPager(
                                 overflow = TextOverflow.Ellipsis
                             )
 
-                            Spacer(Modifier.height(12.dp))
+                            Spacer(Modifier.height(Spacing.s))
 
                             Text(
                                 text = article.summary,
@@ -137,7 +137,7 @@ fun ArticleStackPager(
                         pt.avante.app.ui.components.cards.NotesBookmarkOverlay(
                             modifier = Modifier
                                 .align(androidx.compose.ui.Alignment.TopEnd)
-                                .padding(16.dp)
+                                .padding(Spacing.m)
                         )
                     }
                 }
@@ -168,7 +168,7 @@ fun ArticleGridLayout(
     LazyVerticalStaggeredGrid(
         columns = columns,
         state = gridState,
-        contentPadding = PaddingValues(bottom = 20.dp, start = 16.dp, end = 16.dp, top = 16.dp),
+        contentPadding = PaddingValues(bottom = Spacing.l, start = Spacing.m, end = Spacing.m, top = Spacing.m),
         verticalItemSpacing = ArticleCardMetrics.gridGap,
         horizontalArrangement = Arrangement.spacedBy(ArticleCardMetrics.gridGap),
         modifier = Modifier.fillMaxSize()
