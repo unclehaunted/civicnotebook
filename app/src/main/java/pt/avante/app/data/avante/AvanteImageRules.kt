@@ -44,4 +44,8 @@ object AvanteImageRules {
         
         return placeholderPatterns.any { pattern -> imageUrl.contains(pattern) }
     }
+
+    /** Uma fotografia do CMS (`/images/cms-image-` ou `get_img?…ImageId=`), não um ícone da página. */
+    fun isArticleImage(imageUrl: String): Boolean =
+        ("/images/cms-image-" in imageUrl || "ImageId=" in imageUrl) && !isPlaceholderImage(imageUrl)
 }

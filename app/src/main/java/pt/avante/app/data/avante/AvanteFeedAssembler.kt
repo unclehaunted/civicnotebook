@@ -12,6 +12,7 @@ import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR
 import pt.avante.app.data.HomeFeed
 import pt.avante.app.data.Publication
+import org.jsoup.nodes.Document
 import pt.avante.app.data.auth.AvanteHttp
 
 object AvanteFeedAssembler {
@@ -108,8 +109,7 @@ object AvanteFeedAssembler {
                             try {
                                 val articleDoc = AvanteHttp.get(summary.url)
                                 if (needsImage) {
-                                    var articleImg = articleDoc.select("article img, .hero-content img").first()?.attr("src")
-                                    finalImage = AvanteImageRules.normalizeImageUrl(articleImg)
+                                    finalImage = ownArticleImage(articleDoc)
                                 }
                                 if (needsAuthor) {
                                     val extractedAuthor = articleDoc.select(".author, .autor").first()?.text()
@@ -127,4 +127,14 @@ object AvanteFeedAssembler {
             }.awaitAll()
         }
     }
+
+    /**
+     * A imagem do próprio artigo: só dentro do primeiro `article` da página. Os seguintes são os
+     * outros da secção, e a imagem de um deles passava a ser a de todas as Opiniões sem imagem.
+     */
+    internal fun ownArticleImage(doc: Document): String? =
+        AvanteArticleParser.selectArticleContainer(doc).select("img")
+            .map { it.attr("src") }
+            .firstOrNull(AvanteImageRules::isArticleImage)
+            ?.let { AvanteImageRules.normalizeImageUrl(it) }
 }
