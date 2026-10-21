@@ -20,7 +20,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import pt.avante.app.data.ReaderFont
 import pt.avante.app.data.ReaderFontSize
 import pt.avante.app.data.ReaderSettingsStore
 import pt.avante.app.data.ReaderTheme
@@ -72,7 +71,7 @@ fun DefinicoesScreen(
                     Column(modifier = Modifier.padding(Spacing.m)) {
                         Text(
                             text = "Proletários de todos os países, uni-vos!",
-                            fontFamily = readerFontFamily(settings.font),
+                            fontFamily = readerFontFamily(settings.tiposDeLetra.display),
                             fontWeight = FontWeight.Bold,
                             fontSize = settings.fontSize.spValue.sp,
                             color = Color(settings.theme.textColor)
@@ -81,7 +80,7 @@ fun DefinicoesScreen(
                         Text(
                             text = "O Avante! é o Órgão Central do Partido Comunista Português. " +
                                     "Assim se apresenta, semanalmente, aos seus leitores desde 1931.",
-                            fontFamily = readerFontFamily(settings.font),
+                            fontFamily = readerFontFamily(settings.tiposDeLetra.texto),
                             fontSize = settings.fontSize.spValue.sp,
                             lineHeight = (settings.fontSize.spValue * 1.4f).sp,
                             color = Color(settings.theme.textColor)
@@ -91,29 +90,18 @@ fun DefinicoesScreen(
 
                 Spacer(modifier = Modifier.height(Spacing.l))
 
-                // Tipo de letra
-                SettingLabel("Tipo de letra")
-                ReaderFont.entries.forEach { font ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { settingsStore.setFont(font) }
-                            .padding(vertical = Spacing.s),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = settings.font == font,
-                            onClick = { settingsStore.setFont(font) },
-                            colors = RadioButtonDefaults.colors(selectedColor = OriginalRed)
-                        )
-                        Text(
-                            text = font.label,
-                            fontFamily = readerFontFamily(font),
-                            fontSize = 17.sp,
-                            color = TextPrimary
-                        )
-                    }
-                }
+                SettingLabel("Tipos de letra")
+                TiposDeLetraOpcoes(settings.tiposDeLetra, settingsStore::setTiposDeLetra)
+
+                Spacer(modifier = Modifier.height(Spacing.m))
+
+                SettingLabel("Escrita")
+                Text(
+                    text = "Para o que escreve nas suas Notas.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+                EscritaOpcoes(settings.escrita, settingsStore::setEscrita)
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 

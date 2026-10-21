@@ -29,10 +29,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.GraphicsMode
 import pt.avante.app.R
 import pt.avante.app.data.ArticleBlock
-import pt.avante.app.data.ReaderFont
 import pt.avante.app.data.ReaderFontSize
 import pt.avante.app.data.ReaderSettings
 import pt.avante.app.data.ReaderTheme
+import pt.avante.app.data.TiposDeLetra
 import pt.avante.app.ui.settings.LocalReaderSettings
 
 /**
@@ -154,7 +154,7 @@ class ArticleBlockRendererTest {
     @Test
     fun question_followsFontSizeAndThemeColour() {
         val settings = ReaderSettings(
-            font = ReaderFont.ATKINSON_HYPERLEGIBLE,
+            tiposDeLetra = TiposDeLetra.LEGIVEL,
             fontSize = ReaderFontSize.XLARGE,
             theme = ReaderTheme.DARK
         )
@@ -177,13 +177,13 @@ class ArticleBlockRendererTest {
 
     // Negrito real: onde a fonte tem ficheiro a 700, usa-se esse e não negrito sintetizado.
     @Test
-    fun question_withAtkinson_usesItsBoldFile() = assertUsesBoldFile(ReaderFont.ATKINSON_HYPERLEGIBLE, R.font.atkinson_hyperlegible_700)
+    fun question_withAtkinson_usesItsBoldFile() = assertUsesBoldFile(TiposDeLetra.LEGIVEL, R.font.atkinson_hyperlegible_700)
 
     @Test
-    fun question_withBitter_usesItsBoldFile() = assertUsesBoldFile(ReaderFont.BITTER, R.font.bitter_700)
+    fun question_withBitter_usesItsBoldFile() = assertUsesBoldFile(TiposDeLetra.LIVRO, R.font.bitter_700)
 
-    private fun assertUsesBoldFile(readerFont: ReaderFont, boldRes: Int) {
-        val view = render(ArticleBlock.Question("Porquê?"), settings = ReaderSettings(font = readerFont))
+    private fun assertUsesBoldFile(tiposDeLetra: TiposDeLetra, boldRes: Int) {
+        val view = render(ArticleBlock.Question("Porquê?"), settings = ReaderSettings(tiposDeLetra = tiposDeLetra))
 
         assertSame(font(boldRes), view.typeface)
         assertFalse(view.paint.isFakeBoldText)
@@ -191,20 +191,21 @@ class ArticleBlockRendererTest {
 
     // #6, story 2: a Pergunta usa o negrito da própria fonte do corpo (eixo wght), não o Bitter 700.
     @Test
-    fun question_withLibreFranklin_usesItsOwnBold() = assertUsesBoldFile(ReaderFont.LIBRE_FRANKLIN, R.font.libre_franklin_bold)
+    fun question_withLibreFranklin_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.CLASSICO, R.font.libre_franklin_bold)
 
     // #6, story 1: a Citação usa o itálico desenhado da fonte, não o regular inclinado.
     @Test
-    fun quote_withAtkinson_usesItsItalicFile() = assertUsesItalicFile(ReaderFont.ATKINSON_HYPERLEGIBLE, R.font.atkinson_hyperlegible_italic)
+    fun quote_withAtkinson_usesItsItalicFile() = assertUsesItalicFile(TiposDeLetra.LEGIVEL, R.font.atkinson_hyperlegible_italic)
 
     @Test
-    fun quote_withBitter_usesItsItalic() = assertUsesItalicFile(ReaderFont.BITTER, R.font.bitter_italic)
+    fun quote_withBitter_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.LIVRO, R.font.bitter_italic)
 
     @Test
-    fun quote_withLibreFranklin_usesItsItalic() = assertUsesItalicFile(ReaderFont.LIBRE_FRANKLIN, R.font.libre_franklin_italic)
+    fun quote_withLibreFranklin_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.CLASSICO, R.font.libre_franklin_italic)
 
-    private fun assertUsesItalicFile(readerFont: ReaderFont, italicRes: Int) {
-        val view = render(ArticleBlock.Quote("A luta continua."), settings = ReaderSettings(font = readerFont))
+    private fun assertUsesItalicFile(tiposDeLetra: TiposDeLetra, italicRes: Int) {
+        val settings = ReaderSettings(tiposDeLetra = tiposDeLetra)
+        val view = render(ArticleBlock.Quote("A luta continua."), settings = settings)
 
         assertSame(font(italicRes), view.typeface)
         assertEquals(0f, view.paint.textSkewX, 0f)
@@ -213,7 +214,8 @@ class ArticleBlockRendererTest {
     // As fontes variáveis abrem na instância Thin: o itálico tem de vir com o peso do texto.
     @Test
     fun quote_withBitter_hasTextWeightNotTheThinDefault() {
-        val view = render(ArticleBlock.Quote("A luta continua."), settings = ReaderSettings(font = ReaderFont.BITTER))
+        val settings = ReaderSettings(tiposDeLetra = TiposDeLetra.LIVRO)
+        val view = render(ArticleBlock.Quote("A luta continua."), settings = settings)
 
         assertTrue(ink(view.typeface) > ink(font(R.font.bitter_italic_vf)) * 1.5f)
     }
@@ -222,7 +224,7 @@ class ArticleBlockRendererTest {
     fun libreFranklin_textIsTheRegularWeightAndQuestionIsHeavier() {
         val (question, text, quote) = renderAll(
             listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Text("Entrei."), ArticleBlock.Quote("A luta.")),
-            ReaderSettings(font = ReaderFont.LIBRE_FRANKLIN)
+            ReaderSettings(tiposDeLetra = TiposDeLetra.CLASSICO)
         )
 
         assertTrue(ink(text.typeface) > ink(font(R.font.libre_franklin_vf)) * 1.5f)
@@ -245,16 +247,16 @@ class ArticleBlockRendererTest {
     }
 
     @Test
-    fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(ReaderFont.SOURCE_SANS, R.font.source_sans_4_bold)
+    fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.MODERNO, R.font.source_sans_4_bold)
 
     @Test
-    fun quote_withSourceSans_usesItsItalic() = assertUsesItalicFile(ReaderFont.SOURCE_SANS, R.font.source_sans_4_italic)
+    fun quote_withSourceSans_usesItsItalic() = assertUsesItalicFile(TiposDeLetra.MODERNO, R.font.source_sans_4_italic)
 
     @Test
     fun sourceSans_textIsTheRegularWeightAndQuestionIsHeavier() {
         val (question, text, quote) = renderAll(
             listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Text("Entrei."), ArticleBlock.Quote("A luta.")),
-            ReaderSettings(font = ReaderFont.SOURCE_SANS)
+            ReaderSettings(tiposDeLetra = TiposDeLetra.MODERNO)
         )
 
         assertTrue(ink(text.typeface) > ink(font(R.font.source_sans_vf)) * 1.5f)

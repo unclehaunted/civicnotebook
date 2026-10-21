@@ -18,16 +18,33 @@ class ReaderSettingsStore(context: Context) {
 
     private fun load(): ReaderSettings {
         return ReaderSettings(
-            font = prefs.getString(KEY_FONT, null).toEnumOrDefault(ReaderFont.LIBRE_FRANKLIN),
+            tiposDeLetra = loadTiposDeLetra(),
+            escrita = prefs.getString(KEY_ESCRITA, null).toEnumOrDefault(Escrita.IA_WRITER_DUO),
             fontSize = prefs.getString(KEY_FONT_SIZE, null).toEnumOrDefault(ReaderFontSize.MEDIUM),
             theme = prefs.getString(KEY_THEME, null).toEnumOrDefault(ReaderTheme.PAPER),
             showImages = prefs.getBoolean(KEY_SHOW_IMAGES, true)
         )
     }
 
-    fun setFont(font: ReaderFont) {
-        prefs.edit().putString(KEY_FONT, font.name).apply()
-        _settings.value = _settings.value.copy(font = font)
+    /** Sem escolha de Tipos de letra guardada, migra a fonte única de antes da #10. */
+    private fun loadTiposDeLetra(): TiposDeLetra =
+        if (prefs.contains(KEY_TIPOS_DE_LETRA)) {
+            prefs.getString(KEY_TIPOS_DE_LETRA, null).toEnumOrDefault(TiposDeLetra.CLASSICO)
+        } else {
+            TiposDeLetra.daFonteAntiga(prefs.getString(KEY_LEGACY_FONT, null))
+        }
+
+    fun setTiposDeLetra(tiposDeLetra: TiposDeLetra) {
+        prefs.edit()
+            .putString(KEY_TIPOS_DE_LETRA, tiposDeLetra.name)
+            .remove(KEY_LEGACY_FONT)
+            .apply()
+        _settings.value = _settings.value.copy(tiposDeLetra = tiposDeLetra)
+    }
+
+    fun setEscrita(escrita: Escrita) {
+        prefs.edit().putString(KEY_ESCRITA, escrita.name).apply()
+        _settings.value = _settings.value.copy(escrita = escrita)
     }
 
     fun setFontSize(fontSize: ReaderFontSize) {
@@ -52,7 +69,11 @@ class ReaderSettingsStore(context: Context) {
 
     companion object {
         private const val PREFS_NAME = "pt.avante.app.reader_settings"
-        private const val KEY_FONT = "reader_font"
+
+        /** A fonte única de antes da #10: só se lê para migrar para [KEY_TIPOS_DE_LETRA]. */
+        private const val KEY_LEGACY_FONT = "reader_font"
+        private const val KEY_TIPOS_DE_LETRA = "reader_tipos_de_letra"
+        private const val KEY_ESCRITA = "reader_escrita"
         private const val KEY_FONT_SIZE = "reader_font_size"
         private const val KEY_THEME = "reader_theme"
         private const val KEY_SHOW_IMAGES = "reader_show_images"

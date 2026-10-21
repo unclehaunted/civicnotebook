@@ -54,6 +54,7 @@ fun readerFontFamily(font: ReaderFont): FontFamily = when (font) {
     ReaderFont.ATKINSON_HYPERLEGIBLE -> AtkinsonHyperlegible
     ReaderFont.BITTER -> Bitter
     ReaderFont.SOURCE_SANS -> SourceSans4
+    ReaderFont.IA_WRITER_DUO -> IAWriterDuo
 }
 
 /**
