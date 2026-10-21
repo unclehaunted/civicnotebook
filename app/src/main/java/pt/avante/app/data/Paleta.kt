@@ -107,7 +107,8 @@ private val SEPIA = Paleta(
     cartao = 0xFFF8F1E0,
     divisor = 0xFFD8C9A8,
     textoPrimario = 0xFF43382C,
-    textoSecundario = 0xFF6B5D4F,
+    // Um tom abaixo de #6B5D4F, que dava 4,15:1 sobre o Destaque (#9).
+    textoSecundario = 0xFF635649,
     acento = 0xFFA51D2D,
     sobreAcento = BRANCO_PURO,
     destaque = 0xFFE9CF83,
@@ -122,12 +123,14 @@ private val ESCURO = Paleta(
     cartao = 0xFF242424,
     divisor = 0xFF454545,
     textoPrimario = 0xFFE3E0DB,
-    textoSecundario = 0xFFA8A29A,
+    // Texto secundário, Citação e Destaque acertados juntos para o texto destacado passar AA
+    // (#9): o Destaque desce um pouco (1,6:1 sobre o fundo, ainda visível) e o texto sobe.
+    textoSecundario = 0xFFADA79F,
     acento = 0xFFFF8A80,
     sobreAcento = 0xFF3B0A0A,
-    destaque = 0xFF5A4A1C,
-    // Um vermelho escuro não passa AA sobre o fundo escuro (#9): fica um tom mais claro.
-    citacao = 0xFFE57373,
+    destaque = 0xFF483B16,
+    // Um vermelho escuro não passa AA no escuro: é um vermelho claro, ainda abaixo do acento.
+    citacao = 0xFFF28C8C,
     escrita = 0xFFF0EDE8,
     escura = true
 )
