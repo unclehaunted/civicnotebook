@@ -7,25 +7,72 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
+/** Seam: as preferências como o Leitor as reencontra ao reabrir a app (um store novo). */
 @RunWith(RobolectricTestRunner::class)
 class ReaderSettingsStoreTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val prefs = context.getSharedPreferences("pt.avante.app.reader_settings", Context.MODE_PRIVATE)
 
-    // #6: o IBM Plex Sans saiu da lista; quem o tinha escolhido passa à fonte por omissão (Clássico em #5).
+    private fun reabrir() = ReaderSettingsStore(context).settings.value
+
     @Test
-    fun storedIbmPlexSans_opensAsLibreFranklin() {
-        context.getSharedPreferences("pt.avante.app.reader_settings", Context.MODE_PRIVATE)
-            .edit().putString("reader_font", "IBM_PLEX_SANS").commit()
+    fun semPreferencias_abreEmClassicoEIaWriterDuo() {
+        assertEquals(TiposDeLetra.CLASSICO, reabrir().tiposDeLetra)
+        assertEquals(Escrita.IA_WRITER_DUO, reabrir().escrita)
+    }
 
-        assertEquals(ReaderFont.LIBRE_FRANKLIN, ReaderSettingsStore(context).settings.value.font)
+    // User story 4: quem escolheu Atkinson Hyperlegible antes da #10 reencontra-o como Legível.
+    @Test
+    fun fonteAntigaAtkinson_abreComoLegivel() {
+        prefs.edit().putString("reader_font", "ATKINSON_HYPERLEGIBLE").commit()
+
+        assertEquals(TiposDeLetra.LEGIVEL, reabrir().tiposDeLetra)
+    }
+
+    // #6: o IBM Plex Sans saiu da lista; quem o tinha escolhido passa a Clássico.
+    @Test
+    fun fonteAntigaIbmPlexSans_abreComoClassico() {
+        prefs.edit().putString("reader_font", "IBM_PLEX_SANS").commit()
+
+        assertEquals(TiposDeLetra.CLASSICO, reabrir().tiposDeLetra)
     }
 
     @Test
-    fun storedFont_isKept() {
-        context.getSharedPreferences("pt.avante.app.reader_settings", Context.MODE_PRIVATE)
-            .edit().putString("reader_font", "SOURCE_SANS").commit()
+    fun tiposDeLetraEscolhidos_ganhamAFonteAntiga() {
+        prefs.edit().putString("reader_font", "ATKINSON_HYPERLEGIBLE").commit()
 
-        assertEquals(ReaderFont.SOURCE_SANS, ReaderSettingsStore(context).settings.value.font)
+        ReaderSettingsStore(context).setTiposDeLetra(TiposDeLetra.MODERNO)
+
+        assertEquals(TiposDeLetra.MODERNO, reabrir().tiposDeLetra)
+    }
+
+    @Test
+    fun tiposDeLetraEscolhidos_ficamGuardados() {
+        val store = ReaderSettingsStore(context)
+        store.setTiposDeLetra(TiposDeLetra.LIVRO)
+
+        assertEquals(TiposDeLetra.LIVRO, store.settings.value.tiposDeLetra)
+        assertEquals(TiposDeLetra.LIVRO, reabrir().tiposDeLetra)
+    }
+
+    @Test
+    fun escritaEscolhida_ficaGuardada() {
+        val store = ReaderSettingsStore(context)
+        store.setEscrita(Escrita.SOURCE_SANS)
+
+        assertEquals(Escrita.SOURCE_SANS, store.settings.value.escrita)
+        assertEquals(Escrita.SOURCE_SANS, reabrir().escrita)
+    }
+
+    @Test
+    fun valorGuardadoDesconhecido_abreNosValoresPorOmissao() {
+        prefs.edit()
+            .putString("reader_tipos_de_letra", "INVERSO")
+            .putString("reader_escrita", "COMIC_SANS")
+            .commit()
+
+        assertEquals(TiposDeLetra.CLASSICO, reabrir().tiposDeLetra)
+        assertEquals(Escrita.IA_WRITER_DUO, reabrir().escrita)
     }
 }

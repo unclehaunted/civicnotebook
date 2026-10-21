@@ -8,11 +8,9 @@ import pt.avante.app.R
  */
 
 /**
- * Cada fonte de leitura tem regular, itálico e negrito desenhados (#6): um ficheiro próprio
- * ou um recurso XML que fixa a instância `wght` de uma fonte variável. Nunca se sintetiza
- * itálico nem negrito sobre o regular.
- *
- * Uma preferência guardada que já não exista (IBM Plex Sans) cai no valor por omissão.
+ * As faces que os [TiposDeLetra] e a [Escrita] combinam. Cada uma tem regular, itálico e negrito
+ * desenhados (#6): um ficheiro próprio ou um recurso XML que fixa a instância `wght` de uma fonte
+ * variável. Nunca se sintetiza itálico nem negrito sobre o regular.
  */
 enum class ReaderFont(
     val label: String,
@@ -38,6 +36,12 @@ enum class ReaderFont(
         R.font.source_sans_4_regular,
         R.font.source_sans_4_italic,
         R.font.source_sans_4_bold
+    ),
+    IA_WRITER_DUO(
+        "iA Writer Duo",
+        R.font.ia_writer_duo_regular,
+        R.font.ia_writer_duo_italic,
+        R.font.ia_writer_duo_bold
     )
 }
 
@@ -63,7 +67,8 @@ enum class ReaderTheme(
 }
 
 data class ReaderSettings(
-    val font: ReaderFont = ReaderFont.LIBRE_FRANKLIN,
+    val tiposDeLetra: TiposDeLetra = TiposDeLetra.CLASSICO,
+    val escrita: Escrita = Escrita.IA_WRITER_DUO,
     val fontSize: ReaderFontSize = ReaderFontSize.MEDIUM,
     val theme: ReaderTheme = ReaderTheme.PAPER,
     val showImages: Boolean = true
