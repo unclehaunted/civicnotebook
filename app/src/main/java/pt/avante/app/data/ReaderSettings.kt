@@ -8,16 +8,37 @@ import pt.avante.app.R
  */
 
 /**
- * [boldFontResId] é o recurso usado nos elementos a negrito (ficheiro a 700).
- * Libre Franklin nunca aparece a negrito: usa o Bitter 700 dos títulos.
- * Null quando a fonte não tem negrito próprio; aí o negrito é sintetizado pelo Android.
+ * Cada fonte de leitura tem regular, itálico e negrito desenhados (#6): um ficheiro próprio
+ * ou um recurso XML que fixa a instância `wght` de uma fonte variável. Nunca se sintetiza
+ * itálico nem negrito sobre o regular.
+ *
+ * Uma preferência guardada que já não exista (IBM Plex Sans) cai no valor por omissão.
  */
-enum class ReaderFont(val label: String, val fontResId: Int, val boldFontResId: Int? = null) {
-    LIBRE_FRANKLIN("Libre Franklin", R.font.libre_franklin, R.font.bitter_700),
-    ATKINSON_HYPERLEGIBLE("Atkinson Hyperlegible", R.font.atkinson_hyperlegible_regular, R.font.atkinson_hyperlegible_700),
-    BITTER("Bitter", R.font.bitter_regular, R.font.bitter_700),
-    IBM_PLEX_SANS("IBM Plex Sans", R.font.ibm_plex_sans_regular),
-    SOURCE_SANS("Source Sans 4", R.font.source_sans_4_regular)
+enum class ReaderFont(
+    val label: String,
+    val regularFontResId: Int,
+    val italicFontResId: Int,
+    val boldFontResId: Int
+) {
+    LIBRE_FRANKLIN(
+        "Libre Franklin",
+        R.font.libre_franklin_regular,
+        R.font.libre_franklin_italic,
+        R.font.libre_franklin_bold
+    ),
+    ATKINSON_HYPERLEGIBLE(
+        "Atkinson Hyperlegible",
+        R.font.atkinson_hyperlegible_regular,
+        R.font.atkinson_hyperlegible_italic,
+        R.font.atkinson_hyperlegible_700
+    ),
+    BITTER("Bitter", R.font.bitter_regular, R.font.bitter_italic, R.font.bitter_700),
+    SOURCE_SANS(
+        "Source Sans 4",
+        R.font.source_sans_4_regular,
+        R.font.source_sans_4_italic,
+        R.font.source_sans_4_bold
+    )
 }
 
 enum class ReaderFontSize(val label: String, val spValue: Float) {

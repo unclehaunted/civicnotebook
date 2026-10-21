@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bitter Italic: instância wght 400 da fonte variável (a instância por omissão é a mais leve). -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        android:font="@font/bitter_italic_vf"
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:fontVariationSettings="'wght' 400"
+        app:font="@font/bitter_italic_vf"
+        app:fontStyle="italic"
+        app:fontWeight="400"
+        app:fontVariationSettings="'wght' 400" />
+</font-family>

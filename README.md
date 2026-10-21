@@ -81,7 +81,7 @@ APK de demonstração disponível em
 
 Requer Android SDK, JDK 17, minSdk 24. Sem Google Play Services, sem
 Firebase — compatível com F-Droid (Jsoup MIT; Room/Compose Apache 2.0;
-fontes sob SIL OFL).
+fontes sob SIL OFL, com as licenças em `licenses/fonts/`).
 
 ## Licença
 
