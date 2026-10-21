@@ -80,6 +80,29 @@ class PaletaTest {
         assertEquals(emptyList<String>(), falhas)
     }
 
+    // WCAG 1.4.11: o contorno de um componente (o campo de pesquisa, em repouso e com foco) é o
+    // que o identifica, por isso fica a 3:1 de cada fundo em cada Aparência.
+    @Test
+    fun oContornoDosComponentes_cumpre3para1_emCadaAparencia() {
+        val falhas = ReaderTheme.entries.flatMap { aparencia ->
+            val paleta = paleta(aparencia)
+            listOf("contorno" to paleta.contorno, "contorno com foco" to paleta.acento).flatMap { (nome, cor) ->
+                FUNDOS_DE_TEXTO.mapNotNull { fundo ->
+                    val razao = contraste(cor, paleta.cor(fundo))
+                    "$aparencia: $nome sobre $fundo = %.2f".format(razao).takeIf { razao < AA_UI }
+                }
+            }
+        }
+        assertEquals(emptyList<String>(), falhas)
+    }
+
+    @Test
+    fun oContorno_eOpaco_emCadaAparencia() {
+        for (aparencia in ReaderTheme.entries) {
+            assertEquals("$aparencia", 0xFFL, paleta(aparencia).contorno ushr 24)
+        }
+    }
+
     // A fórmula de luminância relativa da WCAG 2.x, conferida em valores conhecidos.
     @Test
     fun oContraste_segueAFormulaDaWcag() {
@@ -109,6 +132,9 @@ class PaletaTest {
 
     private companion object {
         const val AA_TEXTO = 4.5
+
+        /** Elementos gráficos e contornos de componentes (WCAG 1.4.11). */
+        const val AA_UI = 3.0
 
         val FUNDOS_DE_TEXTO = listOf(PapelDeCor.FUNDO, PapelDeCor.SUPERFICIE, PapelDeCor.CARTAO)
 

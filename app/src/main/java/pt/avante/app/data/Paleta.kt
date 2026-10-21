@@ -55,6 +55,13 @@ data class Paleta(
     /** Aparência escura: os ícones da barra de estado passam a claros. */
     val escura: Boolean = false
 ) {
+    /**
+     * O contorno de um componente que só o contorno identifica (o campo de pesquisa): opaco e
+     * a 3:1 de cada fundo (WCAG 1.4.11). É o texto secundário, que já passa os 4,5:1 do texto;
+     * o divisor é decorativo e fica abaixo disso.
+     */
+    val contorno: Long get() = textoSecundario
+
     fun cor(papel: PapelDeCor): Long = when (papel) {
         PapelDeCor.FUNDO -> fundo
         PapelDeCor.SUPERFICIE -> superficie

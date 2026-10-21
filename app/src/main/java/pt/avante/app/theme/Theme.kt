@@ -37,6 +37,7 @@ object Cores {
     val destaque: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.destaque)
     val citacao: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.citacao)
     val escrita: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.escrita)
+    val contorno: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.contorno)
 }
 
 /**
@@ -86,7 +87,7 @@ private fun esquemaMaterial(p: Paleta): ColorScheme {
         onError = sobreAcento,
         errorContainer = superficie,
         onErrorContainer = acento,
-        outline = secundario,
+        outline = Color(p.contorno),
         outlineVariant = Color(p.divisor),
         surfaceBright = cartao,
         surfaceDim = superficie,

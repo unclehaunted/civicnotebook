@@ -103,7 +103,7 @@ fun PesquisaScreen(
                 shape = MaterialTheme.shapes.small,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Cores.acento,
-                    unfocusedBorderColor = Cores.textoSecundario.copy(alpha = 0.5f),
+                    unfocusedBorderColor = Cores.contorno,
                     cursorColor = Cores.acento,
                     focusedTextColor = Cores.textoPrimario,
                     unfocusedTextColor = Cores.textoPrimario,
