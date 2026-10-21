@@ -10,27 +10,27 @@ import androidx.compose.ui.unit.sp
 import pt.avante.app.R
 import pt.avante.app.data.ReaderFont
 
-// Itálico e negrito sempre de ficheiros desenhados ou de instâncias wght de fontes variáveis
-// (o Compose aplica o eixo wght a partir de FontWeight): nunca sintetizados (#6).
+// Itálico e negrito sempre de ficheiros desenhados ou dos recursos XML que fixam a instância
+// wght de uma fonte variável (a instância por omissão é a mais leve): nunca sintetizados (#6).
 
 val Bitter = FontFamily(
     Font(R.font.bitter_regular, FontWeight.Normal),
-    Font(R.font.bitter_italic_vf, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.bitter_italic, FontWeight.Normal, FontStyle.Italic),
     Font(R.font.bitter_600, FontWeight.SemiBold),
     Font(R.font.bitter_700, FontWeight.Bold)
 )
 
 val LibreFranklin = FontFamily(
-    Font(R.font.libre_franklin_vf, FontWeight.Normal),
-    Font(R.font.libre_franklin_vf, FontWeight.Medium),
-    Font(R.font.libre_franklin_vf, FontWeight.Bold),
-    Font(R.font.libre_franklin_italic_vf, FontWeight.Normal, FontStyle.Italic)
+    Font(R.font.libre_franklin_regular, FontWeight.Normal),
+    Font(R.font.libre_franklin_medium, FontWeight.Medium),
+    Font(R.font.libre_franklin_bold, FontWeight.Bold),
+    Font(R.font.libre_franklin_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
 val SourceSans4 = FontFamily(
-    Font(R.font.source_sans_vf, FontWeight.Normal),
-    Font(R.font.source_sans_vf, FontWeight.Bold),
-    Font(R.font.source_sans_italic_vf, FontWeight.Normal, FontStyle.Italic)
+    Font(R.font.source_sans_4_regular, FontWeight.Normal),
+    Font(R.font.source_sans_4_bold, FontWeight.Bold),
+    Font(R.font.source_sans_4_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
 val AtkinsonHyperlegible = FontFamily(
