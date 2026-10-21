@@ -109,25 +109,12 @@ fun DefinicoesScreen(
 
                 // Tamanho do texto
                 SettingLabel("Tamanho do texto")
-                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                    ReaderFontSize.entries.forEachIndexed { index, size ->
-                        SegmentedButton(
-                            selected = settings.fontSize == size,
-                            onClick = { settingsStore.setFontSize(size) },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = ReaderFontSize.entries.size
-                            ),
-                            colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = Cores.acento.copy(alpha = 0.1f),
-                                activeContentColor = Cores.acento,
-                                inactiveContentColor = Cores.textoSecundario
-                            )
-                        ) {
-                            Text(size.label, style = MaterialTheme.typography.labelLarge, maxLines = 1)
-                        }
-                    }
-                }
+                OpcoesSegmentadas(
+                    ReaderFontSize.entries,
+                    settings.fontSize,
+                    ReaderFontSize::label,
+                    settingsStore::setFontSize
+                )
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 
@@ -136,8 +123,8 @@ fun DefinicoesScreen(
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 
-                // Cor de fundo
-                SettingLabel("Cor de fundo")
+                // Aparência: as cores da app inteira, não só do artigo (#8)
+                SettingLabel("Aparência")
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.m)
