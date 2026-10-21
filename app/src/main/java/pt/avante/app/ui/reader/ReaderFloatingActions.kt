@@ -46,8 +46,10 @@ fun ReaderFloatingActions(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    // Enrolado, o botão (cartão) pousa no fundo do artigo, quase da mesma cor: só o contorno o
+    // marca, por isso é opaco e a 3:1 (WCAG 1.4.11).
     val buttonBorderModifier =
-        if (isRolledUp) Modifier.border(1.dp, Cores.acento.copy(alpha = 0.5f), CircleShape) else Modifier
+        if (isRolledUp) Modifier.border(1.dp, Cores.contorno, CircleShape) else Modifier
 
     // Back Button
     Row(

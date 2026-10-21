@@ -32,7 +32,8 @@ fun AnnotationActionRow(
             .clickable { onClick() },
         color = background,
         shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, tint.copy(alpha = 0.18f))
+        // Opaco e a 3:1 do fundo da folha (WCAG 1.4.11): sobre a superfície só o contorno marca a linha.
+        border = BorderStroke(1.dp, Cores.contorno)
     ) {
         Row(
             modifier = Modifier.padding(Spacing.m),
