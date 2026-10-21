@@ -19,9 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.theme.Cores
 
 /** Etiqueta da barra sem a margem dos insets, para os testes medirem onde começa. */
 internal const val TITLE_BAR_TAG = "TitleBar"
@@ -48,7 +46,7 @@ fun TitleBar(
 ) {
     Column(
         modifier = modifier
-            .background(WarmPaper)
+            .background(Cores.fundo)
             .windowInsetsPadding(windowInsets)
     ) {
         TopAppBar(
@@ -58,13 +56,13 @@ fun TitleBar(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = Cores.textoPrimario
                     )
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
                             style = MaterialTheme.typography.labelSmall,
-                            color = TextSecondary
+                            color = Cores.textoSecundario
                         )
                     }
                 }
@@ -79,10 +77,10 @@ fun TitleBar(
             actions = actions,
             windowInsets = WindowInsets(0.dp),
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = WarmPaper,
-                titleContentColor = TextPrimary,
-                navigationIconContentColor = TextPrimary,
-                actionIconContentColor = TextPrimary
+                containerColor = Cores.fundo,
+                titleContentColor = Cores.textoPrimario,
+                navigationIconContentColor = Cores.textoPrimario,
+                actionIconContentColor = Cores.textoPrimario
             ),
             modifier = Modifier.testTag(TITLE_BAR_TAG)
         )

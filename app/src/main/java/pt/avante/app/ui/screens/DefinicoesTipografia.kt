@@ -21,10 +21,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Escrita
 import pt.avante.app.data.TiposDeLetra
-import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.readerFontFamily
 
 /** Alvo de toque mínimo de cada opção (48dp), com o rádio desenhado mais pequeno. */
@@ -47,13 +45,13 @@ internal fun TiposDeLetraOpcoes(
                     text = opcao.label,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = readerFontFamily(opcao.display),
-                    color = TextPrimary
+                    color = Cores.textoPrimario
                 )
                 Text(
                     text = faces(opcao),
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = readerFontFamily(opcao.texto),
-                    color = TextSecondary
+                    color = Cores.textoSecundario
                 )
             }
         }
@@ -74,7 +72,7 @@ internal fun EscritaOpcoes(
                     text = opcao.label,
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = readerFontFamily(opcao.face),
-                    color = TextPrimary
+                    color = Cores.textoPrimario
                 )
             }
         }
@@ -98,7 +96,7 @@ private fun OpcaoUnica(selected: Boolean, onClick: () -> Unit, content: @Composa
         RadioButton(
             selected = selected,
             onClick = null,
-            colors = RadioButtonDefaults.colors(selectedColor = OriginalRed)
+            colors = RadioButtonDefaults.colors(selectedColor = Cores.acento)
         )
         Spacer(Modifier.width(Spacing.s))
         Column(content = content)

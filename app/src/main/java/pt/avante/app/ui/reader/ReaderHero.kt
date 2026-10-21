@@ -20,6 +20,8 @@ import pt.avante.app.data.Publication
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.presentation.ArticleTaxonomyFormatter
 import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Cores
+import pt.avante.app.theme.SobreImagem
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.theme.naEscalaDoArtigo
@@ -42,7 +44,7 @@ fun ReaderHero(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(if (hasImage) Color.Transparent else Color(settings.theme.backgroundColor))
+            .background(if (hasImage) Color.Transparent else Cores.fundo)
     ) {
         if (hasImage) {
             // Big photo covering the head space
@@ -59,7 +61,7 @@ fun ReaderHero(
                     .matchParentSize()
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f)),
+                            colors = listOf(Color.Transparent, SobreImagem.veu.copy(alpha = 0.8f)),
                             startY = 200f
                         )
                     )
@@ -85,7 +87,7 @@ fun ReaderHero(
                 text = title,
                 style = MaterialTheme.typography.headlineLarge
                     .naEscalaDoArtigo(escalaDoArtigo(settings.fontSize).titulo),
-                color = if (hasImage) Color.White else Color(settings.theme.textColor),
+                color = if (hasImage) SobreImagem.texto else Cores.textoPrimario,
                 modifier = Modifier.padding(bottom = Spacing.xs)
             )
         }

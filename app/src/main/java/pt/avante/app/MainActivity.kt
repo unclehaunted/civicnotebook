@@ -100,8 +100,9 @@ class MainActivity : ComponentActivity() {
         val noteViewModel: NoteViewModel by viewModels { factory }
         
         setContent {
-            OriginalTheme {
-                val readerSettings by readerSettingsStore.settings.collectAsState()
+            val readerSettings by readerSettingsStore.settings.collectAsState()
+            // A Aparência escolhida pinta a app inteira, não só o artigo (ADR 0001).
+            OriginalTheme(aparencia = readerSettings.theme) {
                 CompositionLocalProvider(
                     pt.avante.app.ui.settings.LocalReaderSettings provides readerSettings
                 ) {

@@ -24,9 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import pt.avante.app.data.ArticleSummary
-import pt.avante.app.theme.SoftDivider
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Cores
 import pt.avante.app.ui.components.ArticleSummaryCard
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.layout.LocalAppViewport
@@ -88,9 +86,9 @@ fun ArticleStackPager(
                     .fillMaxHeight(0.86f)
                     .clickable { onArticleClick(article) },
                 shape = MaterialTheme.shapes.medium,
-                color = Color.White,
+                color = Cores.cartao,
                 shadowElevation = 8.dp,
-                border = BorderStroke(1.dp, SoftDivider)
+                border = BorderStroke(1.dp, Cores.divisor)
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column {
@@ -117,7 +115,7 @@ fun ArticleStackPager(
                             Text(
                                 text = article.title,
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = TextPrimary,
+                                color = Cores.textoPrimario,
                                 maxLines = 4,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -127,7 +125,7 @@ fun ArticleStackPager(
                             Text(
                                 text = article.summary,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = TextSecondary,
+                                color = Cores.textoSecundario,
                                 maxLines = 4,
                                 overflow = TextOverflow.Ellipsis
                             )

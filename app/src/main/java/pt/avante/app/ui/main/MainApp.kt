@@ -7,8 +7,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import pt.avante.app.theme.Cores
 import pt.avante.app.BuildConfig
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.avante.AvanteSite
@@ -195,7 +195,7 @@ fun MainApp(
     if (showMenuSheet) {
         ModalBottomSheet(
             onDismissRequest = { showMenuSheet = false },
-            containerColor = Color.White
+            containerColor = Cores.superficie
         ) {
             val context = LocalContext.current
             MainMenu(

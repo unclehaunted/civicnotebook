@@ -43,13 +43,8 @@ import androidx.compose.ui.unit.dp
 import pt.avante.app.data.db.NoteEntity
 import pt.avante.app.data.db.NoteType
 import pt.avante.app.data.db.summary
-import pt.avante.app.theme.AnnotationYellow
-import pt.avante.app.theme.MutedGreen
-import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -98,7 +93,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = Color.White,
+        color = Cores.cartao,
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
@@ -109,20 +104,22 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    val (pillText, pillColor) = when (note.noteType) {
-                        NoteType.STANDALONE -> "Livre" to Color(0xFF2196F3) // Blue
-                        NoteType.ARTICLE_NOTE -> "Artigo" to MutedGreen // Green
-                        NoteType.EXCERPT_NOTE -> "Excerto" to AnnotationYellow // Amber
-                        NoteType.REFLECTION -> "Reflexão" to Color(0xFF9C27B0) // Purple
-                        NoteType.COMMENTARY -> "Comentário" to OriginalRed // Red
+                    // O tipo diz-se pelo rótulo; a pill é neutra para o amarelo do Destaque e o
+                    // vermelho do acento guardarem o seu sentido (#8).
+                    val pillText = when (note.noteType) {
+                        NoteType.STANDALONE -> "Livre"
+                        NoteType.ARTICLE_NOTE -> "Artigo"
+                        NoteType.EXCERPT_NOTE -> "Excerto"
+                        NoteType.REFLECTION -> "Reflexão"
+                        NoteType.COMMENTARY -> "Comentário"
                     }
 
-                    Pill(text = pillText, containerColor = pillColor.copy(alpha = 0.1f), contentColor = pillColor)
+                    Pill(text = pillText, containerColor = Cores.superficie, contentColor = Cores.textoSecundario)
                     Spacer(modifier = Modifier.width(Spacing.xs))
                     Text(
                         text = "•  $dateString",
                         style = MaterialTheme.typography.labelMedium,
-                        color = TextSecondary
+                        color = Cores.textoSecundario
                     )
                 }
                 Box {
@@ -131,21 +128,21 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                         Icon(
                             Icons.Default.MoreVert,
                             contentDescription = "Mais opções",
-                            tint = TextSecondary,
+                            tint = Cores.textoSecundario,
                             modifier = Modifier.size(20.dp)
                         )
                     }
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.background(Color.White)
+                        modifier = Modifier.background(Cores.superficie)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Editar", color = TextPrimary) },
+                            text = { Text("Editar", color = Cores.textoPrimario) },
                             onClick = { expanded = false; onClick() }
                         )
                         DropdownMenuItem(
-                            text = { Text("Eliminar", color = OriginalRed) },
+                            text = { Text("Eliminar", color = Cores.acento) },
                             onClick = { expanded = false; onDelete() }
                         )
                     }
@@ -157,7 +154,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
             Text(
                 text = note.title,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = TextPrimary,
+                color = Cores.textoPrimario,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -166,21 +163,21 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
 
             if (excerpt != null) {
                 Surface(
-                    color = WarmPaper,
+                    color = Cores.fundo,
                     shape = MaterialTheme.shapes.small,
                     modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.xs)
                 ) {
                     // A altura intrínseca da linha é a do texto; a barra estica até ela.
                     Row(modifier = Modifier.padding(Spacing.s).height(IntrinsicSize.Min)) {
                         Box(
-                            modifier = Modifier.width(4.dp).fillMaxHeight().background(OriginalRed)
+                            modifier = Modifier.width(4.dp).fillMaxHeight().background(Cores.acento)
                                 .testTag(EXCERPT_BAR_TAG)
                         )
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"$excerpt\"",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary,
+                            color = Cores.textoSecundario,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -192,7 +189,8 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 Text(
                     text = firstLine,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextPrimary,
+                    // As palavras do Leitor: o papel Escrita.
+                    color = Cores.escrita,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(bottom = Spacing.xs)
@@ -203,7 +201,7 @@ internal fun NoteCard(note: NoteEntity, onClick: () -> Unit, onDelete: () -> Uni
                 Spacer(modifier = Modifier.height(Spacing.xs))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(Spacing.xs)) {
                     items(tags) { tag ->
-                        Pill(text = tag, containerColor = WarmPaper, contentColor = TextSecondary)
+                        Pill(text = tag, containerColor = Cores.fundo, contentColor = Cores.textoSecundario)
                     }
                 }
             }

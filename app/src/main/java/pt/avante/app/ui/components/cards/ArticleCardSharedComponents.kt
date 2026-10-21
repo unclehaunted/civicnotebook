@@ -46,7 +46,7 @@ fun ArticleThumbnail(
         Box(
             modifier = modifier
                 .clip(shape)
-                .background(WarmPaper),
+                .background(Cores.fundo),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -83,8 +83,8 @@ fun ArticleCardFooter(
             val displayAuthor = author.ifBlank { pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR }
             Pill(
                 text = displayAuthor,
-                containerColor = WarmPaper,
-                contentColor = TextSecondary,
+                containerColor = Cores.fundo,
+                contentColor = Cores.textoSecundario,
                 horizontalPadding = Spacing.s
             )
         }
@@ -97,7 +97,7 @@ fun ArticleCardFooter(
                 Box(
                     modifier = Modifier
                         .size(8.dp)
-                        .background(pt.avante.app.theme.OriginalRed, androidx.compose.foundation.shape.CircleShape)
+                        .background(Cores.acento, androidx.compose.foundation.shape.CircleShape)
                         .semantics { contentDescription = "Artigo exclusivo" }
                 )
             }
@@ -106,7 +106,7 @@ fun ArticleCardFooter(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Guardar",
-                    tint = Color.LightGray,
+                    tint = Cores.textoSecundario,
                     modifier = Modifier
                         .size(24.dp)
                         .clip(CircleShape)
@@ -122,13 +122,14 @@ fun NotesBookmarkOverlay(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.semantics { contentDescription = "Artigo com notas" },
         shape = MaterialTheme.shapes.medium.copy(topStart = ZeroCornerSize, bottomEnd = ZeroCornerSize),
-        color = Color(0xFFFFD54F), // Yellow ribbon
+        // O amarelo do Destaque: a fita diz que o Leitor anotou este artigo.
+        color = Cores.destaque,
         shadowElevation = 2.dp
     ) {
         Icon(
             imageVector = androidx.compose.material.icons.Icons.Default.Edit,
             contentDescription = null, // Semantics already on Surface
-            tint = Color(0xFF5D4037), // Dark brown/ink
+            tint = Cores.textoPrimario,
             modifier = Modifier.padding(Spacing.xs).size(16.dp)
         )
     }

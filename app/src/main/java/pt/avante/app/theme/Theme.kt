@@ -1,54 +1,128 @@
 package pt.avante.app.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.app.Activity
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import pt.avante.app.data.Paleta
+import pt.avante.app.data.ReaderTheme
+import pt.avante.app.data.paleta
 
-private val DarkColorScheme = darkColorScheme(
-    primary = DeepOriginalRed,
-    secondary = MutedGreen,
-    tertiary = AnnotationYellow,
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
-    onPrimary = Color.White,
-    onBackground = Color(0xFFE0E0E0),
-    onSurface = Color(0xFFE0E0E0)
-)
+/** A paleta da Aparência atual, provida por [OriginalTheme]. */
+val LocalPaleta = staticCompositionLocalOf { paleta(ReaderTheme.PAPER) }
 
-private val LightColorScheme = lightColorScheme(
-    primary = OriginalRed,
-    secondary = MutedGreen,
-    tertiary = AnnotationYellow,
-    background = WarmPaper,
-    surface = CardSurface,
-    onPrimary = Color.White,
-    onBackground = TextPrimary,
-    onSurface = TextSecondary
-)
+/**
+ * Os papéis de cor da Aparência atual (ADR 0001), para a UI. Texto e superfícies novos escolhem
+ * um papel daqui ou de `MaterialTheme.colorScheme`, que é feito da mesma paleta; nunca uma cor.
+ */
+object Cores {
+    val fundo: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.fundo)
+    val superficie: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.superficie)
+    val cartao: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.cartao)
+    val divisor: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.divisor)
+    val textoPrimario: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.textoPrimario)
+    val textoSecundario: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.textoSecundario)
+    val acento: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.acento)
+    val sobreAcento: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.sobreAcento)
+    val destaque: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.destaque)
+    val citacao: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.citacao)
+    val escrita: Color @Composable @ReadOnlyComposable get() = Color(LocalPaleta.current.escrita)
+}
 
+/**
+ * Texto e véu pousados sobre uma fotografia: não mudam com a Aparência, porque o fundo é a
+ * imagem e não a paleta.
+ */
+object SobreImagem {
+    val texto: Color = Color.White
+    val veu: Color = Color.Black
+}
+
+/** O esquema Material feito da paleta: os componentes Material ficam na mesma Aparência. */
+private fun esquemaMaterial(p: Paleta): ColorScheme {
+    val fundo = Color(p.fundo)
+    val superficie = Color(p.superficie)
+    val cartao = Color(p.cartao)
+    val texto = Color(p.textoPrimario)
+    val secundario = Color(p.textoSecundario)
+    val acento = Color(p.acento)
+    val sobreAcento = Color(p.sobreAcento)
+    val base = if (p.escura) darkColorScheme() else lightColorScheme()
+    return base.copy(
+        primary = acento,
+        onPrimary = sobreAcento,
+        primaryContainer = superficie,
+        onPrimaryContainer = texto,
+        inversePrimary = acento,
+        secondary = secundario,
+        onSecondary = fundo,
+        secondaryContainer = superficie,
+        onSecondaryContainer = texto,
+        tertiary = Color(p.destaque),
+        onTertiary = texto,
+        tertiaryContainer = Color(p.destaque),
+        onTertiaryContainer = texto,
+        background = fundo,
+        onBackground = texto,
+        surface = fundo,
+        onSurface = texto,
+        surfaceVariant = superficie,
+        onSurfaceVariant = secundario,
+        // Sem tinta de elevação: uma superfície elevada não se tinge de vermelho.
+        surfaceTint = fundo,
+        inverseSurface = texto,
+        inverseOnSurface = fundo,
+        error = acento,
+        onError = sobreAcento,
+        errorContainer = superficie,
+        onErrorContainer = acento,
+        outline = secundario,
+        outlineVariant = Color(p.divisor),
+        surfaceBright = cartao,
+        surfaceDim = superficie,
+        surfaceContainerLowest = cartao,
+        surfaceContainerLow = cartao,
+        surfaceContainer = superficie,
+        surfaceContainerHigh = superficie,
+        surfaceContainerHighest = superficie
+    )
+}
+
+/**
+ * O tema da app inteira, na Aparência escolhida nas Definições (ADR 0001). As cores dinâmicas
+ * do sistema ficam de fora: apagariam a identidade do jornal.
+ */
 @Composable
 fun OriginalTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  // Dynamic color is available on Android 12+ but we disable it by default to enforce our brand identity
-  dynamicColor: Boolean = false,
-  content: @Composable () -> Unit,
+    aparencia: ReaderTheme = ReaderTheme.PAPER,
+    content: @Composable () -> Unit,
 ) {
-  val colorScheme =
-    when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-        val context = LocalContext.current
-        if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
-      darkTheme -> DarkColorScheme
-      else -> LightColorScheme
+    val paleta = paleta(aparencia)
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            val barras = WindowCompat.getInsetsController(window, view)
+            barras.isAppearanceLightStatusBars = !paleta.escura
+            barras.isAppearanceLightNavigationBars = !paleta.escura
+        }
     }
-
-  MaterialTheme(colorScheme = colorScheme, typography = Typography, shapes = AppShapes, content = content)
+    CompositionLocalProvider(LocalPaleta provides paleta) {
+        MaterialTheme(
+            colorScheme = remember(paleta) { esquemaMaterial(paleta) },
+            typography = Typography,
+            shapes = AppShapes,
+            content = content
+        )
+    }
 }

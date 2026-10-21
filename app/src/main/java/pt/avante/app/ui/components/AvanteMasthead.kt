@@ -9,14 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pt.avante.app.R
 import pt.avante.app.data.Publication
-import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.emMaiusculas
 
@@ -39,7 +38,7 @@ fun AvanteMasthead(
             text = "PROLETÁRIOS DE TODOS OS PAÍSES, UNI-VOS!",
             style = MaterialTheme.typography.labelSmall.emMaiusculas(),
             fontWeight = FontWeight.Bold,
-            color = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
+            color = Cores.acento.copy(alpha = if (isCompact) 0.8f else 1f),
             modifier = Modifier.padding(bottom = if (isCompact) Spacing.xxs else Spacing.xs)
         )
         
@@ -76,11 +75,11 @@ fun AvanteMasthead(
         Text(
             text = publicationSubtitle,
             style = MaterialTheme.typography.labelMedium,
-            color = Color.Gray,
+            color = Cores.textoSecundario,
             modifier = Modifier.padding(top = Spacing.xxs)
         )
         
         Spacer(modifier = Modifier.height(if (isCompact) Spacing.xxs else Spacing.xs))
-        Divider(color = OriginalRed.copy(alpha = 0.2f), thickness = 2.dp)
+        Divider(color = Cores.acento.copy(alpha = 0.2f), thickness = 2.dp)
     }
 }

@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Cores
+import pt.avante.app.theme.SobreImagem
 import pt.avante.app.viewmodel.ReaderMode
 import pt.avante.app.theme.Spacing
 
@@ -46,7 +46,8 @@ fun ReaderFloatingActions(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val buttonBorderModifier = if (isRolledUp) Modifier.border(1.dp, OriginalRed.copy(alpha = 0.5f), CircleShape) else Modifier
+    val buttonBorderModifier =
+        if (isRolledUp) Modifier.border(1.dp, Cores.acento.copy(alpha = 0.5f), CircleShape) else Modifier
 
     // Back Button
     Row(
@@ -57,9 +58,10 @@ fun ReaderFloatingActions(
     ) {
         IconButton(
             onClick = onBackClick,
-            modifier = Modifier.background(Color.Black.copy(alpha = 0.4f), CircleShape)
+            // Pousado sobre a fotografia do artigo.
+            modifier = Modifier.background(SobreImagem.veu.copy(alpha = 0.4f), CircleShape)
         ) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.White)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = SobreImagem.texto)
         }
     }
 
@@ -74,20 +76,20 @@ fun ReaderFloatingActions(
             if (readerMode == ReaderMode.READ_MODE) {
                 IconButton(
                     onClick = onCreateNoteClick,
-                    modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Color.White, CircleShape)
+                    modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Cores.cartao, CircleShape)
                 ) {
-                    Icon(Icons.Default.NoteAdd, contentDescription = "Criar nota do artigo", tint = OriginalRed)
+                    Icon(Icons.Default.NoteAdd, contentDescription = "Criar nota do artigo", tint = Cores.acento)
                 }
                 IconButton(
                     onClick = onToggleAnnotationMode,
-                    modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Color.White, CircleShape)
+                    modifier = Modifier.size(48.dp).then(buttonBorderModifier).background(Cores.cartao, CircleShape)
                 ) {
-                    Icon(Icons.Default.Edit, contentDescription = "Ativar Modo de Anotação", tint = OriginalRed)
+                    Icon(Icons.Default.Edit, contentDescription = "Ativar Modo de Anotação", tint = Cores.acento)
                 }
             } else {
                 // Annotation mode active - show exit button with stronger visual
                 Surface(
-                    color = OriginalRed,
+                    color = Cores.acento,
                     shape = CircleShape,
                     shadowElevation = 4.dp,
                     modifier = Modifier.size(48.dp).clickable { onToggleAnnotationMode() }
@@ -96,7 +98,7 @@ fun ReaderFloatingActions(
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "Sair do Modo de Anotação",
-                            tint = Color.White,
+                            tint = Cores.sobreAcento,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -117,7 +119,7 @@ fun ReaderFloatingActions(
                     .height(140.dp)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color(LocalReaderSettings.current.theme.backgroundColor))
+                            colors = listOf(Color.Transparent, Cores.fundo)
                         )
                     ),
                 contentAlignment = Alignment.BottomCenter
@@ -127,12 +129,13 @@ fun ReaderFloatingActions(
                     modifier = Modifier
                         .padding(bottom = Spacing.xl)
                         .size(48.dp)
-                        .background(Color(0xFF4A7C77), CircleShape) // Muted blue-green
+                        // Neutro: o vermelho é o único acento (ADR 0001).
+                        .background(Cores.cartao, CircleShape)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Share, 
-                        contentDescription = "Partilhar", 
-                        tint = Color.White, 
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Partilhar",
+                        tint = Cores.textoPrimario,
                         modifier = Modifier.size(20.dp)
                     )
                 }

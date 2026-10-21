@@ -3,9 +3,8 @@ package pt.avante.app.ui.components
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 
 @Composable
@@ -17,8 +16,8 @@ fun CategoryRubricPill(
 
     Pill(
         text = formattedTaxonomy,
-        containerColor = OriginalRed,
-        contentColor = Color.White,
+        containerColor = Cores.acento,
+        contentColor = Cores.sobreAcento,
         modifier = modifier,
         shape = CircleShape,
         horizontalPadding = Spacing.s,

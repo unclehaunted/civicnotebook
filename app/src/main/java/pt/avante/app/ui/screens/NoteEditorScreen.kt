@@ -13,10 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.SoftDivider
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.theme.Cores
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
 import pt.avante.app.theme.Spacing
@@ -48,18 +45,18 @@ fun NoteEditorScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = WarmPaper
+        color = Cores.fundo
     ) {
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
             when (val state = uiState) {
                 is NoteEditorUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = OriginalRed)
+                        CircularProgressIndicator(color = Cores.acento)
                     }
                 }
                 is NoteEditorUiState.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(state.message, color = OriginalRed)
+                        Text(state.message, color = Cores.acento)
                     }
                 }
                 is NoteEditorUiState.Success -> {
@@ -72,13 +69,13 @@ fun NoteEditorScreen(
                             actions = {
                                 if (state.articleSourceId != null) {
                                     TextButton(onClick = { onOpenArticle(state.articleSourceId) }) {
-                                        Text("Ver Artigo", color = OriginalRed)
+                                        Text("Ver Artigo", color = Cores.acento)
                                     }
                                 }
                             }
                         )
     
-                        HorizontalDivider(color = SoftDivider)
+                        HorizontalDivider(color = Cores.divisor)
     
                         // Title Field
                         TextField(
@@ -92,16 +89,16 @@ fun NoteEditorScreen(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
-                            textStyle = estiloDoTitulo.copy(color = TextPrimary)
+                            textStyle = estiloDoTitulo.copy(color = Cores.textoPrimario)
                         )
     
-                        HorizontalDivider(color = SoftDivider, modifier = Modifier.padding(horizontal = Spacing.m))
+                        HorizontalDivider(color = Cores.divisor, modifier = Modifier.padding(horizontal = Spacing.m))
     
                         // Markdown Toolbar (Simple for now)
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color.White)
+                                .background(Cores.superficie)
                                 .padding(horizontal = Spacing.xs, vertical = Spacing.xxs),
                             horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
                         ) {
@@ -116,7 +113,7 @@ fun NoteEditorScreen(
                             }
                         }
     
-                        HorizontalDivider(color = SoftDivider)
+                        HorizontalDivider(color = Cores.divisor)
     
                         // Body Field
                         TextField(
@@ -132,7 +129,8 @@ fun NoteEditorScreen(
                             ),
                             textStyle = MaterialTheme.typography.bodyLarge
                                 .naEscalaDoArtigo(escala.corpo)
-                                .copy(color = TextPrimary)
+                                // As palavras do Leitor: o papel Escrita da Aparência.
+                                .copy(color = Cores.escrita)
                         )
                     }
                 }

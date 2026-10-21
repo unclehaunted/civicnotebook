@@ -12,6 +12,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
+import pt.avante.app.theme.LocalPaleta
 import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.ui.settings.LocalReaderSettings
 
@@ -19,20 +20,23 @@ import pt.avante.app.ui.settings.LocalReaderSettings
 const val SELECTION_MENU_HIGHLIGHT = 1
 const val SELECTION_MENU_CREATE_NOTE = 2
 
+/** [corDoDestaque] e [corDoSimbolo] são ARGB da paleta da Aparência (Destaque, texto secundário). */
 fun buildHighlightedText(
     text: String,
     highlights: List<HighlightEntity>,
     blockIndex: Int,
     onHighlightClick: (HighlightEntity) -> Unit,
+    corDoDestaque: Int,
+    corDoSimbolo: Int,
     isFinalBlock: Boolean = false
 ): SpannableString {
     val baseText = if (isFinalBlock) "$text ☭" else text
     val spannable = SpannableString(baseText)
-    
+
     if (isFinalBlock) {
         val symbolStart = baseText.length - 1
         spannable.setSpan(
-            android.text.style.ForegroundColorSpan(android.graphics.Color.parseColor("#888888")),
+            android.text.style.ForegroundColorSpan(corDoSimbolo),
             symbolStart,
             baseText.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -53,7 +57,7 @@ fun buildHighlightedText(
 
             if (start < end) {
                 spannable.setSpan(
-                    BackgroundColorSpan(android.graphics.Color.argb(90, 214, 178, 94)),
+                    BackgroundColorSpan(corDoDestaque),
                     start,
                     end,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -91,13 +95,18 @@ fun SelectableArticleText(
     modifier: Modifier = Modifier
 ) {
     val settings = LocalReaderSettings.current
+    val paleta = LocalPaleta.current
+    // A Citação tem cor própria, um vermelho da família do acento (#7).
+    val corDoTexto = (if (isQuote) paleta.citacao else paleta.textoPrimario).toInt()
 
-    val spannableText = androidx.compose.runtime.remember(content, articleHighlights, index, isFinalBlock) {
+    val spannableText = androidx.compose.runtime.remember(content, articleHighlights, index, isFinalBlock, paleta) {
         buildHighlightedText(
             text = content,
             highlights = articleHighlights,
             blockIndex = index,
             onHighlightClick = onHighlightClick,
+            corDoDestaque = paleta.destaque.toInt(),
+            corDoSimbolo = paleta.textoSecundario.toInt(),
             isFinalBlock = isFinalBlock
         )
     }
@@ -158,7 +167,7 @@ fun SelectableArticleText(
                 isBold -> escala.pergunta
                 else -> escala.corpo
             }
-            view.setTextColor(settings.theme.textColor.toInt())
+            view.setTextColor(corDoTexto)
 
             if (view.tag != spannableText) {
                 view.text = spannableText

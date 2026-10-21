@@ -29,8 +29,8 @@ fun CompactRowArticleCard(
                 horizontal = ArticleCardMetrics.cardHorizontalPadding, 
                 vertical = Spacing.xs
             ),
-        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.White),
-        border = androidx.compose.foundation.BorderStroke(1.dp, SoftDivider),
+        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = Cores.cartao),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Cores.divisor),
         shape = MaterialTheme.shapes.medium,
         elevation = androidx.compose.material3.CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
     ) {
@@ -53,7 +53,7 @@ fun CompactRowArticleCard(
                             Text(
                                 text = formattedTaxonomy,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = OriginalRed,
+                                color = Cores.acento,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -62,7 +62,7 @@ fun CompactRowArticleCard(
                         Text(
                             text = article.title,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = TextPrimary,
+                            color = Cores.textoPrimario,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )

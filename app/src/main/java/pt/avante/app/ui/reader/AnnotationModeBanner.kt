@@ -14,12 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 
 /** Faixa que avisa que o Modo de Anotação está ativo, igual nos layouts compacto e largo. */
@@ -36,9 +34,9 @@ fun AnnotationModeBanner(
         modifier = modifier.padding(top = topOffset)
     ) {
         Surface(
-            color = Color(0xFFFDECEA),
+            color = Cores.superficie,
             shape = MaterialTheme.shapes.large,
-            border = BorderStroke(1.dp, OriginalRed),
+            border = BorderStroke(1.dp, Cores.acento),
             shadowElevation = 4.dp
         ) {
             Column(
@@ -48,13 +46,13 @@ fun AnnotationModeBanner(
                 Text(
                     text = "Modo de Anotação Activo",
                     style = MaterialTheme.typography.labelLarge,
-                    color = OriginalRed,
+                    color = Cores.acento,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Seleccione um excerto para criar uma nota",
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
+                    color = Cores.textoSecundario
                 )
             }
         }

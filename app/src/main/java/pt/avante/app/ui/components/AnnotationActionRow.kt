@@ -13,8 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 
 @Composable
@@ -60,19 +59,19 @@ fun AnnotationActionRow(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
-                    color = TextPrimary
+                    color = Cores.textoPrimario
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
+                    color = Cores.textoSecundario
                 )
             }
 
             Icon(
                 Icons.Default.ChevronRight,
                 contentDescription = null,
-                tint = TextSecondary.copy(alpha = 0.5f)
+                tint = Cores.textoSecundario
             )
         }
     }

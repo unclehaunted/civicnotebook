@@ -10,16 +10,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.animation.*
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.ArticleBlock
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Cores
 import pt.avante.app.ui.components.CategoryRubricPill
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.ui.presentation.ArticleAuthorFormatter
@@ -41,10 +38,8 @@ fun ArticleReaderScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val selectedHighlight by viewModel.selectedHighlight.collectAsState()
-    val readerTheme = LocalReaderSettings.current.theme
-    val readerBackground = Color(readerTheme.backgroundColor)
-    val readerTextPrimary = Color(readerTheme.textColor)
-    val readerTextSecondary = Color(readerTheme.secondaryTextColor)
+    val readerBackground = Cores.fundo
+    val readerTextSecondary = Cores.textoSecundario
 
     LaunchedEffect(articleSummary, articleId) {
         if (articleSummary != null) {
@@ -58,7 +53,7 @@ fun ArticleReaderScreen(
         is ReaderUiState.Loading -> {
             Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = OriginalRed)
+                    CircularProgressIndicator(color = Cores.acento)
                 }
             }
         }
@@ -87,7 +82,7 @@ fun ArticleReaderScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(Spacing.m)
                             ) {
-                                CircularProgressIndicator(color = OriginalRed, modifier = Modifier.size(32.dp))
+                                CircularProgressIndicator(color = Cores.acento, modifier = Modifier.size(32.dp))
                                 Text(
                                     text = "A carregar artigo...",
                                     style = MaterialTheme.typography.bodyMedium,

@@ -22,10 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.SoftDivider
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.theme.Cores
 import pt.avante.app.ui.components.AvanteMasthead
 import pt.avante.app.theme.Spacing
 
@@ -46,7 +43,7 @@ fun HomeHeader(
 
     Surface(
         shadowElevation = 2.dp,
-        color = WarmPaper
+        color = Cores.fundo
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             AvanteMasthead(
@@ -70,14 +67,14 @@ fun HomeHeader(
                         Icon(
                             Icons.Default.CalendarToday,
                             contentDescription = null,
-                            tint = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
+                            tint = Cores.acento.copy(alpha = if (isCompact) 0.8f else 1f),
                             modifier = Modifier.size(if (isCompact) 12.dp else 14.dp)
                         )
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = editionText,
                             style = if (isCompact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
-                            color = if (isCompact) TextPrimary.copy(alpha = 0.8f) else TextPrimary,
+                            color = if (isCompact) Cores.textoPrimario.copy(alpha = 0.8f) else Cores.textoPrimario,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -110,7 +107,7 @@ fun HomeHeader(
                 }
             }
             
-            HorizontalDivider(color = SoftDivider, thickness = 1.dp)
+            HorizontalDivider(color = Cores.divisor, thickness = 1.dp)
         }
     }
 }
@@ -125,15 +122,15 @@ fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Uni
     }
     
     Surface(
-        color = if (selected) OriginalRed else Color.Transparent,
+        color = if (selected) Cores.acento else Color.Transparent,
         shape = shape,
-        border = BorderStroke(1.dp, OriginalRed),
+        border = BorderStroke(1.dp, Cores.acento),
         modifier = Modifier.clickable { onClick() }
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = if (selected) Color.White else OriginalRed,
+            tint = if (selected) Cores.sobreAcento else Cores.acento,
             modifier = Modifier
                 .padding(
                     horizontal = if (isCompact) Spacing.xs else Spacing.s,

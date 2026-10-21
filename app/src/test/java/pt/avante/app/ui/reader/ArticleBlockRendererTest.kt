@@ -33,6 +33,8 @@ import pt.avante.app.data.ReaderFontSize
 import pt.avante.app.data.ReaderSettings
 import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.TiposDeLetra
+import pt.avante.app.data.paleta
+import pt.avante.app.theme.OriginalTheme
 import pt.avante.app.ui.settings.LocalReaderSettings
 
 /**
@@ -61,7 +63,9 @@ class ArticleBlockRendererTest {
         onCreateNote: (String, Int, Int, Int) -> Unit = { _, _, _, _ -> }
     ): List<TextView> {
         composeRule.setContent {
+            // Como na MainActivity: a Aparência escolhida dá o tema da app inteira.
             CompositionLocalProvider(LocalReaderSettings provides settings) {
+              OriginalTheme(aparencia = settings.theme) {
                 Column {
                     blocks.forEachIndexed { i, block ->
                         ArticleBlockRenderer(
@@ -75,6 +79,7 @@ class ArticleBlockRendererTest {
                         )
                     }
                 }
+              }
             }
         }
         composeRule.waitForIdle()
@@ -169,10 +174,24 @@ class ArticleBlockRendererTest {
         )
         assertEquals(expectedSize, question.textSize, 0.01f)
         assertEquals(text.textSize, question.textSize, 0.01f)
-        assertEquals(ReaderTheme.DARK.textColor.toInt(), question.currentTextColor)
+        assertEquals(0xFFE3E0DB.toInt(), question.currentTextColor)
         assertEquals(text.currentTextColor, question.currentTextColor)
         assertSame(font(R.font.atkinson_hyperlegible_regular), text.typeface)
         assertSame(font(R.font.atkinson_hyperlegible_700), question.typeface)
+    }
+
+    // Veredito da #7: a Citação tem cor própria (o papel Citação), diferente do corpo, em cada Aparência.
+    @Test
+    fun citacao_usaACorDaCitacao_naAparenciaEscolhida() {
+        val settings = ReaderSettings(theme = ReaderTheme.SEPIA)
+
+        val (quote, text) = renderAll(
+            listOf(ArticleBlock.Quote("A luta continua."), ArticleBlock.Text("Disse o orador.")),
+            settings
+        )
+
+        assertEquals(paleta(ReaderTheme.SEPIA).citacao.toInt(), quote.currentTextColor)
+        assertEquals(paleta(ReaderTheme.SEPIA).textoPrimario.toInt(), text.currentTextColor)
     }
 
     // Negrito real: onde a fonte tem ficheiro a 700, usa-se esse e não negrito sintetizado.

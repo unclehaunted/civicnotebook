@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import pt.avante.app.theme.*
@@ -30,7 +29,7 @@ fun CadernoScreen(
     val deleteNote = rememberDeleteNoteWithUndo(snackbarHostState, viewModel::removeNote, viewModel::restoreNote)
 
     Scaffold(
-        containerColor = WarmPaper,
+        containerColor = Cores.fundo,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
@@ -47,8 +46,8 @@ fun CadernoScreen(
                         }
                     }
                 },
-                containerColor = OriginalRed,
-                contentColor = Color.White
+                containerColor = Cores.acento,
+                contentColor = Cores.sobreAcento
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Nova Nota")
             }
@@ -58,19 +57,19 @@ fun CadernoScreen(
             Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
                 TitleBar(title = "Caderno")
 
-                HorizontalDivider(color = SoftDivider)
+                HorizontalDivider(color = Cores.divisor)
 
                 when (val state = uiState) {
                     is CadernoUiState.Loading -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = OriginalRed)
+                            CircularProgressIndicator(color = Cores.acento)
                         }
                     }
                     is CadernoUiState.Empty -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text(
                                 "O seu caderno está vazio.\nCrie notas a partir dos artigos.",
-                                color = TextSecondary,
+                                color = Cores.textoSecundario,
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }

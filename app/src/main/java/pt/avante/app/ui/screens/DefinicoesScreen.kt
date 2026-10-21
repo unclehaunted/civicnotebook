@@ -25,11 +25,8 @@ import pt.avante.app.data.ReaderSettingsStore
 import pt.avante.app.data.ReaderTheme
 import pt.avante.app.data.auth.AuthState
 import pt.avante.app.data.auth.AvanteAuthRepository
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.SoftDivider
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.data.paleta
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.readerFontFamily
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.emMaiusculas
@@ -47,7 +44,7 @@ fun DefinicoesScreen(
     val loginInProgress by authRepository.loginInProgress.collectAsState()
     val scope = rememberCoroutineScope()
 
-    Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+    Surface(modifier = Modifier.fillMaxSize(), color = Cores.fundo) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleBar(title = "Definições", onBack = onBackClick)
 
@@ -61,11 +58,11 @@ fun DefinicoesScreen(
                 // ==================== LEITURA ====================
                 SectionHeader("Leitura")
 
-                // Preview ao vivo
+                // Preview ao vivo (a app inteira já está na Aparência escolhida)
                 Surface(
-                    color = Color(settings.theme.backgroundColor),
+                    color = Cores.fundo,
                     shape = MaterialTheme.shapes.medium,
-                    border = BorderStroke(1.dp, SoftDivider),
+                    border = BorderStroke(1.dp, Cores.divisor),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.padding(Spacing.m)) {
@@ -74,7 +71,7 @@ fun DefinicoesScreen(
                             fontFamily = readerFontFamily(settings.tiposDeLetra.display),
                             fontWeight = FontWeight.Bold,
                             fontSize = settings.fontSize.spValue.sp,
-                            color = Color(settings.theme.textColor)
+                            color = Cores.textoPrimario
                         )
                         Spacer(modifier = Modifier.height(Spacing.xs))
                         Text(
@@ -83,7 +80,7 @@ fun DefinicoesScreen(
                             fontFamily = readerFontFamily(settings.tiposDeLetra.texto),
                             fontSize = settings.fontSize.spValue.sp,
                             lineHeight = (settings.fontSize.spValue * 1.4f).sp,
-                            color = Color(settings.theme.textColor)
+                            color = Cores.textoPrimario
                         )
                     }
                 }
@@ -99,7 +96,7 @@ fun DefinicoesScreen(
                 Text(
                     text = "Para o que escreve nas suas Notas.",
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
+                    color = Cores.textoSecundario
                 )
                 EscritaOpcoes(settings.escrita, settingsStore::setEscrita)
 
@@ -117,9 +114,9 @@ fun DefinicoesScreen(
                                 count = ReaderFontSize.entries.size
                             ),
                             colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = OriginalRed.copy(alpha = 0.1f),
-                                activeContentColor = OriginalRed,
-                                inactiveContentColor = TextSecondary
+                                activeContainerColor = Cores.acento.copy(alpha = 0.1f),
+                                activeContentColor = Cores.acento,
+                                inactiveContentColor = Cores.textoSecundario
                             )
                         ) {
                             Text(size.label, style = MaterialTheme.typography.labelLarge, maxLines = 1)
@@ -137,6 +134,8 @@ fun DefinicoesScreen(
                 ) {
                     ReaderTheme.entries.forEach { theme ->
                         val selected = settings.theme == theme
+                        // Cada amostra mostra o fundo e o acento da sua própria Aparência.
+                        val amostra = paleta(theme)
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.clickable { settingsStore.setTheme(theme) }
@@ -144,10 +143,10 @@ fun DefinicoesScreen(
                             Box(
                                 modifier = Modifier
                                     .size(44.dp)
-                                    .background(Color(theme.backgroundColor), CircleShape)
+                                    .background(Color(amostra.fundo), CircleShape)
                                     .border(
                                         width = if (selected) 2.5.dp else 1.dp,
-                                        color = if (selected) OriginalRed else SoftDivider,
+                                        color = if (selected) Cores.acento else Cores.divisor,
                                         shape = CircleShape
                                     ),
                                 contentAlignment = Alignment.Center
@@ -156,7 +155,7 @@ fun DefinicoesScreen(
                                     Icon(
                                         Icons.Default.Check,
                                         contentDescription = null,
-                                        tint = if (theme == ReaderTheme.DARK) Color.White else OriginalRed,
+                                        tint = Color(amostra.acento),
                                         modifier = Modifier.size(20.dp)
                                     )
                                 }
@@ -165,7 +164,7 @@ fun DefinicoesScreen(
                             Text(
                                 text = theme.label,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = if (selected) OriginalRed else TextSecondary
+                                color = if (selected) Cores.acento else Cores.textoSecundario
                             )
                         }
                     }
@@ -183,26 +182,26 @@ fun DefinicoesScreen(
                         Text(
                             text = "Mostrar imagens",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = TextPrimary
+                            color = Cores.textoPrimario
                         )
                         Text(
                             text = "Nos artigos e na lista da edição",
                             style = MaterialTheme.typography.bodySmall,
-                            color = TextSecondary
+                            color = Cores.textoSecundario
                         )
                     }
                     Switch(
                         checked = settings.showImages,
                         onCheckedChange = { settingsStore.setShowImages(it) },
                         colors = SwitchDefaults.colors(
-                            checkedTrackColor = OriginalRed,
-                            checkedThumbColor = Color.White
+                            checkedTrackColor = Cores.acento,
+                            checkedThumbColor = Cores.sobreAcento
                         )
                     )
                 }
 
                 Spacer(modifier = Modifier.height(Spacing.xl))
-                HorizontalDivider(color = SoftDivider)
+                HorizontalDivider(color = Cores.divisor)
                 Spacer(modifier = Modifier.height(Spacing.l))
 
                 // ==================== ACESSO AO ARQUIVO ====================
@@ -212,7 +211,7 @@ fun DefinicoesScreen(
                     text = "A edição impressa do Avante! publica semanalmente uma palavra-passe " +
                             "que dá acesso à edição digital e a todo o arquivo até ao número seguinte.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondary
+                    color = Cores.textoSecundario
                 )
 
                 Spacer(modifier = Modifier.height(Spacing.m))
@@ -223,13 +222,13 @@ fun DefinicoesScreen(
                             Box(
                                 modifier = Modifier
                                     .size(10.dp)
-                                    .background(Color(0xFF2F4F46), CircleShape)
+                                    .background(Cores.acento, CircleShape)
                             )
                             Spacer(modifier = Modifier.width(Spacing.xs))
                             Text(
                                 text = "Acesso ativo",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = Color(0xFF2F4F46),
+                                color = Cores.textoPrimario,
                                 fontWeight = FontWeight.Medium
                             )
                         }
@@ -238,14 +237,14 @@ fun DefinicoesScreen(
                             text = "Se os artigos voltarem a aparecer bloqueados, introduza a nova " +
                                     "palavra-passe publicada no número mais recente.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = TextSecondary
+                            color = Cores.textoSecundario
                         )
                         Spacer(modifier = Modifier.height(Spacing.m))
                         OutlinedButton(
                             onClick = { authRepository.logout() },
-                            border = BorderStroke(1.dp, OriginalRed)
+                            border = BorderStroke(1.dp, Cores.acento)
                         ) {
-                            Text("Desativar acesso", color = OriginalRed)
+                            Text("Desativar acesso", color = Cores.acento)
                         }
                     }
 
@@ -262,9 +261,9 @@ fun DefinicoesScreen(
                             modifier = Modifier.fillMaxWidth(),
                             shape = MaterialTheme.shapes.small,
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = OriginalRed,
-                                focusedLabelColor = OriginalRed,
-                                cursorColor = OriginalRed
+                                focusedBorderColor = Cores.acento,
+                                focusedLabelColor = Cores.acento,
+                                cursorColor = Cores.acento
                             )
                         )
 
@@ -274,7 +273,7 @@ fun DefinicoesScreen(
                                 text = "Palavra-passe recusada. Confirme que está a usar a publicada " +
                                         "no número mais recente do jornal.",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = OriginalRed
+                                color = Cores.acento
                             )
                         }
 
@@ -288,18 +287,18 @@ fun DefinicoesScreen(
                                 }
                             },
                             enabled = password.isNotBlank() && !loginInProgress,
-                            colors = ButtonDefaults.buttonColors(containerColor = OriginalRed),
+                            colors = ButtonDefaults.buttonColors(containerColor = Cores.acento),
                             shape = MaterialTheme.shapes.small,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             if (loginInProgress) {
                                 CircularProgressIndicator(
-                                    color = Color.White,
+                                    color = Cores.sobreAcento,
                                     modifier = Modifier.size(20.dp),
                                     strokeWidth = 2.dp
                                 )
                             } else {
-                                Text("Ativar acesso", color = Color.White)
+                                Text("Ativar acesso", color = Cores.sobreAcento)
                             }
                         }
                     }
@@ -312,7 +311,7 @@ fun DefinicoesScreen(
 @Composable
 private fun SectionHeader(title: String) {
     Surface(
-        color = OriginalRed,
+        color = Cores.acento,
         shape = MaterialTheme.shapes.extraSmall,
         modifier = Modifier
             .fillMaxWidth()
@@ -321,7 +320,7 @@ private fun SectionHeader(title: String) {
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelLarge.emMaiusculas(),
-            color = Color.White,
+            color = Cores.sobreAcento,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xs)
         )
@@ -333,7 +332,7 @@ private fun SettingLabel(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.labelLarge,
-        color = TextSecondary,
+        color = Cores.textoSecundario,
         modifier = Modifier.padding(bottom = Spacing.xs)
     )
 }

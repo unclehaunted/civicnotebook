@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleSummary
@@ -34,7 +33,7 @@ fun ReaderWideLayout(
     onShareClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = Color(pt.avante.app.ui.settings.LocalReaderSettings.current.theme.backgroundColor)
+    val backgroundColor = pt.avante.app.theme.Cores.fundo
     Box(modifier = modifier.fillMaxSize().background(backgroundColor)) {
         Row(modifier = Modifier.fillMaxSize()) {
             ReaderActionRail(

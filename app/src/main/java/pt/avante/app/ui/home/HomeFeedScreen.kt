@@ -21,8 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleSummary
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.theme.Cores
 import pt.avante.app.ui.layout.AdaptiveContent
 import pt.avante.app.viewmodel.HomeUiState
 import pt.avante.app.viewmodel.HomeViewModel
@@ -42,7 +41,7 @@ fun HomeFeedScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = WarmPaper
+        color = Cores.fundo
     ) {
         AdaptiveContent(maxWidth = 1400.dp) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -57,11 +56,14 @@ fun HomeFeedScreen(
 
                     if (uiState is HomeUiState.Loading) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = OriginalRed)
+                            CircularProgressIndicator(color = Cores.acento)
                         }
                     } else if (uiState is HomeUiState.Error) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            androidx.compose.material3.Text(text = (uiState as HomeUiState.Error).message, color = androidx.compose.ui.graphics.Color.Black)
+                            androidx.compose.material3.Text(
+                                text = (uiState as HomeUiState.Error).message,
+                                color = Cores.textoPrimario
+                            )
                             androidx.compose.material3.Button(onClick = { viewModel.loadFeed(true) }, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = Spacing.xl)) {
                                 androidx.compose.material3.Text("Tentar Novamente")
                             }

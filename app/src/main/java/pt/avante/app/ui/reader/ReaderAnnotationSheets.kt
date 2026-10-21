@@ -35,7 +35,7 @@ fun ReaderAnnotationSheets(
     if (selectedPassageText != null) {
         ModalBottomSheet(
             onDismissRequest = onDismissSelection,
-            containerColor = Color.White
+            containerColor = Cores.cartao
         ) {
             Column(modifier = Modifier.align(Alignment.CenterHorizontally).widthIn(max = 600.dp).padding(Spacing.m).fillMaxWidth()) {
                 Text(
@@ -48,8 +48,9 @@ fun ReaderAnnotationSheets(
                     icon = Icons.Default.BorderColor,
                     title = "Realçar excerto",
                     subtitle = "Guardar este trecho no artigo",
-                    tint = AnnotationYellow,
-                    background = AnnotationYellow.copy(alpha = 0.10f),
+                    // O amarelo do Destaque só aparece onde se destaca (ADR 0001).
+                    tint = Cores.textoPrimario,
+                    background = Cores.destaque,
                     onClick = onHighlightSelection
                 )
                 
@@ -57,8 +58,8 @@ fun ReaderAnnotationSheets(
                     icon = Icons.Default.NoteAdd,
                     title = "Criar nota",
                     subtitle = "Abrir uma nova nota com este excerto",
-                    tint = MutedGreen,
-                    background = MutedGreen.copy(alpha = 0.07f),
+                    tint = Cores.acento,
+                    background = Cores.superficie,
                     onClick = onCreateNoteFromSelection
                 )
 
@@ -71,7 +72,7 @@ fun ReaderAnnotationSheets(
     if (selectedHighlight != null) {
         ModalBottomSheet(
             onDismissRequest = onDismissHighlight,
-            containerColor = Color.White
+            containerColor = Cores.cartao
         ) {
             Column(
                 modifier = Modifier
@@ -83,12 +84,12 @@ fun ReaderAnnotationSheets(
                 Text(
                     "O que quer fazer com este excerto?",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = TextPrimary,
+                    color = Cores.textoPrimario,
                     modifier = Modifier.padding(bottom = Spacing.m)
                 )
 
                 Surface(
-                    color = WarmPaper,
+                    color = Cores.fundo,
                     shape = MaterialTheme.shapes.small,
                     modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.l)
                 ) {
@@ -97,13 +98,13 @@ fun ReaderAnnotationSheets(
                             modifier = Modifier
                                 .width(4.dp)
                                 .height(48.dp)
-                                .background(OriginalRed)
+                                .background(Cores.acento)
                         )
                         Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"${selectedHighlight.selectedText}\"",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary,
+                            color = Cores.textoSecundario,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -111,14 +112,14 @@ fun ReaderAnnotationSheets(
                 }
 
                 ListItem(
-                    headlineContent = { Text("Criar nota", color = TextPrimary) },
-                    leadingContent = { Icon(Icons.Default.NoteAdd, contentDescription = null, tint = OriginalRed) },
+                    headlineContent = { Text("Criar nota", color = Cores.textoPrimario) },
+                    leadingContent = { Icon(Icons.Default.NoteAdd, contentDescription = null, tint = Cores.acento) },
                     colors = androidx.compose.material3.ListItemDefaults.colors(containerColor = Color.Transparent),
                     modifier = Modifier.clickable { onCreateNoteFromHighlight() }
                 )
                 ListItem(
-                    headlineContent = { Text("Remover realce", color = TextPrimary) },
-                    leadingContent = { Icon(Icons.Default.Delete, contentDescription = null, tint = OriginalRed) },
+                    headlineContent = { Text("Remover realce", color = Cores.textoPrimario) },
+                    leadingContent = { Icon(Icons.Default.Delete, contentDescription = null, tint = Cores.acento) },
                     colors = androidx.compose.material3.ListItemDefaults.colors(containerColor = Color.Transparent),
                     modifier = Modifier.clickable { onDeleteHighlight() }
                 )

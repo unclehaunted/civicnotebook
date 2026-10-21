@@ -18,10 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.TextPrimary
+import pt.avante.app.theme.Cores
 import pt.avante.app.viewmodel.ReaderMode
 import pt.avante.app.ui.layout.LocalAppViewport
 import pt.avante.app.theme.Spacing
@@ -52,14 +50,14 @@ fun ReaderActionRail(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Voltar",
-                tint = TextPrimary
+                tint = Cores.textoPrimario
             )
         }
 
         FloatingActionButton(
             onClick = onCreateNoteClick,
-            containerColor = OriginalRed,
-            contentColor = Color.White,
+            containerColor = Cores.acento,
+            contentColor = Cores.sobreAcento,
             shape = CircleShape,
             modifier = Modifier.size(56.dp)
         ) {
@@ -68,8 +66,8 @@ fun ReaderActionRail(
 
         FloatingActionButton(
             onClick = onToggleAnnotationMode,
-            containerColor = if (readerMode == ReaderMode.ANNOTATION_MODE) OriginalRed else Color.White,
-            contentColor = if (readerMode == ReaderMode.ANNOTATION_MODE) Color.White else TextPrimary,
+            containerColor = if (readerMode == ReaderMode.ANNOTATION_MODE) Cores.acento else Cores.cartao,
+            contentColor = if (readerMode == ReaderMode.ANNOTATION_MODE) Cores.sobreAcento else Cores.textoPrimario,
             shape = CircleShape,
             modifier = Modifier.size(56.dp)
         ) {
@@ -78,8 +76,9 @@ fun ReaderActionRail(
 
         FloatingActionButton(
             onClick = onShareClick,
-            containerColor = Color(0xFF4A7C77),
-            contentColor = Color.White,
+            // Neutro: o vermelho é o único acento (ADR 0001).
+            containerColor = Cores.cartao,
+            contentColor = Cores.textoPrimario,
             shape = CircleShape,
             elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 2.dp),
             modifier = Modifier.size(48.dp)

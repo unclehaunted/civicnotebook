@@ -17,11 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import pt.avante.app.R
 import pt.avante.app.ProjectSite
-import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
 import pt.avante.app.ui.components.TitleBar
 
 private const val INDEPENDENCE_NOTE =
@@ -35,7 +32,7 @@ fun SobreScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(modifier = modifier.fillMaxSize(), color = WarmPaper) {
+    Surface(modifier = modifier.fillMaxSize(), color = Cores.fundo) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleBar(title = "Sobre", onBack = onBackClick)
             SobreBody(versionName = versionName)
@@ -58,35 +55,35 @@ private fun SobreBody(versionName: String) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary,
+                color = Cores.textoPrimario,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = "Versão $versionName",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = Cores.textoSecundario
             )
         }
         Text(
             text = INDEPENDENCE_NOTE,
             style = MaterialTheme.typography.bodyLarge,
-            color = TextPrimary
+            color = Cores.textoPrimario
         )
         Text(
             text = "Licença: GNU GPLv3",
             style = MaterialTheme.typography.bodyLarge,
-            color = TextPrimary
+            color = Cores.textoPrimario
         )
         Column {
             Text(
                 text = "Código",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = Cores.textoSecundario
             )
             TextButton(onClick = { uriHandler.openUri(ProjectSite.REPOSITORY_URL) }) {
                 Text(
                     text = ProjectSite.REPOSITORY_URL.removePrefix("https://"),
-                    color = OriginalRed
+                    color = Cores.acento
                 )
             }
         }

@@ -17,11 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Cores
 import pt.avante.app.viewmodel.ReaderErrorReason
 import pt.avante.app.theme.Spacing
 
@@ -50,10 +48,9 @@ fun ReaderErrorContent(
     onRetry: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    val readerTheme = LocalReaderSettings.current.theme
-    val readerBackground = Color(readerTheme.backgroundColor)
-    val readerTextPrimary = Color(readerTheme.textColor)
-    val readerTextSecondary = Color(readerTheme.secondaryTextColor)
+    val readerBackground = Cores.fundo
+    val readerTextPrimary = Cores.textoPrimario
+    val readerTextSecondary = Cores.textoSecundario
 
     Surface(modifier = Modifier.fillMaxSize(), color = readerBackground) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -81,9 +78,9 @@ fun ReaderErrorContent(
                     }
                     Button(
                         onClick = onRetry,
-                        colors = ButtonDefaults.buttonColors(containerColor = OriginalRed)
+                        colors = ButtonDefaults.buttonColors(containerColor = Cores.acento)
                     ) {
-                        Text("Tentar de novo", color = Color.White)
+                        Text("Tentar de novo", color = Cores.sobreAcento)
                     }
                 }
             }

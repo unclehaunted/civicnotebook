@@ -36,10 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleSummary
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
-import pt.avante.app.theme.WarmPaper
+import pt.avante.app.theme.Cores
 import pt.avante.app.ui.components.NoteList
 import pt.avante.app.ui.components.TitleBar
 import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
@@ -68,7 +65,7 @@ fun PesquisaScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val deleteNote = rememberDeleteNoteWithUndo(snackbarHostState, viewModel::removeNote, viewModel::restoreNote)
 
-    Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
+    Surface(modifier = Modifier.fillMaxSize(), color = Cores.fundo) {
       Box(modifier = Modifier.fillMaxSize()) {
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -76,12 +73,12 @@ fun PesquisaScreen(
 
             TabRow(
                 selectedTabIndex = searchScope.ordinal,
-                containerColor = WarmPaper,
-                contentColor = OriginalRed,
+                containerColor = Cores.fundo,
+                contentColor = Cores.acento,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
                         Modifier.tabIndicatorOffset(tabPositions[searchScope.ordinal]),
-                        color = OriginalRed
+                        color = Cores.acento
                     )
                 }
             ) {
@@ -89,7 +86,9 @@ fun PesquisaScreen(
                     Tab(
                         selected = searchScope == scope,
                         onClick = { searchScope = scope },
-                        text = { Text(scope.label, color = if (searchScope == scope) OriginalRed else TextSecondary) }
+                        text = {
+                            Text(scope.label, color = if (searchScope == scope) Cores.acento else Cores.textoSecundario)
+                        }
                     )
                 }
             }
@@ -98,20 +97,20 @@ fun PesquisaScreen(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
                 modifier = Modifier.fillMaxWidth().padding(Spacing.m),
-                placeholder = { Text(searchScope.placeholder, color = TextSecondary) },
+                placeholder = { Text(searchScope.placeholder, color = Cores.textoSecundario) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Pesquisar") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.small,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = OriginalRed,
-                    unfocusedBorderColor = TextSecondary.copy(alpha = 0.5f),
-                    cursorColor = OriginalRed,
-                    focusedTextColor = TextPrimary,
-                    unfocusedTextColor = TextPrimary,
-                    focusedPlaceholderColor = TextSecondary,
-                    unfocusedPlaceholderColor = TextSecondary,
-                    focusedLeadingIconColor = OriginalRed,
-                    unfocusedLeadingIconColor = TextSecondary
+                    focusedBorderColor = Cores.acento,
+                    unfocusedBorderColor = Cores.textoSecundario.copy(alpha = 0.5f),
+                    cursorColor = Cores.acento,
+                    focusedTextColor = Cores.textoPrimario,
+                    unfocusedTextColor = Cores.textoPrimario,
+                    focusedPlaceholderColor = Cores.textoSecundario,
+                    unfocusedPlaceholderColor = Cores.textoSecundario,
+                    focusedLeadingIconColor = Cores.acento,
+                    unfocusedLeadingIconColor = Cores.textoSecundario
                 )
             )
 
@@ -128,7 +127,7 @@ fun PesquisaScreen(
                             Text(
                                 text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = TextPrimary,
+                                color = Cores.textoPrimario,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(Spacing.xl)
                             )
@@ -139,7 +138,7 @@ fun PesquisaScreen(
                                 Text(
                                     text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual.",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TextPrimary,
+                                    color = Cores.textoPrimario,
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.padding(Spacing.xl)
                                 )
@@ -179,7 +178,7 @@ fun PesquisaScreen(
                             Text(
                                 text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = TextPrimary,
+                                color = Cores.textoPrimario,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(Spacing.xl)
                             )

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
-import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Cores
 import pt.avante.app.theme.Spacing
 
 /** Altura livre no fim do artigo para o botão flutuante não tapar o último parágrafo: um tamanho, não espaçamento. */
@@ -44,8 +44,7 @@ fun ReaderBody(
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val viewportHeight = maxHeight
         val density = LocalDensity.current.density
-        val readerTheme = LocalReaderSettings.current.theme
-        val backgroundColor = androidx.compose.ui.graphics.Color(readerTheme.backgroundColor)
+        val backgroundColor = Cores.fundo
 
         LazyColumn(
             state = listState,
@@ -82,11 +81,11 @@ fun ReaderBody(
                         subcategoryLabel = article.subcategoryLabel,
                         hasNotes = hasArticleNotes,
                         hasHighlights = articleHighlights.isNotEmpty(),
-                        textColor = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor)
+                        textColor = Cores.textoSecundario
                     )
                     Spacer(modifier = Modifier.height(Spacing.m))
                     androidx.compose.material3.Divider(
-                        color = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor).copy(alpha = 0.2f),
+                        color = Cores.divisor,
                         thickness = 1.dp
                     )
                     
@@ -99,13 +98,13 @@ fun ReaderBody(
                             androidx.compose.material3.Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Anotado",
-                                tint = androidx.compose.ui.graphics.Color(0xFFB97A00),
+                                tint = Cores.textoSecundario,
                                 modifier = Modifier.size(16.dp)
                             )
                             androidx.compose.material3.Text(
                                 text = "Anotado",
                                 style = androidx.compose.material3.MaterialTheme.typography.labelMedium,
-                                color = androidx.compose.ui.graphics.Color(0xFFB97A00),
+                                color = Cores.textoSecundario,
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                             )
                         }

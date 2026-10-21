@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleSummary
@@ -33,8 +32,8 @@ fun MediumArticleCard(
                 vertical = Spacing.s
             )
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, SoftDivider),
+        colors = CardDefaults.cardColors(containerColor = Cores.cartao),
+        border = BorderStroke(1.dp, Cores.divisor),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
     ) {
@@ -63,7 +62,7 @@ fun MediumArticleCard(
                         Text(
                             text = article.title,
                             style = MaterialTheme.typography.titleMedium,
-                            color = TextPrimary,
+                            color = Cores.textoPrimario,
                             maxLines = ArticleCardMetrics.mediumTitleMaxLines,
                             overflow = TextOverflow.Ellipsis
                         )

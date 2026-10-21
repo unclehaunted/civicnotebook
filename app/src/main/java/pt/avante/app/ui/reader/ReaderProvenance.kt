@@ -22,7 +22,7 @@ fun ReaderProvenance(
     subcategoryLabel: String? = null,
     hasNotes: Boolean = false,
     hasHighlights: Boolean = false,
-    textColor: Color = pt.avante.app.theme.TextSecondary,
+    textColor: Color = pt.avante.app.theme.Cores.textoSecundario,
     modifier: Modifier = Modifier
 ) {
     val formatted = pt.avante.app.ui.components.ProvenanceFormatter.formatProvenance(

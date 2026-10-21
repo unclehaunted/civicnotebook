@@ -52,8 +52,8 @@ fun GridImageArticleCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = WarmPaper),
-        border = BorderStroke(1.dp, SoftDivider),
+        colors = CardDefaults.cardColors(containerColor = Cores.cartao),
+        border = BorderStroke(1.dp, Cores.divisor),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)
     ) {
@@ -90,7 +90,7 @@ fun GridImageArticleCard(
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.titleSmall,
-                        color = TextPrimary,
+                        color = Cores.textoPrimario,
                         maxLines = ArticleCardMetrics.gridTitleMaxLines,
                         overflow = TextOverflow.Ellipsis
                     )

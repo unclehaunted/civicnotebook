@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,8 +33,8 @@ fun LeadArticleCard(
                 vertical = ArticleCardMetrics.cardVerticalPadding
             )
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, SoftDivider),
+        colors = CardDefaults.cardColors(containerColor = Cores.cartao),
+        border = BorderStroke(1.dp, Cores.divisor),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.outlinedCardElevation(defaultElevation = 2.dp)
     ) {
@@ -68,7 +67,7 @@ fun LeadArticleCard(
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.headlineLarge,
-                        color = TextPrimary,
+                        color = Cores.textoPrimario,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -78,7 +77,7 @@ fun LeadArticleCard(
                         Text(
                             text = article.summary,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary,
+                            color = Cores.textoSecundario,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
