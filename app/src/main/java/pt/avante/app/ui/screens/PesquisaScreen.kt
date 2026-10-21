@@ -43,6 +43,7 @@ import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.components.NoteList
 import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
 import pt.avante.app.viewmodel.HomeUiState
 import pt.avante.app.viewmodel.PesquisaViewModel
@@ -188,17 +189,7 @@ fun PesquisaScreen(
                             )
                         }
                     } else {
-                        LazyColumn(
-                            contentPadding = PaddingValues(bottom = 20.dp)
-                        ) {
-                            items(noteResults, key = { it.noteId }) { note ->
-                                NoteCard(
-                                    note = note,
-                                    onClick = { onNoteClick(note.noteId) },
-                                    onDelete = { deleteNote(note.noteId) }
-                                )
-                            }
-                        }
+                        NoteList(notes = noteResults, onOpen = onNoteClick, onDelete = deleteNote)
                     }
                 }
             }

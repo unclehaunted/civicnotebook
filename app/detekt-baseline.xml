@@ -28,7 +28,6 @@
     <ID>FunctionNaming:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
     <ID>FunctionNaming:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
     <ID>FunctionNaming:AvanteMasthead.kt:@Composable fun AvanteMasthead</ID>
-    <ID>FunctionNaming:CadernoScreen.kt:@Composable fun NoteCard</ID>
     <ID>FunctionNaming:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
     <ID>FunctionNaming:CategoryRubricPill.kt:@Composable fun CategoryRubricPill</ID>
     <ID>FunctionNaming:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
@@ -46,6 +45,8 @@
     <ID>FunctionNaming:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
     <ID>FunctionNaming:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
     <ID>FunctionNaming:MediumArticleCard.kt:@Composable fun MediumArticleCard</ID>
+    <ID>FunctionNaming:NoteList.kt:@Composable fun NoteList</ID>
+    <ID>FunctionNaming:NoteList.kt:@Composable internal fun NoteCard</ID>
     <ID>FunctionNaming:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
     <ID>FunctionNaming:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
     <ID>FunctionNaming:ReaderActionRail.kt:@Composable fun ReaderActionRail</ID>
@@ -63,7 +64,6 @@
     <ID>LongMethod:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
     <ID>LongMethod:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
     <ID>LongMethod:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
-    <ID>LongMethod:CadernoScreen.kt:@Composable fun NoteCard</ID>
     <ID>LongMethod:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
     <ID>LongMethod:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
     <ID>LongMethod:DefinicoesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DefinicoesScreen</ID>
@@ -74,6 +74,7 @@
     <ID>LongMethod:HomeViewModel.kt:HomeViewModel$fun loadFeed</ID>
     <ID>LongMethod:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
     <ID>LongMethod:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
+    <ID>LongMethod:NoteList.kt:@Composable internal fun NoteCard</ID>
     <ID>LongMethod:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
     <ID>LongMethod:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
     <ID>LongMethod:ReaderAnnotationSheets.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ReaderAnnotationSheets</ID>
@@ -95,8 +96,6 @@
     <ID>MagicNumber:ArticleIdentity.kt:ArticleIdentity$16</ID>
     <ID>MagicNumber:AvanteCategoryRules.kt:AvanteCategoryRules$50</ID>
     <ID>MagicNumber:AvanteIndexParser.kt:AvanteIndexParser$60</ID>
-    <ID>MagicNumber:CadernoScreen.kt:0xFF2196F3</ID>
-    <ID>MagicNumber:CadernoScreen.kt:0xFF9C27B0</ID>
     <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$10</ID>
     <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$100</ID>
     <ID>MagicNumber:CategoryWeightResolver.kt:CategoryWeightResolver$20</ID>
@@ -120,6 +119,8 @@
     <ID>MagicNumber:HomeFeedLayouts.kt:0.86f</ID>
     <ID>MagicNumber:HomeFeedLayouts.kt:16f</ID>
     <ID>MagicNumber:HomeFeedLayouts.kt:9f</ID>
+    <ID>MagicNumber:NoteList.kt:0xFF2196F3</ID>
+    <ID>MagicNumber:NoteList.kt:0xFF9C27B0</ID>
     <ID>MagicNumber:NoteViewModel.kt:NoteViewModel$300</ID>
     <ID>MagicNumber:NoteViewModel.kt:NoteViewModel$800</ID>
     <ID>MagicNumber:ReaderActionRail.kt:0xFF4A7C77</ID>
@@ -181,7 +182,6 @@
     <ID>MaxLineLength:AvanteIndexParser.kt:AvanteIndexParser$val contentArea = doc.select("#grid-indice, .content-indice, main, .main-content").firstOrNull() ?: doc.body()</ID>
     <ID>MaxLineLength:AvanteMasthead.kt:style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelMedium</ID>
     <ID>MaxLineLength:AvanteMasthead.kt:style = if (isCompact) MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp, lineHeight = 12.sp) else MaterialTheme.typography.labelSmall</ID>
-    <ID>MaxLineLength:CadernoScreen.kt:Icon(Icons.Default.MoreVert, contentDescription = "Mais opções", tint = TextSecondary, modifier = Modifier.size(20.dp))</ID>
     <ID>MaxLineLength:CompactRowArticleCard.kt:Row</ID>
     <ID>MaxLineLength:CompactRowArticleCard.kt:colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.White)</ID>
     <ID>MaxLineLength:CurrentIssueStore.kt:CurrentIssueStore$kotlinx.serialization.json.Json.decodeFromString(pt.avante.app.data.FeedPresentationSnapshot.serializer(), json)</ID>
