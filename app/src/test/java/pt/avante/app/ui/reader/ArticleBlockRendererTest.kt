@@ -78,6 +78,7 @@ class ArticleBlockRendererTest {
                     blocks.forEachIndexed { i, block ->
                         ArticleBlockRenderer(
                             block = block,
+                            next = blocks.getOrNull(i + 1),
                             index = firstIndex + i,
                             isSelected = false,
                             articleHighlights = emptyList(),

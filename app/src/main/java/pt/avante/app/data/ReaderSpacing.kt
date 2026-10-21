@@ -45,6 +45,30 @@ data class ArticleSpacing(
     /** Recuo à esquerda da Citação, em sp: a sua única marca além do itálico e da cor (#13). */
     val quoteIndentSp: Float
 ) {
+    /**
+     * Espaço entre [above] e o bloco que se lhe segue ([below]), em sp: depende do par. A
+     * Citação e o subtítulo trazem o seu espaço antes, que substitui o espaço depois de
+     * [above]; os outros blocos ficam ao espaço depois de [above]. Sem bloco abaixo, fica o
+     * espaço depois de [above].
+     */
+    fun gapSp(above: ArticleBlock, below: ArticleBlock?): Float = when (below) {
+        is ArticleBlock.Quote -> beforeQuoteSp
+        is ArticleBlock.Subheading -> beforeSubheadingSp
+        is ArticleBlock.Text, is ArticleBlock.Question, is ArticleBlock.Image, is ArticleBlock.PaywallCTA, null ->
+            afterSp(above)
+    }
+
+    /** O espaço que [block] deixa depois de si quando o bloco seguinte não traz o seu. */
+    private fun afterSp(block: ArticleBlock): Float = when (block) {
+        is ArticleBlock.Text -> paragraphSp
+        is ArticleBlock.Question -> afterQuestionSp
+        is ArticleBlock.Quote -> afterQuoteSp
+        is ArticleBlock.Subheading -> afterSubheadingSp
+        // Sem texto que o Espaçamento meça: a imagem ainda não se desenha e o convite à
+        // assinatura traz a sua própria margem.
+        is ArticleBlock.Image, is ArticleBlock.PaywallCTA -> 0f
+    }
+
     companion object {
         /** Nos Tamanhos grandes a linha já é longa em altura: a entrelinha desce 0,05. */
         private const val LARGE_SIZE_LINE_HEIGHT_DROP = 0.05f

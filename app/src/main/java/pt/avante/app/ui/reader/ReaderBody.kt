@@ -139,6 +139,7 @@ fun ReaderBody(
                 Box(modifier = Modifier.articleColumn(columnMaxWidth)) {
                     ArticleBlockRenderer(
                         block = block,
+                        next = article.blocks.getOrNull(index + 1),
                         index = index,
                         isSelected = isSelected,
                         isFinalCompleteTextBlock = index == lastTextBlockIndex,

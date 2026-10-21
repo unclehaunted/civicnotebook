@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.avante.app.data.ArticleBlock
@@ -26,6 +25,8 @@ import pt.avante.app.theme.escalaDoArtigo
 @Composable
 fun ArticleBlockRenderer(
     block: ArticleBlock,
+    /** O bloco que se segue, se houver: o espaço entre os dois depende do par. */
+    next: ArticleBlock? = null,
     index: Int,
     isSelected: Boolean,
     isFinalCompleteTextBlock: Boolean = false,
@@ -59,24 +60,20 @@ fun ArticleBlockRenderer(
     )
 
     // Espaço entre blocos do Espaçamento (#12), em sp para crescer com o texto. Cada bloco
-    // leva o espaço que fica depois dele; o seguinte não tem margem superior.
-    val gaps = articleBlockGaps()
+    // leva por baixo o espaço até ao seguinte, que depende do par (ArticleSpacing.gapSp).
+    val settings = LocalReaderSettings.current
+    val spacing = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
+    val (gapBelow, quoteIndent) = with(LocalDensity.current) {
+        spacing.gapSp(block, next).sp.toDp() to spacing.quoteIndentSp.sp.toDp()
+    }
+    val withGap = modifier.padding(bottom = gapBelow)
 
     when (block) {
-        is ArticleBlock.Text -> selectable(block.content, modifier.padding(bottom = gaps.paragraph))
-        // Margem inferior menor, para a pergunta ficar colada à resposta.
-        is ArticleBlock.Question ->
-            selectable(block.content, modifier.padding(bottom = gaps.afterQuestion), isBold = true)
-        is ArticleBlock.Subheading -> ArticleSubheading(
-            block.text,
-            modifier.padding(top = gaps.extraBeforeSubheading, bottom = gaps.afterSubheading)
-        )
+        is ArticleBlock.Text -> selectable(block.content, withGap)
+        is ArticleBlock.Question -> selectable(block.content, withGap, isBold = true)
+        is ArticleBlock.Subheading -> ArticleSubheading(block.text, withGap)
         // Citação (#13, story 9): itálico da face de display, cor própria e recuo, sem caixa nem borda.
-        is ArticleBlock.Quote -> selectable(
-            block.content,
-            modifier.padding(start = gaps.quoteIndent, top = gaps.extraBeforeQuote, bottom = gaps.afterQuote),
-            isQuote = true
-        )
+        is ArticleBlock.Quote -> selectable(block.content, withGap.padding(start = quoteIndent), isQuote = true)
         is ArticleBlock.PaywallCTA -> {
             Column(
                 modifier = modifier
@@ -113,39 +110,6 @@ fun ArticleBlockRenderer(
         is ArticleBlock.Image -> {
             // Future media handling
         }
-    }
-}
-
-/** O Espaçamento resolvido em medidas de layout. */
-private class ArticleBlockGaps(
-    val paragraph: Dp,
-    val afterQuestion: Dp,
-    /**
-     * O bloco anterior já deixa um espaço de parágrafo; a Citação junta-lhe a diferença para
-     * chegar ao espaço antes dela (veredito de #7).
-     */
-    val extraBeforeQuote: Dp,
-    val afterQuote: Dp,
-    val quoteIndent: Dp,
-    /** Como na Citação: o bloco anterior já deixa um parágrafo; o subtítulo junta o resto. */
-    val extraBeforeSubheading: Dp,
-    val afterSubheading: Dp
-)
-
-@Composable
-private fun articleBlockGaps(): ArticleBlockGaps {
-    val settings = LocalReaderSettings.current
-    val spacing = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
-    return with(LocalDensity.current) {
-        ArticleBlockGaps(
-            paragraph = spacing.paragraphSp.sp.toDp(),
-            afterQuestion = spacing.afterQuestionSp.sp.toDp(),
-            extraBeforeQuote = (spacing.beforeQuoteSp - spacing.paragraphSp).sp.toDp(),
-            afterQuote = spacing.afterQuoteSp.sp.toDp(),
-            quoteIndent = spacing.quoteIndentSp.sp.toDp(),
-            extraBeforeSubheading = (spacing.beforeSubheadingSp - spacing.paragraphSp).sp.toDp(),
-            afterSubheading = spacing.afterSubheadingSp.sp.toDp()
-        )
     }
 }
 

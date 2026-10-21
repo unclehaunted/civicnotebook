@@ -47,6 +47,7 @@ class ArticleSpacingRenderTest {
                     blocks.forEachIndexed { i, block ->
                         ArticleBlockRenderer(
                             block = block,
+                            next = blocks.getOrNull(i + 1),
                             index = i,
                             isSelected = false,
                             articleHighlights = emptyList(),
@@ -152,6 +153,45 @@ class ArticleSpacingRenderTest {
         assertEquals(spToPx(19.845f), gap(quote, after).toFloat(), PX_TOLERANCE) // 20,25 × 0,98
     }
 
+    /** Topo de [view], em px da janela. */
+    private fun top(view: View): Int = IntArray(2).also { view.getLocationInWindow(it) }[1]
+
+    private fun contentTop(): Int =
+        top(composeRule.activity.findViewById<View>(android.R.id.content))
+
+    // O espaço entre dois blocos depende do par: antes da Citação fica o seu espaço próprio,
+    // venha ela depois de um parágrafo, de uma Pergunta ou de outra Citação.
+    @Test
+    fun `a Citação depois de uma Pergunta fica a 1,02 parágrafos dela`() {
+        val (question, quote) = renderAll(
+            listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Quote("A luta continua.")),
+            ReaderSettings()
+        )
+
+        assertEquals(spToPx(20.655f), gap(question, quote).toFloat(), PX_TOLERANCE) // 20,25 × 1,02
+    }
+
+    @Test
+    fun `a Citação depois de outra Citação fica a 1,02 parágrafos dela`() {
+        // Extra grande Arejado: o maior parágrafo, para 0,02 parágrafos passarem a tolerância.
+        val settings = ReaderSettings(fontSize = ReaderFontSize.XLARGE, spacing = ReaderSpacing.AIRY)
+
+        val (first, second) = renderAll(
+            listOf(ArticleBlock.Quote("A luta continua."), ArticleBlock.Quote("E continuará.")),
+            settings
+        )
+
+        assertEquals(spToPx(39.168f), gap(first, second).toFloat(), PX_TOLERANCE) // 24 × 1,6 × 1 × 1,02
+    }
+
+    // Sem bloco acima não há espaço entre blocos: a Citação começa onde começaria um parágrafo.
+    @Test
+    fun `a Citação como primeiro bloco não leva espaço antes`() {
+        val quote = renderAll(listOf(ArticleBlock.Quote("A luta continua.")), ReaderSettings()).single()
+
+        assertEquals(contentTop(), top(quote))
+    }
+
     // #13, story 9: a Citação marca-se pelo recuo de 1,5 em à esquerda; à direita alinha com o corpo.
     @Test
     fun `a Citação recua 1,5 vezes o corpo à esquerda e acaba onde acaba o corpo`() {
@@ -191,6 +231,23 @@ class ArticleSpacingRenderTest {
 
         assertEquals(spToPx(52.8f), top - beforeBottom, PX_TOLERANCE) // 2 × 16 × 1,65 × 1
         assertEquals(spToPx(26.4f), afterTop - bottom, PX_TOLERANCE) // 16 × 1,65 × 1
+    }
+
+    @Test
+    fun `o subtítulo depois de uma Pergunta fica a dois parágrafos dela`() {
+        val settings = ReaderSettings(fontSize = ReaderFontSize.SMALL, spacing = ReaderSpacing.AIRY)
+
+        val question = renderAll(
+            listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Subheading("Subtítulo")),
+            settings
+        ).single()
+
+        val subheading = composeRule.onNodeWithText("Subtítulo").getBoundsInRoot()
+        val density = composeRule.activity.resources.displayMetrics.density
+        val subheadingTop = contentTop() + subheading.top.value * density
+
+        val questionBottom = top(question) + question.height
+        assertEquals(spToPx(52.8f), subheadingTop - questionBottom, PX_TOLERANCE) // 2 × 16 × 1,65 × 1
     }
 
     /** Renderiza um artigo inteiro, como o leitor o mostra, e devolve o TextView do corpo. */
