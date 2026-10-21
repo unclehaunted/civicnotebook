@@ -22,8 +22,14 @@ class ReaderSettingsStore(context: Context) {
             escrita = prefs.getString(KEY_ESCRITA, null).toEnumOrDefault(Escrita.IA_WRITER_DUO),
             fontSize = prefs.getString(KEY_FONT_SIZE, null).toEnumOrDefault(ReaderFontSize.MEDIUM),
             theme = prefs.getString(KEY_THEME, null).toEnumOrDefault(ReaderTheme.PAPER),
-            showImages = prefs.getBoolean(KEY_SHOW_IMAGES, true)
+            showImages = prefs.getBoolean(KEY_SHOW_IMAGES, true),
+            spacing = prefs.getString(KEY_SPACING, null).toEnumOrDefault(ReaderSpacing.NORMAL)
         )
+    }
+
+    fun setSpacing(spacing: ReaderSpacing) {
+        prefs.edit().putString(KEY_SPACING, spacing.name).apply()
+        _settings.value = _settings.value.copy(spacing = spacing)
     }
 
     /** Sem escolha de Tipos de letra guardada, migra a fonte única de antes da #10. */
@@ -77,5 +83,6 @@ class ReaderSettingsStore(context: Context) {
         private const val KEY_FONT_SIZE = "reader_font_size"
         private const val KEY_THEME = "reader_theme"
         private const val KEY_SHOW_IMAGES = "reader_show_images"
+        private const val KEY_SPACING = "reader_spacing"
     }
 }

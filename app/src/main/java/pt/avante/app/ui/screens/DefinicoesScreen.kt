@@ -15,11 +15,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.ReaderFontSize
 import pt.avante.app.data.ReaderSettingsStore
 import pt.avante.app.data.ReaderTheme
@@ -30,6 +34,7 @@ import pt.avante.app.theme.Cores
 import pt.avante.app.theme.readerFontFamily
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.emMaiusculas
+import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.ui.components.TitleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,22 +70,35 @@ fun DefinicoesScreen(
                     border = BorderStroke(1.dp, Cores.divisor),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Tamanho, Tipos de letra e Espaçamento como no artigo: dois parágrafos para
+                    // se ver a entrelinha e o espaço entre eles.
+                    val escala = escalaDoArtigo(settings.fontSize)
+                    val espacamento = ArticleSpacing.resolve(settings.fontSize, settings.spacing)
+                    val paragrafo = with(LocalDensity.current) { espacamento.paragraphSp.sp.toDp() }
+                    val corpo = TextStyle(
+                        fontFamily = readerFontFamily(settings.tiposDeLetra.texto),
+                        fontSize = escala.corpo.sp,
+                        lineHeight = espacamento.lineHeight.em,
+                        color = Cores.textoPrimario
+                    )
                     Column(modifier = Modifier.padding(Spacing.m)) {
                         Text(
                             text = "Proletários de todos os países, uni-vos!",
                             fontFamily = readerFontFamily(settings.tiposDeLetra.display),
                             fontWeight = FontWeight.Bold,
-                            fontSize = settings.fontSize.spValue.sp,
+                            fontSize = escala.subtitulo.sp,
+                            lineHeight = ArticleSpacing.HEADING_LINE_HEIGHT.em,
                             color = Cores.textoPrimario
                         )
                         Spacer(modifier = Modifier.height(Spacing.xs))
                         Text(
-                            text = "O Avante! é o Órgão Central do Partido Comunista Português. " +
-                                    "Assim se apresenta, semanalmente, aos seus leitores desde 1931.",
-                            fontFamily = readerFontFamily(settings.tiposDeLetra.texto),
-                            fontSize = settings.fontSize.spValue.sp,
-                            lineHeight = (settings.fontSize.spValue * 1.4f).sp,
-                            color = Cores.textoPrimario
+                            text = "O Avante! é o Órgão Central do Partido Comunista Português.",
+                            style = corpo
+                        )
+                        Spacer(modifier = Modifier.height(paragrafo))
+                        Text(
+                            text = "Assim se apresenta, semanalmente, aos seus leitores desde 1931.",
+                            style = corpo
                         )
                     }
                 }
@@ -123,6 +141,11 @@ fun DefinicoesScreen(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(Spacing.m))
+
+                SettingLabel("Espaçamento")
+                EspacamentoOpcoes(settings.spacing, settingsStore::setSpacing)
 
                 Spacer(modifier = Modifier.height(Spacing.m))
 

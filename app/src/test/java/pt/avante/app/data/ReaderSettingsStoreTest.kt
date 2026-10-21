@@ -75,4 +75,27 @@ class ReaderSettingsStoreTest {
         assertEquals(TiposDeLetra.CLASSICO, reabrir().tiposDeLetra)
         assertEquals(Escrita.IA_WRITER_DUO, reabrir().escrita)
     }
+
+    // #12: o Espaçamento escolhido sobrevive a reabrir a app.
+    @Test
+    fun chosenSpacing_survivesReopening() {
+        val store = ReaderSettingsStore(context)
+        store.setSpacing(ReaderSpacing.AIRY)
+
+        assertEquals(ReaderSpacing.AIRY, store.settings.value.spacing)
+        assertEquals(ReaderSpacing.AIRY, ReaderSettingsStore(context).settings.value.spacing)
+    }
+
+    @Test
+    fun noStoredSpacing_opensAsNormal() {
+        assertEquals(ReaderSpacing.NORMAL, ReaderSettingsStore(context).settings.value.spacing)
+    }
+
+    @Test
+    fun unknownStoredSpacing_opensAsNormal() {
+        context.getSharedPreferences("pt.avante.app.reader_settings", Context.MODE_PRIVATE)
+            .edit().putString("reader_spacing", "APERTADO").commit()
+
+        assertEquals(ReaderSpacing.NORMAL, ReaderSettingsStore(context).settings.value.spacing)
+    }
 }

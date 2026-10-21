@@ -1,5 +1,6 @@
 package pt.avante.app.ui.reader
 
+import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -10,7 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.TextViewCompat
+import java.util.Locale
+import kotlin.math.roundToInt
 import pt.avante.app.data.ArticleBlock
+import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.LocalPaleta
 import pt.avante.app.theme.escalaDoArtigo
@@ -19,6 +24,9 @@ import pt.avante.app.ui.settings.LocalReaderSettings
 /** Ids dos itens do menu de seleção de texto ("Realçar" / "Criar Nota"). */
 const val SELECTION_MENU_HIGHLIGHT = 1
 const val SELECTION_MENU_CREATE_NOTE = 2
+
+/** Língua do texto do artigo: escolhe os padrões de hifenização. */
+private val PORTUGUESE: Locale = Locale.forLanguageTag("pt-PT")
 
 /** [corDoDestaque] e [corDoSimbolo] são ARGB da paleta da Aparência (Destaque, texto secundário). */
 fun buildHighlightedText(
@@ -118,8 +126,13 @@ fun SelectableArticleText(
                 setTextIsSelectable(true)
                 movementMethod = LinkMovementMethod.getInstance()
                 highlightColor = android.graphics.Color.TRANSPARENT
-                setLineSpacing(0f, 1.4f)
-                
+                // Alinhado à esquerda (o TextView não justifica por omissão), com hifenização
+                // portuguesa (#12): a margem direita da coluna estreita do telemóvel fica menos
+                // irregular. Desde o Android 13 a frequência por omissão é NONE; fixa-se aqui.
+                hyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NORMAL
+                textLocale = PORTUGUESE
+
+
                 customSelectionActionModeCallback = object : android.view.ActionMode.Callback {
                     override fun onCreateActionMode(mode: android.view.ActionMode, menu: android.view.Menu): Boolean {
                         menu.add(0, SELECTION_MENU_HIGHLIGHT, 0, "Realçar")
@@ -167,6 +180,10 @@ fun SelectableArticleText(
                 isBold -> escala.pergunta
                 else -> escala.corpo
             }
+            // Entrelinha do Espaçamento, em múltiplos do tamanho do texto (não da altura natural
+            // da fonte, que varia de face para face).
+            val lineHeight = ArticleSpacing.resolve(settings.fontSize, settings.spacing).lineHeight
+            TextViewCompat.setLineHeight(view, (view.textSize * lineHeight).roundToInt())
             view.setTextColor(corDoTexto)
 
             if (view.tag != spannableText) {
