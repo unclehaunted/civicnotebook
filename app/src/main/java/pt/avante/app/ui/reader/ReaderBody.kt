@@ -1,5 +1,6 @@
 package pt.avante.app.ui.reader
 
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.draw.clip
@@ -8,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import pt.avante.app.data.Article
 import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ReaderBody(
@@ -47,7 +49,7 @@ fun ReaderBody(
             modifier = Modifier
                 .fillMaxSize()
                 .background(backgroundColor),
-            contentPadding = PaddingValues(bottom = 100.dp) // Room for FAB
+            contentPadding = PaddingValues(bottom = Spacing.xxl * 2) // espaço para o FAB
         ) {
         item {
             heroContent()
@@ -58,12 +60,17 @@ fun ReaderBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .offset(y = (-28).dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                    .clip(
+                        MaterialTheme.shapes.extraLarge.copy(
+                            bottomStart = ZeroCornerSize,
+                            bottomEnd = ZeroCornerSize
+                        )
+                    )
                     .background(backgroundColor)
-                    .padding(top = 28.dp),
+                    .padding(top = Spacing.xl),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Column(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = 24.dp)) {
+                Column(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
                     ReaderProvenance(
                         publication = article.publication,
                         issueNumber = article.issueNumber,
@@ -74,17 +81,17 @@ fun ReaderBody(
                         hasHighlights = articleHighlights.isNotEmpty(),
                         textColor = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Spacing.m))
                     androidx.compose.material3.Divider(
                         color = androidx.compose.ui.graphics.Color(readerTheme.secondaryTextColor).copy(alpha = 0.2f),
                         thickness = 1.dp
                     )
                     
                     if (hasArticleNotes) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Spacing.m))
                         androidx.compose.foundation.layout.Row(
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)
+                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(Spacing.xs)
                         ) {
                             androidx.compose.material3.Icon(
                                 imageVector = Icons.Default.Edit,
@@ -99,9 +106,9 @@ fun ReaderBody(
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
                             )
                         }
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(Spacing.l))
                     } else {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(Spacing.l))
                     }
                 }
             }
@@ -119,7 +126,7 @@ fun ReaderBody(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = androidx.compose.ui.Alignment.Center
             ) {
-                Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = 24.dp)) {
+                Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
                     ArticleBlockRenderer(
                         block = block,
                         index = index,
@@ -137,10 +144,10 @@ fun ReaderBody(
         if (!hasPaywall) {
             item {
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.xl),
                     contentAlignment = androidx.compose.ui.Alignment.Center
                 ) {
-                    Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = 24.dp)) {
+                    Box(modifier = Modifier.widthIn(max = 720.dp).padding(horizontal = Spacing.l)) {
                         ReaderEndMark()
                     }
                 }

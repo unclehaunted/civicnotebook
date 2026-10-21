@@ -3,7 +3,6 @@ package pt.avante.app.ui.reader
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -38,12 +37,12 @@ fun ReaderAnnotationSheets(
             onDismissRequest = onDismissSelection,
             containerColor = Color.White
         ) {
-            Column(modifier = Modifier.align(Alignment.CenterHorizontally).widthIn(max = 600.dp).padding(16.dp).fillMaxWidth()) {
+            Column(modifier = Modifier.align(Alignment.CenterHorizontally).widthIn(max = 600.dp).padding(Spacing.m).fillMaxWidth()) {
                 Text(
                     text = "Ação de Anotação",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.m)
                 )
                 AnnotationActionRow(
                     icon = Icons.Default.BorderColor,
@@ -63,7 +62,7 @@ fun ReaderAnnotationSheets(
                     onClick = onCreateNoteFromSelection
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(Spacing.xl))
             }
         }
     }
@@ -79,28 +78,28 @@ fun ReaderAnnotationSheets(
                     .align(Alignment.CenterHorizontally)
                     .widthIn(max = 600.dp)
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp, top = 8.dp, start = 24.dp, end = 24.dp)
+                    .padding(bottom = Spacing.xl, top = Spacing.xs, start = Spacing.l, end = Spacing.l)
             ) {
                 Text(
                     "O que quer fazer com este excerto?",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = TextPrimary,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = Spacing.m)
                 )
 
                 Surface(
                     color = WarmPaper,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = Spacing.l)
                 ) {
-                    Row(modifier = Modifier.padding(12.dp)) {
+                    Row(modifier = Modifier.padding(Spacing.s)) {
                         Box(
                             modifier = Modifier
                                 .width(4.dp)
                                 .height(48.dp)
                                 .background(OriginalRed)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = "\"${selectedHighlight.selectedText}\"",
                             style = MaterialTheme.typography.bodyMedium,

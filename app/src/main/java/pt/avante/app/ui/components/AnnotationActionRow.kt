@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun AnnotationActionRow(
@@ -29,14 +29,14 @@ fun AnnotationActionRow(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp)
+            .padding(vertical = Spacing.xs)
             .clickable { onClick() },
         color = background,
-        shape = RoundedCornerShape(18.dp),
+        shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, tint.copy(alpha = 0.18f))
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(Spacing.m),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
@@ -54,7 +54,7 @@ fun AnnotationActionRow(
                 }
             }
 
-            Spacer(Modifier.width(14.dp))
+            Spacer(Modifier.width(Spacing.m))
 
             Column(Modifier.weight(1f)) {
                 Text(

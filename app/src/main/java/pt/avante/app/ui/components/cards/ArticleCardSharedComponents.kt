@@ -8,7 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Edit
@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import pt.avante.app.R
@@ -37,12 +37,10 @@ fun ArticleThumbnail(
     heroImageUrl: String?,
     imagePolicy: ArticleImagePolicy,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 8.dp
+    shape: Shape = MaterialTheme.shapes.small
 ) {
     if (imagePolicy == ArticleImagePolicy.NO_IMAGE) return
     if (!LocalReaderSettings.current.showImages) return
-
-    val shape = RoundedCornerShape(cornerRadius)
 
     if (imagePolicy == ArticleImagePolicy.OPINION_AH_PLACEHOLDER) {
         Box(
@@ -84,7 +82,7 @@ fun ArticleCardFooter(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             val displayAuthor = author.ifBlank { pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR }
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = MaterialTheme.shapes.extraSmall,
                 color = pt.avante.app.theme.WarmPaper
             ) {
                 Text(
@@ -93,14 +91,14 @@ fun ArticleCardFooter(
                     color = pt.avante.app.theme.TextSecondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xxs)
                 )
             }
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.xxs)
         ) {
             if (!article.isFree) {
                 Box(
@@ -130,7 +128,7 @@ fun ArticleCardFooter(
 fun NotesBookmarkOverlay(modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.semantics { contentDescription = "Artigo com notas" },
-        shape = RoundedCornerShape(topEnd = 12.dp, bottomStart = 12.dp),
+        shape = MaterialTheme.shapes.medium.copy(topStart = ZeroCornerSize, bottomEnd = ZeroCornerSize),
         color = Color(0xFFFFD54F), // Yellow ribbon
         shadowElevation = 2.dp
     ) {
@@ -138,7 +136,7 @@ fun NotesBookmarkOverlay(modifier: Modifier = Modifier) {
             imageVector = androidx.compose.material.icons.Icons.Default.Edit,
             contentDescription = null, // Semantics already on Surface
             tint = Color(0xFF5D4037), // Dark brown/ink
-            modifier = Modifier.padding(6.dp).size(16.dp)
+            modifier = Modifier.padding(Spacing.xs).size(16.dp)
         )
     }
 }

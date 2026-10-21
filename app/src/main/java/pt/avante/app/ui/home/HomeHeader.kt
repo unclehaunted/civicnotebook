@@ -1,5 +1,6 @@
 package pt.avante.app.ui.home
 
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import pt.avante.app.theme.SoftDivider
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.WarmPaper
 import pt.avante.app.ui.components.AvanteMasthead
+import pt.avante.app.theme.Spacing
 
 enum class HomeLayoutMode {
     STACK, GRID, LIST
@@ -57,7 +59,7 @@ fun HomeHeader(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(horizontal = Spacing.m, vertical = Spacing.xs),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -71,7 +73,7 @@ fun HomeHeader(
                             tint = OriginalRed.copy(alpha = if (isCompact) 0.8f else 1f),
                             modifier = Modifier.size(if (isCompact) 12.dp else 14.dp)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(Spacing.xs))
                         Text(
                             text = editionText,
                             style = if (isCompact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
@@ -116,9 +118,10 @@ fun HomeHeader(
 @Composable
 fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Unit, isFirst: Boolean = false, isLast: Boolean = false, isCompact: Boolean = false) {
     val shape = when {
-        isFirst -> RoundedCornerShape(topStart = 14.dp, bottomStart = 14.dp)
-        isLast -> RoundedCornerShape(topEnd = 14.dp, bottomEnd = 14.dp)
-        else -> RoundedCornerShape(0.dp)
+        // Pontas totalmente redondas e sem cantos no meio: formas, não raios.
+        isFirst -> RoundedCornerShape(topStartPercent = 50, bottomStartPercent = 50)
+        isLast -> RoundedCornerShape(topEndPercent = 50, bottomEndPercent = 50)
+        else -> RectangleShape
     }
     
     Surface(
@@ -133,8 +136,8 @@ fun SegmentedIconButton(icon: ImageVector, selected: Boolean, onClick: () -> Uni
             tint = if (selected) Color.White else OriginalRed,
             modifier = Modifier
                 .padding(
-                    horizontal = if (isCompact) 8.dp else 10.dp,
-                    vertical = if (isCompact) 4.dp else 5.dp
+                    horizontal = if (isCompact) Spacing.xs else Spacing.s,
+                    vertical = Spacing.xxs
                 )
                 .size(if (isCompact) 16.dp else 18.dp)
         )

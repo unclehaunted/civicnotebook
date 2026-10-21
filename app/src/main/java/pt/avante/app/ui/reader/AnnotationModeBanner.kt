@@ -8,7 +8,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextSecondary
+import pt.avante.app.theme.Spacing
 
 /** Faixa que avisa que o Modo de Anotação está ativo, igual nos layouts compacto e largo. */
 @Composable
@@ -37,12 +37,12 @@ fun AnnotationModeBanner(
     ) {
         Surface(
             color = Color(0xFFFDECEA),
-            shape = RoundedCornerShape(16.dp),
+            shape = MaterialTheme.shapes.large,
             border = BorderStroke(1.dp, OriginalRed),
             shadowElevation = 4.dp
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = Spacing.m, vertical = Spacing.xs),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(

@@ -27,15 +27,15 @@ fun CompactRowArticleCard(
             .clickable { onClick() }
             .padding(
                 horizontal = ArticleCardMetrics.cardHorizontalPadding, 
-                vertical = 6.dp
+                vertical = Spacing.xs
             ),
         colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color.White),
         border = androidx.compose.foundation.BorderStroke(1.dp, SoftDivider),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(ArticleCardMetrics.cardCornerRadius),
+        shape = MaterialTheme.shapes.medium,
         elevation = androidx.compose.material3.CardDefaults.outlinedCardElevation(defaultElevation = 1.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().padding(Spacing.s)) {
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     if (presentation.imagePolicy != pt.avante.app.ui.presentation.ArticleImagePolicy.NO_IMAGE &&
                         LocalReaderSettings.current.showImages) {
@@ -43,9 +43,9 @@ fun CompactRowArticleCard(
                             heroImageUrl = article.heroImageUrl,
                             imagePolicy = presentation.imagePolicy,
                             modifier = Modifier.size(ArticleCardMetrics.smallThumbnailSize),
-                            cornerRadius = 8.dp
+                            shape = MaterialTheme.shapes.small
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(Spacing.m))
                     }
                     
                     Column(modifier = Modifier.weight(1f)) {
@@ -57,7 +57,7 @@ fun CompactRowArticleCard(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(Spacing.xxs))
                         }
                         Text(
                             text = article.title,
@@ -69,7 +69,7 @@ fun CompactRowArticleCard(
                     }
                 }
                 if (presentation.showFooter || presentation.showFavourite) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Spacing.s))
                     ArticleCardFooter(
                         article = article,
                         author = pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(article.author),

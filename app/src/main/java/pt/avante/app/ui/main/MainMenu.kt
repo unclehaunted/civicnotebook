@@ -17,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import pt.avante.app.theme.Spacing
 
 /** Conteúdo do Menu aberto a partir da Edição. "Exportar notas" volta com #29. */
 @Composable
@@ -27,12 +27,12 @@ fun MainMenu(
     onAbout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(16.dp).fillMaxWidth()) {
+    Column(modifier = modifier.padding(Spacing.m).fillMaxWidth()) {
         Text(
             "Menu",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = Spacing.m)
         )
         ListItem(
             headlineContent = { Text("Assinatura") },
@@ -49,6 +49,6 @@ fun MainMenu(
             leadingContent = { Icon(Icons.Default.Info, contentDescription = null) },
             modifier = Modifier.clickable(onClick = onAbout)
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(Spacing.xl))
     }
 }

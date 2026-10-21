@@ -25,10 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import pt.avante.app.R
 import pt.avante.app.data.avante.ProjectSite
 import pt.avante.app.theme.OriginalRed
+import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
@@ -59,7 +59,7 @@ private fun SobreHeader(onBackClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(start = 4.dp, end = 16.dp),
+            .padding(start = Spacing.xxs, end = Spacing.m),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBackClick) {
@@ -86,8 +86,8 @@ private fun SobreBody(versionName: String) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = Spacing.l, vertical = Spacing.m),
+        verticalArrangement = Arrangement.spacedBy(Spacing.m)
     ) {
         Column {
             Text(

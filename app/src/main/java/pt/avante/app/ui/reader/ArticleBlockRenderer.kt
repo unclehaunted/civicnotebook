@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +22,7 @@ import pt.avante.app.theme.SoftDivider
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.ui.settings.LocalOpenSettings
 import pt.avante.app.ui.settings.LocalReaderSettings
+import pt.avante.app.theme.Spacing
 
 @Composable
 fun ArticleBlockRenderer(
@@ -61,26 +61,26 @@ fun ArticleBlockRenderer(
     )
 
     when (block) {
-        is ArticleBlock.Text -> selectable(block.content, modifier.padding(bottom = 16.dp))
+        is ArticleBlock.Text -> selectable(block.content, modifier.padding(bottom = Spacing.m))
         // Mesma margem superior de um parágrafo (nenhuma; o espaço vem do bloco anterior)
         // e margem inferior menor, para a pergunta ficar colada à resposta.
-        is ArticleBlock.Question -> selectable(block.content, modifier.padding(bottom = 6.dp), isBold = true)
+        is ArticleBlock.Question -> selectable(block.content, modifier.padding(bottom = Spacing.xs), isBold = true)
         is ArticleBlock.Subheading -> {
             Text(
                 text = block.text,
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color(readerTheme.textColor),
-                modifier = modifier.padding(top = 16.dp, bottom = 12.dp)
+                modifier = modifier.padding(top = Spacing.m, bottom = Spacing.s)
             )
         }
         is ArticleBlock.Quote -> {
             Surface(
                 color = Color(readerTheme.quoteSurfaceColor),
-                shape = RoundedCornerShape(8.dp),
+                shape = MaterialTheme.shapes.small,
                 border = androidx.compose.foundation.BorderStroke(2.dp, Color(readerTheme.quoteBorderColor)),
-                modifier = modifier.fillMaxWidth().padding(vertical = 12.dp)
+                modifier = modifier.fillMaxWidth().padding(vertical = Spacing.s)
             ) {
-                Box(modifier = Modifier.padding(16.dp)) {
+                Box(modifier = Modifier.padding(Spacing.m)) {
                     selectable(block.content, isQuote = true)
                 }
             }
@@ -89,7 +89,7 @@ fun ArticleBlockRenderer(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = 32.dp),
+                    .padding(vertical = Spacing.xl),
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
             ) {
                 androidx.compose.material3.Button(
@@ -98,14 +98,14 @@ fun ArticleBlockRenderer(
                         context.startActivity(intent)
                     },
                     colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = OriginalRed),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = MaterialTheme.shapes.small,
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .height(50.dp)
                 ) {
                     androidx.compose.material3.Text("Assinar o Avante!", color = androidx.compose.ui.graphics.Color.White, style = androidx.compose.material3.MaterialTheme.typography.labelLarge)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Spacing.m))
                 Text(
                     text = "Tem assinatura ou a edição impressa? Introduza a palavra-passe",
                     style = MaterialTheme.typography.labelLarge,
