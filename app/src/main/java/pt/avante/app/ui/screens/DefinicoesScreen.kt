@@ -271,6 +271,7 @@ fun DefinicoesScreen(
                             singleLine = true,
                             isError = authState == AuthState.PASSWORD_REJECTED,
                             modifier = Modifier.fillMaxWidth(),
+                            shape = MaterialTheme.shapes.small,
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = OriginalRed,
                                 focusedLabelColor = OriginalRed,

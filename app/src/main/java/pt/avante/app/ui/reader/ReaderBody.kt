@@ -23,6 +23,9 @@ import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
 
+/** Altura livre no fim do artigo para o botão flutuante não tapar o último parágrafo: um tamanho, não espaçamento. */
+private val FabClearance = 96.dp
+
 @Composable
 fun ReaderBody(
     article: Article,
@@ -49,7 +52,7 @@ fun ReaderBody(
             modifier = Modifier
                 .fillMaxSize()
                 .background(backgroundColor),
-            contentPadding = PaddingValues(bottom = Spacing.xxl * 2) // espaço para o FAB
+            contentPadding = PaddingValues(bottom = FabClearance)
         ) {
         item {
             heroContent()

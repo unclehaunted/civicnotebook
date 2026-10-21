@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import pt.avante.app.R
-import pt.avante.app.data.avante.ProjectSite
+import pt.avante.app.ProjectSite
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.TextPrimary

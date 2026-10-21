@@ -15,57 +15,6 @@
     <ID>EmptyFunctionBlock:SelectableArticleText.kt:&lt;no name provided&gt;${}</ID>
     <ID>ForbiddenComment:ArquivoScreen.kt:/* TODO: Subscribe */</ID>
     <ID>ForbiddenComment:ArticleCardSharedComponents.kt:/* TODO: Guardar artigo */</ID>
-    <ID>FunctionNaming:AdaptiveAppScaffold.kt:@Composable fun AdaptiveAppScaffold</ID>
-    <ID>FunctionNaming:AdaptiveContent.kt:@Composable fun AdaptiveContent</ID>
-    <ID>FunctionNaming:AnnotationActionRow.kt:@Composable fun AnnotationActionRow</ID>
-    <ID>FunctionNaming:AppViewport.kt:@Composable fun ProvideAppViewport</ID>
-    <ID>FunctionNaming:AnnotationModeBanner.kt:@Composable fun AnnotationModeBanner</ID>
-    <ID>FunctionNaming:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
-    <ID>FunctionNaming:ArticleBlockRenderer.kt:@Composable fun ArticleBlockRenderer</ID>
-    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun ArticleCardFooter</ID>
-    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun ArticleThumbnail</ID>
-    <ID>FunctionNaming:ArticleCardSharedComponents.kt:@Composable fun NotesBookmarkOverlay</ID>
-    <ID>FunctionNaming:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
-    <ID>FunctionNaming:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
-    <ID>FunctionNaming:AvanteMasthead.kt:@Composable fun AvanteMasthead</ID>
-    <ID>FunctionNaming:CadernoScreen.kt:@Composable fun CadernoScreen</ID>
-    <ID>FunctionNaming:CategoryRubricPill.kt:@Composable fun CategoryRubricPill</ID>
-    <ID>FunctionNaming:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
-    <ID>FunctionNaming:DefinicoesScreen.kt:@Composable private fun SectionHeader</ID>
-    <ID>FunctionNaming:DefinicoesScreen.kt:@Composable private fun SettingLabel</ID>
-    <ID>FunctionNaming:DefinicoesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DefinicoesScreen</ID>
-    <ID>FunctionNaming:GridImageArticleCard.kt:@Composable fun GridImageArticleCard</ID>
-    <ID>FunctionNaming:GridTextArticleCard.kt:@Composable fun GridTextArticleCard</ID>
-    <ID>FunctionNaming:HomeFeedLayouts.kt:@Composable fun ArticleGridLayout</ID>
-    <ID>FunctionNaming:HomeFeedLayouts.kt:@Composable fun ArticleListLayout</ID>
-    <ID>FunctionNaming:HomeFeedLayouts.kt:@OptIn(ExperimentalFoundationApi::class) @Composable fun ArticleStackPager</ID>
-    <ID>FunctionNaming:HomeFeedScreen.kt:@Composable fun HomeFeedScreen</ID>
-    <ID>FunctionNaming:HomeHeader.kt:@Composable fun HomeHeader</ID>
-    <ID>FunctionNaming:HomeHeader.kt:@Composable fun SegmentedIconButton</ID>
-    <ID>FunctionNaming:LeadArticleCard.kt:@Composable fun LeadArticleCard</ID>
-    <ID>FunctionNaming:MainApp.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainApp</ID>
-    <ID>FunctionNaming:MainBottomBar.kt:@Composable fun MainBottomBar</ID>
-    <ID>FunctionNaming:MainMenu.kt:@Composable fun MainMenu</ID>
-    <ID>FunctionNaming:SobreScreen.kt:@Composable fun SobreScreen</ID>
-    <ID>FunctionNaming:SobreScreen.kt:@Composable private fun SobreBody</ID>
-    <ID>FunctionNaming:MediumArticleCard.kt:@Composable fun MediumArticleCard</ID>
-    <ID>FunctionNaming:NoteList.kt:@Composable fun NoteList</ID>
-    <ID>FunctionNaming:NoteList.kt:@Composable internal fun NoteCard</ID>
-    <ID>FunctionNaming:TitleBar.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun TitleBar</ID>
-    <ID>FunctionNaming:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
-    <ID>FunctionNaming:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
-    <ID>FunctionNaming:ReaderActionRail.kt:@Composable fun ReaderActionRail</ID>
-    <ID>FunctionNaming:ReaderAnnotationSheets.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ReaderAnnotationSheets</ID>
-    <ID>FunctionNaming:ReaderBody.kt:@Composable fun ReaderBody</ID>
-    <ID>FunctionNaming:ReaderCompactLayout.kt:@Composable fun ReaderCompactLayout</ID>
-    <ID>FunctionNaming:ReaderEndMark.kt:@Composable fun ReaderEndMark</ID>
-    <ID>FunctionNaming:ReaderErrorContent.kt:@Composable fun ReaderErrorContent</ID>
-    <ID>FunctionNaming:ReaderFloatingActions.kt:@Composable fun ReaderFloatingActions</ID>
-    <ID>FunctionNaming:ReaderHero.kt:@Composable fun ReaderHero</ID>
-    <ID>FunctionNaming:ReaderProvenance.kt:@Composable fun ReaderProvenance</ID>
-    <ID>FunctionNaming:ReaderWideLayout.kt:@Composable fun ReaderWideLayout</ID>
-    <ID>FunctionNaming:SelectableArticleText.kt:@Composable fun SelectableArticleText</ID>
-    <ID>FunctionNaming:Theme.kt:@Composable fun OriginalTheme</ID>
     <ID>LongMethod:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
     <ID>LongMethod:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
     <ID>LongMethod:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>

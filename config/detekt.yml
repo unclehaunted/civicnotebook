@@ -8,3 +8,8 @@ empty-blocks:
 exceptions:
   SwallowedException:
     active: true
+
+naming:
+  FunctionNaming:
+    # Os composables seguem a convenção do Compose (PascalCase).
+    ignoreAnnotated: ['Composable']

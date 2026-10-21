@@ -101,6 +101,7 @@ fun PesquisaScreen(
                 placeholder = { Text(searchScope.placeholder, color = TextSecondary) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Pesquisar") },
                 singleLine = true,
+                shape = MaterialTheme.shapes.small,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = OriginalRed,
                     unfocusedBorderColor = TextSecondary.copy(alpha = 0.5f),

@@ -14,9 +14,3 @@ object AvanteSite {
     /** Índice da edição (tpl=183), o inventário canónico dos artigos. */
     fun indexUrl(editionNumber: String) = "$BASE_URL/pt/$editionNumber/?tpl=183"
 }
-
-/** Endereços da própria app, que não são do avante.pt. */
-object ProjectSite {
-    /** Repositório público do código da app, mostrado no ecrã Sobre. */
-    const val REPOSITORY_URL = "https://github.com/unclehaunted/civicnotebook"
-}

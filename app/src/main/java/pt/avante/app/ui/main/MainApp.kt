@@ -13,8 +13,6 @@ import pt.avante.app.BuildConfig
 import pt.avante.app.data.ArticleSummary
 import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.AppDatabase
-import pt.avante.app.theme.OriginalRed
-import pt.avante.app.theme.TextSecondary
 import pt.avante.app.ui.components.*
 import pt.avante.app.ui.layout.AdaptiveAppScaffold
 import pt.avante.app.ui.layout.LocalAppViewport
@@ -83,7 +81,7 @@ fun MainApp(
         navigationRail = {
             if (!isFullScreen) {
                 NavigationRail(
-                    containerColor = Color.White,
+                    containerColor = MainNavColors.container,
                     modifier = Modifier.fillMaxHeight(),
                     header = {
                         // Optional header content like a logo
@@ -95,13 +93,7 @@ fun MainApp(
                             label = { Text(dest.label) },
                             selected = currentTab == dest,
                             onClick = { currentTab = dest },
-                            colors = NavigationRailItemDefaults.colors(
-                                selectedIconColor = OriginalRed,
-                                selectedTextColor = OriginalRed,
-                                indicatorColor = OriginalRed.copy(alpha = 0.1f),
-                                unselectedIconColor = TextSecondary,
-                                unselectedTextColor = TextSecondary
-                            )
+                            colors = MainNavColors.railItem()
                         )
                     }
                 }
