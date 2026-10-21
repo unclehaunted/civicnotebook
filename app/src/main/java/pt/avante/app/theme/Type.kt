@@ -29,10 +29,10 @@ val LibreFranklin = FontFamily(
     Font(R.font.libre_franklin_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
-val SourceSans4 = FontFamily(
-    Font(R.font.source_sans_4_regular, FontWeight.Normal),
-    Font(R.font.source_sans_4_bold, FontWeight.Bold),
-    Font(R.font.source_sans_4_italic, FontWeight.Normal, FontStyle.Italic)
+val SourceSans3 = FontFamily(
+    Font(R.font.source_sans_3_regular, FontWeight.Normal),
+    Font(R.font.source_sans_3_bold, FontWeight.Bold),
+    Font(R.font.source_sans_3_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
 val AtkinsonHyperlegible = FontFamily(
@@ -53,7 +53,7 @@ fun readerFontFamily(font: ReaderFont): FontFamily = when (font) {
     ReaderFont.LIBRE_FRANKLIN -> LibreFranklin
     ReaderFont.ATKINSON_HYPERLEGIBLE -> AtkinsonHyperlegible
     ReaderFont.BITTER -> Bitter
-    ReaderFont.SOURCE_SANS -> SourceSans4
+    ReaderFont.SOURCE_SANS -> SourceSans3
     ReaderFont.IA_WRITER_DUO -> IAWriterDuo
 }
 

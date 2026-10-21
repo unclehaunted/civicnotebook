@@ -32,10 +32,10 @@ enum class ReaderFont(
     ),
     BITTER("Bitter", R.font.bitter_regular, R.font.bitter_italic, R.font.bitter_700),
     SOURCE_SANS(
-        "Source Sans 4",
-        R.font.source_sans_4_regular,
-        R.font.source_sans_4_italic,
-        R.font.source_sans_4_bold
+        "Source Sans 3",
+        R.font.source_sans_3_regular,
+        R.font.source_sans_3_italic,
+        R.font.source_sans_3_bold
     ),
     IA_WRITER_DUO(
         "iA Writer Duo",

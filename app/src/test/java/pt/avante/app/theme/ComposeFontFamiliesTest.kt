@@ -43,7 +43,7 @@ class ComposeFontFamiliesTest {
 
     @Test
     fun sourceSans_boldIsHeavierThanRegularAndRegularIsNotThin() =
-        assertWeights(SourceSans4, R.font.source_sans_vf)
+        assertWeights(SourceSans3, R.font.source_sans_vf)
 
     private fun assertWeights(family: FontFamily, variableFile: Int) {
         val ink = renderInk(

@@ -74,14 +74,14 @@ class NoteEditorVozesTest {
     }
 
     @Test
-    fun `o corpo da Nota usa a Escrita escolhida, Source Sans 4`() {
+    fun `o corpo da Nota usa a Escrita escolhida, Source Sans 3`() {
         editor(ReaderSettings(escrita = Escrita.SOURCE_SANS))
 
         composeRule.activity.assertDesenhadoCom(
             composeRule.onNodeWithText(CORPO).composicao(),
             CORPO,
             tamanhoSp = 18f,
-            esperado = R.font.source_sans_4_regular,
+            esperado = R.font.source_sans_3_regular,
             fallback = R.font.ia_writer_duo_regular
         )
     }

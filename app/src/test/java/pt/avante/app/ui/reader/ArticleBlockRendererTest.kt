@@ -232,7 +232,7 @@ class ArticleBlockRendererTest {
     @Test
     fun quote_inClassico_usesTheDisplayFaceBitterItalic() = assertUsesItalicFile(TiposDeLetra.CLASSICO, R.font.bitter_italic)
 
-    // Moderno: corpo em Source Sans 4, Citação no itálico do Libre Franklin.
+    // Moderno: corpo em Source Sans 3, Citação no itálico do Libre Franklin.
     @Test
     fun quote_inModerno_usesTheDisplayFaceLibreFranklinItalic() =
         assertUsesItalicFile(TiposDeLetra.MODERNO, R.font.libre_franklin_italic)
@@ -282,7 +282,7 @@ class ArticleBlockRendererTest {
     }
 
     @Test
-    fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.MODERNO, R.font.source_sans_4_bold)
+    fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(TiposDeLetra.MODERNO, R.font.source_sans_3_bold)
 
     /** O estilo com que o subtítulo foi composto, como o Compose o desenhou. */
     private fun renderedSubheadingStyle(settings: ReaderSettings): TextStyle {

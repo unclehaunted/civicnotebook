@@ -65,13 +65,13 @@ class DefinicoesScreenTest {
     }
 
     @Test
-    fun `escolher Source Sans 4 na Escrita fica guardado`() {
+    fun `escolher Source Sans 3 na Escrita fica guardado`() {
         show()
 
         composeRule.onNodeWithText("iA Writer Duo").performScrollTo().assertIsSelected()
-        composeRule.onNodeWithText("Source Sans 4").performScrollTo().performClick()
+        composeRule.onNodeWithText("Source Sans 3").performScrollTo().performClick()
 
-        composeRule.onNodeWithText("Source Sans 4").assertIsSelected()
+        composeRule.onNodeWithText("Source Sans 3").assertIsSelected()
         assertEquals(Escrita.SOURCE_SANS, reabrir().escrita)
     }
 }

@@ -28,5 +28,5 @@ enum class TiposDeLetra(val label: String, val display: ReaderFont, val texto: R
 /** Escrita (#5): a face das palavras do próprio Leitor nas Notas, distinta da do jornal. */
 enum class Escrita(val label: String, val face: ReaderFont) {
     IA_WRITER_DUO("iA Writer Duo", ReaderFont.IA_WRITER_DUO),
-    SOURCE_SANS("Source Sans 4", ReaderFont.SOURCE_SANS)
+    SOURCE_SANS("Source Sans 3", ReaderFont.SOURCE_SANS)
 }
