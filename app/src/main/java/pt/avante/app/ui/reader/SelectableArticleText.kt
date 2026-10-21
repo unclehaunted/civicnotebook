@@ -18,6 +18,7 @@ import pt.avante.app.data.ArticleBlock
 import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.LocalPaleta
+import pt.avante.app.theme.PapelDoTexto
 import pt.avante.app.theme.escalaDoArtigo
 import pt.avante.app.ui.settings.LocalReaderSettings
 
@@ -93,8 +94,7 @@ fun buildHighlightedText(
 fun SelectableArticleText(
     content: String,
     index: Int,
-    isQuote: Boolean = false,
-    isBold: Boolean = false,
+    papel: PapelDoTexto = PapelDoTexto.CORPO,
     isFinalBlock: Boolean = false,
     articleHighlights: List<HighlightEntity>,
     onHighlightClick: (HighlightEntity) -> Unit,
@@ -104,8 +104,7 @@ fun SelectableArticleText(
 ) {
     val settings = LocalReaderSettings.current
     val paleta = LocalPaleta.current
-    // A Citação tem cor própria, um vermelho da família do acento (#7).
-    val corDoTexto = (if (isQuote) paleta.citacao else paleta.textoPrimario).toInt()
+    val corDoTexto = paleta.cor(papel.cor).toInt()
 
     val spannableText = androidx.compose.runtime.remember(content, articleHighlights, index, isFinalBlock, paleta) {
         buildHighlightedText(
@@ -164,22 +163,9 @@ fun SelectableArticleText(
             }
         },
         update = { view ->
-            // Aplicar preferências de leitura (Definições)
-            // Itálico e negrito vêm de ficheiros desenhados (#6), nunca de um estilo sintetizado.
-            // Citações na face de display; corpo e Perguntas na face de texto (#13).
-            val tipos = settings.tiposDeLetra
-            val faceResId = when {
-                isQuote -> tipos.display.italicFontResId
-                isBold -> tipos.texto.boldFontResId
-                else -> tipos.texto.regularFontResId
-            }
-            view.typeface = ResourcesCompat.getFont(view.context, faceResId)
-            val escala = escalaDoArtigo(settings.fontSize)
-            view.textSize = when {
-                isQuote -> escala.citacao
-                isBold -> escala.pergunta
-                else -> escala.corpo
-            }
+            // Aplicar preferências de leitura (Definições): face e tamanho do papel do bloco.
+            view.typeface = ResourcesCompat.getFont(view.context, papel.faceResId(settings.tiposDeLetra))
+            view.textSize = papel.tamanhoSp(escalaDoArtigo(settings.fontSize))
             // Entrelinha do Espaçamento, em múltiplos do tamanho do texto (não da altura natural
             // da fonte, que varia de face para face).
             val lineHeight = ArticleSpacing.resolve(settings.fontSize, settings.spacing).lineHeight

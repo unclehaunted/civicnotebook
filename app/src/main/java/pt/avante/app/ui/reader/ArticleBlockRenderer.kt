@@ -17,6 +17,7 @@ import pt.avante.app.data.ArticleSpacing
 import pt.avante.app.data.avante.AvanteSite
 import pt.avante.app.data.db.HighlightEntity
 import pt.avante.app.theme.Cores
+import pt.avante.app.theme.PapelDoTexto
 import pt.avante.app.ui.settings.LocalOpenSettings
 import pt.avante.app.ui.settings.LocalReaderSettings
 import pt.avante.app.theme.Spacing
@@ -43,14 +44,12 @@ fun ArticleBlockRenderer(
     @Composable
     fun selectable(
         content: String,
-        modifier: Modifier = Modifier,
-        isQuote: Boolean = false,
-        isBold: Boolean = false
+        papel: PapelDoTexto,
+        modifier: Modifier = Modifier
     ) = SelectableArticleText(
         content = content,
         index = index,
-        isQuote = isQuote,
-        isBold = isBold,
+        papel = papel,
         isFinalBlock = isFinalCompleteTextBlock,
         articleHighlights = articleHighlights,
         onHighlightClick = onHighlightClick,
@@ -69,11 +68,11 @@ fun ArticleBlockRenderer(
     val withGap = modifier.padding(bottom = gapBelow)
 
     when (block) {
-        is ArticleBlock.Text -> selectable(block.content, withGap)
-        is ArticleBlock.Question -> selectable(block.content, withGap, isBold = true)
+        is ArticleBlock.Text -> selectable(block.content, PapelDoTexto.CORPO, withGap)
+        is ArticleBlock.Question -> selectable(block.content, PapelDoTexto.PERGUNTA, withGap)
         is ArticleBlock.Subheading -> ArticleSubheading(block.text, withGap)
         // Citação (#13, story 9): itálico da face de display, cor própria e recuo, sem caixa nem borda.
-        is ArticleBlock.Quote -> selectable(block.content, withGap.padding(start = quoteIndent), isQuote = true)
+        is ArticleBlock.Quote -> selectable(block.content, PapelDoTexto.CITACAO, withGap.padding(start = quoteIndent))
         is ArticleBlock.PaywallCTA -> {
             Column(
                 modifier = modifier
