@@ -2,7 +2,6 @@ package pt.avante.app.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -43,6 +42,11 @@ private const val METADE = 0.5f
 /**
  * Aparência (#8): as cores da app inteira, não só do artigo. Cada amostra mostra o fundo e o
  * acento da sua Aparência; a da Automática (#5) mostra as duas que ela alterna, Papel e Escuro.
+ *
+ * As cinco repartem a linha em partes iguais, sem intervalo entre elas: a folga entre amostras
+ * vem da largura de cada parte, que a 360dp é 62dp, acima do alvo mínimo ([AlvoMinimo]). Um
+ * intervalo fixo deixava a última com o que sobrava. O rótulo fica numa linha e, se for mais
+ * largo do que a parte, sai por igual para os dois lados, sobre a folga entre amostras.
  */
 @Composable
 internal fun AparenciaOpcoes(
@@ -50,16 +54,13 @@ internal fun AparenciaOpcoes(
     onSelect: (ReaderTheme) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth().selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.m)
-    ) {
+    Row(modifier = modifier.fillMaxWidth().selectableGroup()) {
         ReaderTheme.entries.forEach { aparencia ->
             val selected = aparencia == selecionada
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .widthIn(min = AlvoMinimo)
+                    .weight(1f)
                     .selectable(selected = selected, onClick = { onSelect(aparencia) }, role = Role.RadioButton)
             ) {
                 Box(
@@ -79,7 +80,10 @@ internal fun AparenciaOpcoes(
                 Text(
                     text = aparencia.label,
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (selected) Cores.acento else Cores.textoSecundario
+                    color = if (selected) Cores.acento else Cores.textoSecundario,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.wrapContentWidth(unbounded = true)
                 )
             }
         }
