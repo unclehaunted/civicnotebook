@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -12,6 +13,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -60,7 +62,8 @@ class NoteListTest {
         assertTrue("altura $height", height >= 48.dp)
     }
 
-    private fun assertExcerptBarMatchesText(excerpt: String) {
+    /** Desenha um cartão com o Excerto, verifica que a barra tem a altura do texto e devolve as linhas do texto. */
+    private fun assertExcerptBarMatchesText(excerpt: String): Int {
         composeRule.setContent {
             Box(Modifier.width(360.dp)) {
                 NoteCard(note = note("n1", "Uma Nota", body = "> $excerpt"), onClick = {}, onDelete = {})
@@ -68,13 +71,17 @@ class NoteListTest {
         }
 
         // O cartão é clicável e funde os filhos; o texto e a barra só existem na árvore não fundida.
-        val text = composeRule.onNodeWithText(excerpt, substring = true, useUnmergedTree = true)
-            .getUnclippedBoundsInRoot()
+        val textNode = composeRule.onNodeWithText(excerpt, substring = true, useUnmergedTree = true)
+        val text = textNode.getUnclippedBoundsInRoot()
         val bar = composeRule.onNodeWithTag(EXCERPT_BAR_TAG, useUnmergedTree = true).getUnclippedBoundsInRoot()
 
         val textHeight = text.bottom - text.top
         val barHeight = bar.bottom - bar.top
         assertEquals("barra $barHeight, texto $textHeight", textHeight.value, barHeight.value, 1f)
+
+        val layouts = mutableListOf<TextLayoutResult>()
+        textNode.fetchSemanticsNode().config[SemanticsActions.GetTextLayoutResult].action?.invoke(layouts)
+        return layouts.single().lineCount
     }
 
     @Test
@@ -99,13 +106,14 @@ class NoteListTest {
 
     @Test
     fun `barra do Excerto de uma linha tem a altura do texto`() {
-        assertExcerptBarMatchesText("Curto.")
+        assertEquals(1, assertExcerptBarMatchesText("Curto."))
     }
 
     @Test
     fun `barra do Excerto de duas linhas tem a altura do texto`() {
-        assertExcerptBarMatchesText(
+        val lines = assertExcerptBarMatchesText(
             "Um Excerto comprido que não cabe numa só linha do cartão de Nota e passa para a segunda linha sem dúvida."
         )
+        assertTrue("o Excerto ocupa $lines linha(s), devia passar para a segunda", lines >= 2)
     }
 }
