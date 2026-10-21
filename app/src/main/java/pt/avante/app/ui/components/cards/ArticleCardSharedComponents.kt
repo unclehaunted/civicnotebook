@@ -81,10 +81,12 @@ fun ArticleCardFooter(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             val displayAuthor = author.ifBlank { pt.avante.app.data.DEFAULT_ARTICLE_AUTHOR }
+            // Neutra, como a pílula do tipo de Nota: sobre o cartão, o fundo da página quase não se via.
             Pill(
                 text = displayAuthor,
-                containerColor = Cores.fundo,
+                containerColor = Cores.superficie,
                 contentColor = Cores.textoSecundario,
+                shape = CircleShape,
                 horizontalPadding = Spacing.s
             )
         }
