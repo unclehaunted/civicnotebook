@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,7 +51,7 @@ fun AvanteMasthead(
                 Icon(Icons.Default.Menu, contentDescription = "Menu")
             }
 
-            // Logo
+            // Logo: as letras na cor do texto da Aparência, o acento vermelho por cima, na mesma tela.
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -58,8 +59,15 @@ fun AvanteMasthead(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_avante),
+                    painter = painterResource(id = R.drawable.ic_avante_letras),
                     contentDescription = Publication.AVANTE.displayName,
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(Cores.textoPrimario),
+                    modifier = Modifier.fillMaxSize()
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_avante_acento),
+                    contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
