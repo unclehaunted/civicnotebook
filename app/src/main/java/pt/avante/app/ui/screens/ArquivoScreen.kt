@@ -18,6 +18,7 @@ import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.components.TitleBar
 
 // Placeholder mock. The subscriber gate below is mock-only: the Arquivo is open to all
 // and its behaviour is being decided in GitHub issue #35 (map).
@@ -31,6 +32,8 @@ fun ArquivoScreen(
         color = WarmPaper
     ) {
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
+          Column(modifier = Modifier.fillMaxSize()) {
+            TitleBar(title = "Arquivo")
             if (!isSubscriber) {
                 // Non-subscriber view: Blurred grid + Red pill
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -106,6 +109,7 @@ fun ArquivoScreen(
                     Text("Arquivo Completo Disponível (Brevemente)", color = TextPrimary)
                 }
             }
+          }
         }
     }
 }

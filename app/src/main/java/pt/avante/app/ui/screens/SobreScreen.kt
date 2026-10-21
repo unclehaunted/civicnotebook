@@ -2,25 +2,15 @@ package pt.avante.app.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -32,6 +22,7 @@ import pt.avante.app.theme.Spacing
 import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
+import pt.avante.app.ui.components.TitleBar
 
 private const val INDEPENDENCE_NOTE =
     "Projeto independente, sem ligação oficial ao «Avante!». " +
@@ -46,35 +37,9 @@ fun SobreScreen(
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = WarmPaper) {
         Column(modifier = Modifier.fillMaxSize()) {
-            SobreHeader(onBackClick = onBackClick)
+            TitleBar(title = "Sobre", onBack = onBackClick)
             SobreBody(versionName = versionName)
         }
-    }
-}
-
-/** Cabeçalho simples; #51 troca-o pela barra de título comum. */
-@Composable
-private fun SobreHeader(onBackClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(start = Spacing.xxs, end = Spacing.m),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
-                tint = OriginalRed
-            )
-        }
-        Text(
-            text = "Sobre",
-            style = MaterialTheme.typography.headlineSmall,
-            color = TextPrimary,
-            fontWeight = FontWeight.Bold
-        )
     }
 }
 

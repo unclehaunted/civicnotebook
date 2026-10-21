@@ -3,7 +3,6 @@ package pt.avante.app.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FormatBold
 import androidx.compose.material.icons.filled.FormatItalic
 import androidx.compose.material.icons.filled.FormatQuote
@@ -17,12 +16,11 @@ import androidx.compose.ui.unit.dp
 import pt.avante.app.theme.OriginalRed
 import pt.avante.app.theme.SoftDivider
 import pt.avante.app.theme.TextPrimary
-import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
-import androidx.compose.foundation.clickable
 import pt.avante.app.viewmodel.NoteEditorUiState
 import pt.avante.app.viewmodel.NoteViewModel
 import pt.avante.app.theme.Spacing
+import pt.avante.app.ui.components.TitleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,43 +57,17 @@ fun NoteEditorScreen(
                 is NoteEditorUiState.Success -> {
                     val note = state.note
                     Column(modifier = Modifier.fillMaxSize()) {
-                        TopAppBar(
-                            title = { 
-                                Column {
-                                    Text("Editar Nota", color = TextPrimary)
-                                    if (isSaving) {
-                                        Text(
-                                            text = "A guardar...",
-                                            style = MaterialTheme.typography.labelSmall,
-                                            color = TextSecondary
-                                        )
-                                    }
-                                }
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = onBackClick) {
-                                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = TextPrimary)
-                                }
-                            },
+                        TitleBar(
+                            title = "Editar Nota",
+                            subtitle = if (isSaving) "A guardar..." else null,
+                            onBack = onBackClick,
                             actions = {
                                 if (state.articleSourceId != null) {
-                                    Surface(
-                                        color = OriginalRed.copy(alpha = 0.1f),
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                        modifier = Modifier
-                                            .padding(end = Spacing.m)
-                                            .clickable { onOpenArticle(state.articleSourceId) }
-                                    ) {
-                                        Text(
-                                            "Ver Artigo", 
-                                            color = OriginalRed, 
-                                            style = MaterialTheme.typography.labelMedium,
-                                            modifier = Modifier.padding(horizontal = Spacing.s, vertical = Spacing.xs)
-                                        )
+                                    TextButton(onClick = { onOpenArticle(state.articleSourceId) }) {
+                                        Text("Ver Artigo", color = OriginalRed)
                                     }
                                 }
-                            },
-                            colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper)
+                            }
                         )
     
                         HorizontalDivider(color = SoftDivider)

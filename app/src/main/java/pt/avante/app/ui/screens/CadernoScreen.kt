@@ -8,16 +8,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import pt.avante.app.theme.*
 import pt.avante.app.ui.components.NoteList
+import pt.avante.app.ui.components.TitleBar
 import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
 import pt.avante.app.viewmodel.CadernoUiState
 import pt.avante.app.viewmodel.CadernoViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CadernoScreen(
     viewModel: CadernoViewModel,
@@ -57,17 +56,8 @@ fun CadernoScreen(
     ) { paddingValues ->
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
             Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                CenterAlignedTopAppBar(
-                    title = { 
-                        Text(
-                            "Caderno", 
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = OriginalRed
-                        ) 
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = WarmPaper),
-                )
-                
+                TitleBar(title = "Caderno")
+
                 HorizontalDivider(color = SoftDivider)
 
                 when (val state = uiState) {

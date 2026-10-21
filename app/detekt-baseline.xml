@@ -28,7 +28,7 @@
     <ID>FunctionNaming:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
     <ID>FunctionNaming:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
     <ID>FunctionNaming:AvanteMasthead.kt:@Composable fun AvanteMasthead</ID>
-    <ID>FunctionNaming:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
+    <ID>FunctionNaming:CadernoScreen.kt:@Composable fun CadernoScreen</ID>
     <ID>FunctionNaming:CategoryRubricPill.kt:@Composable fun CategoryRubricPill</ID>
     <ID>FunctionNaming:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
     <ID>FunctionNaming:DefinicoesScreen.kt:@Composable private fun SectionHeader</ID>
@@ -48,10 +48,10 @@
     <ID>FunctionNaming:MainMenu.kt:@Composable fun MainMenu</ID>
     <ID>FunctionNaming:SobreScreen.kt:@Composable fun SobreScreen</ID>
     <ID>FunctionNaming:SobreScreen.kt:@Composable private fun SobreBody</ID>
-    <ID>FunctionNaming:SobreScreen.kt:@Composable private fun SobreHeader</ID>
     <ID>FunctionNaming:MediumArticleCard.kt:@Composable fun MediumArticleCard</ID>
     <ID>FunctionNaming:NoteList.kt:@Composable fun NoteList</ID>
     <ID>FunctionNaming:NoteList.kt:@Composable internal fun NoteCard</ID>
+    <ID>FunctionNaming:TitleBar.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun TitleBar</ID>
     <ID>FunctionNaming:NoteEditorScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun NoteEditorScreen</ID>
     <ID>FunctionNaming:PesquisaScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun PesquisaScreen</ID>
     <ID>FunctionNaming:ReaderActionRail.kt:@Composable fun ReaderActionRail</ID>
@@ -69,7 +69,7 @@
     <ID>LongMethod:ArquivoScreen.kt:@Composable fun ArquivoScreen</ID>
     <ID>LongMethod:ArticleReaderScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArticleReaderScreen</ID>
     <ID>LongMethod:ArticleSummaryCard.kt:@Composable fun ArticleSummaryCard</ID>
-    <ID>LongMethod:CadernoScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun CadernoScreen</ID>
+    <ID>LongMethod:CadernoScreen.kt:@Composable fun CadernoScreen</ID>
     <ID>LongMethod:CompactRowArticleCard.kt:@Composable fun CompactRowArticleCard</ID>
     <ID>LongMethod:DefinicoesScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun DefinicoesScreen</ID>
     <ID>LongMethod:GridImageArticleCard.kt:@Composable fun GridImageArticleCard</ID>
@@ -221,14 +221,12 @@
     <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `note_sources` (`noteId` TEXT NOT NULL, `articleId` TEXT NOT NULL, `relationType` TEXT NOT NULL, PRIMARY KEY(`noteId`, `articleId`))")</ID>
     <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS `notes` (`noteId` TEXT NOT NULL, `title` TEXT NOT NULL, `bodyMarkdown` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `noteType` TEXT NOT NULL, PRIMARY KEY(`noteId`))")</ID>
     <ID>MaxLineLength:MigrationTest.kt:MigrationTest.&lt;no name provided&gt;$db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")</ID>
-    <ID>MaxLineLength:NoteEditorScreen.kt:Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = TextPrimary)</ID>
     <ID>MaxLineLength:NoteEditorScreen.kt:modifier = Modifier.padding(end = 16.dp).clickable { onOpenArticle(state.articleSourceId) }</ID>
     <ID>MaxLineLength:NoteEditorScreen.kt:textStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = TextPrimary)</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:formattedTaxonomy = pt.avante.app.ui.presentation.ArticleTaxonomyFormatter.formatPillText(article.categoryLabel, article.subcategoryLabel)</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (homeUiState is HomeUiState.Loading) "A carregar edição..." else "Pesquisa na edição atual indisponível.\nLigue-se à internet para obter a edição atual."</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise artigos na edição atual." else "Nenhum resultado encontrado na edição atual."</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:text = if (searchQuery.isBlank()) "Pesquise no seu caderno." else "Nenhum resultado encontrado no caderno."</ID>
-    <ID>MaxLineLength:PesquisaScreen.kt:title = { Text("Pesquisa", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = TextPrimary) }</ID>
     <ID>MaxLineLength:PesquisaScreen.kt:variant = pt.avante.app.ui.presentation.ArticlePresentationVariant.GRID_COMPACT_ROW</ID>
     <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$val formattedAuthor = author?.let { pt.avante.app.ui.presentation.ArticleAuthorFormatter.formatAuthor(it) }?.takeIf { it.isNotBlank() }</ID>
     <ID>MaxLineLength:ProvenanceFormatter.kt:ProvenanceFormatter$withStyle</ID>

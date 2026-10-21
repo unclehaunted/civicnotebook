@@ -9,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,6 +33,7 @@ import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
 import pt.avante.app.theme.readerFontFamily
 import pt.avante.app.theme.Spacing
+import pt.avante.app.ui.components.TitleBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,27 +49,7 @@ fun DefinicoesScreen(
 
     Surface(modifier = Modifier.fillMaxSize(), color = WarmPaper) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Spacing.xxl, start = Spacing.xs, end = Spacing.m, bottom = Spacing.xs),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = OriginalRed
-                    )
-                }
-                Text(
-                    text = "Definições",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = TextPrimary,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            TitleBar(title = "Definições", onBack = onBackClick)
 
             Column(
                 modifier = Modifier

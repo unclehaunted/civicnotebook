@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pt.avante.app.data.ArticleSummary
@@ -44,6 +41,7 @@ import pt.avante.app.theme.TextPrimary
 import pt.avante.app.theme.TextSecondary
 import pt.avante.app.theme.WarmPaper
 import pt.avante.app.ui.components.NoteList
+import pt.avante.app.ui.components.TitleBar
 import pt.avante.app.ui.components.rememberDeleteNoteWithUndo
 import pt.avante.app.viewmodel.HomeUiState
 import pt.avante.app.viewmodel.PesquisaViewModel
@@ -74,13 +72,7 @@ fun PesquisaScreen(
       Box(modifier = Modifier.fillMaxSize()) {
         pt.avante.app.ui.layout.AdaptiveContent(maxWidth = 960.dp) {
             Column(modifier = Modifier.fillMaxSize()) {
-            CenterAlignedTopAppBar(
-                title = { Text("Pesquisa", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = TextPrimary) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = WarmPaper,
-                    titleContentColor = TextPrimary
-                )
-            )
+            TitleBar(title = "Pesquisa")
 
             TabRow(
                 selectedTabIndex = searchScope.ordinal,

@@ -18,6 +18,7 @@ import pt.avante.app.theme.TextSecondary
 import pt.avante.app.ui.components.*
 import pt.avante.app.ui.layout.AdaptiveAppScaffold
 import pt.avante.app.ui.layout.LocalAppViewport
+import pt.avante.app.ui.layout.scaffoldContentPadding
 import pt.avante.app.ui.reader.ArticleReaderScreen
 import pt.avante.app.ui.screens.*
 import pt.avante.app.viewmodel.*
@@ -110,7 +111,7 @@ fun MainApp(
       CompositionLocalProvider(
         pt.avante.app.ui.settings.LocalOpenSettings provides ({ showSettings = true } as () -> Unit)
       ) {
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.scaffoldContentPadding(innerPadding)) {
             // Back handler hierarchy
             val backEnabled = showMenuSheet || isFullScreen
             androidx.activity.compose.BackHandler(enabled = backEnabled) {
