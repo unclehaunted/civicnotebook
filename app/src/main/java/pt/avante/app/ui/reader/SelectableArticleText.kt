@@ -142,14 +142,13 @@ fun SelectableArticleText(
         },
         update = { view ->
             // Aplicar preferências de leitura (Definições)
-            val boldFontResId = if (isBold) settings.font.boldFontResId else null
-            val typeface = ResourcesCompat.getFont(view.context, boldFontResId ?: settings.font.fontResId)
-            val style = when {
-                isQuote -> android.graphics.Typeface.ITALIC
-                isBold && boldFontResId == null -> android.graphics.Typeface.BOLD // sem negrito real: sintetizado
-                else -> android.graphics.Typeface.NORMAL
+            // Itálico e negrito vêm de ficheiros desenhados (#6), nunca de um estilo sintetizado.
+            val faceResId = when {
+                isQuote -> settings.font.italicFontResId
+                isBold -> settings.font.boldFontResId
+                else -> settings.font.regularFontResId
             }
-            view.setTypeface(typeface, style)
+            view.typeface = ResourcesCompat.getFont(view.context, faceResId)
             view.textSize = settings.fontSize.spValue
             view.setTextColor(settings.theme.textColor.toInt())
 

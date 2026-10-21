@@ -29,7 +29,7 @@ rule() {
 # Cores literais na UI: vêm do resolver da Aparência (ADR 0001).
 rule cores-literais 11 '#8' 'Color\(0x' ui
 # Estilo sintetizado: itálico/negrito vêm de ficheiros desenhados ou do eixo wght.
-rule estilo-sintetizado 1 '#6' 'setTypeface\(\s*\w+\s*,' .
+rule estilo-sintetizado 0 '#6' 'setTypeface\(\s*\w+\s*,' .
 # Texto abaixo de 12sp.
 rule texto-abaixo-de-12sp 4 '#11' 'fontSize\s*=\s*([0-9]|1[01])(\.[0-9]+)?\.sp' .
 

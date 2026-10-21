@@ -189,16 +189,76 @@ class ArticleBlockRendererTest {
         assertFalse(view.paint.isFakeBoldText)
     }
 
-    // Libre Franklin nunca aparece a negrito: a pergunta usa o Bitter 700 dos títulos.
+    // #6, story 2: a Pergunta usa o negrito da própria fonte do corpo (eixo wght), não o Bitter 700.
     @Test
-    fun question_withLibreFranklin_usesTitleBoldBitter() = assertUsesBoldFile(ReaderFont.LIBRE_FRANKLIN, R.font.bitter_700)
+    fun question_withLibreFranklin_usesItsOwnBold() = assertUsesBoldFile(ReaderFont.LIBRE_FRANKLIN, R.font.libre_franklin_bold)
+
+    // #6, story 1: a Citação usa o itálico desenhado da fonte, não o regular inclinado.
+    @Test
+    fun quote_withAtkinson_usesItsItalicFile() = assertUsesItalicFile(ReaderFont.ATKINSON_HYPERLEGIBLE, R.font.atkinson_hyperlegible_italic)
 
     @Test
-    fun question_withoutBoldFontFile_fallsBackToSynthesizedBold() {
-        val view = render(ArticleBlock.Question("Porquê?"), settings = ReaderSettings(font = ReaderFont.SOURCE_SANS))
+    fun quote_withBitter_usesItsItalic() = assertUsesItalicFile(ReaderFont.BITTER, R.font.bitter_italic)
 
-        // Sem ficheiro a 700 o Android sintetiza o negrito a partir do tipo regular.
-        assertTrue(view.typeface.isBold)
-        assertNotSame(font(R.font.source_sans_4_regular), view.typeface)
+    @Test
+    fun quote_withLibreFranklin_usesItsItalic() = assertUsesItalicFile(ReaderFont.LIBRE_FRANKLIN, R.font.libre_franklin_italic)
+
+    private fun assertUsesItalicFile(readerFont: ReaderFont, italicRes: Int) {
+        val view = render(ArticleBlock.Quote("A luta continua."), settings = ReaderSettings(font = readerFont))
+
+        assertSame(font(italicRes), view.typeface)
+        assertEquals(0f, view.paint.textSkewX, 0f)
+    }
+
+    // As fontes variáveis abrem na instância Thin: o itálico tem de vir com o peso do texto.
+    @Test
+    fun quote_withBitter_hasTextWeightNotTheThinDefault() {
+        val view = render(ArticleBlock.Quote("A luta continua."), settings = ReaderSettings(font = ReaderFont.BITTER))
+
+        assertTrue(ink(view.typeface) > ink(font(R.font.bitter_italic_vf)) * 1.5f)
+    }
+
+    @Test
+    fun libreFranklin_textIsTheRegularWeightAndQuestionIsHeavier() {
+        val (question, text, quote) = renderAll(
+            listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Text("Entrei."), ArticleBlock.Quote("A luta.")),
+            ReaderSettings(font = ReaderFont.LIBRE_FRANKLIN)
+        )
+
+        assertTrue(ink(text.typeface) > ink(font(R.font.libre_franklin_vf)) * 1.5f)
+        assertTrue(ink(quote.typeface) > ink(font(R.font.libre_franklin_italic_vf)) * 1.5f)
+        assertTrue(ink(question.typeface) > ink(text.typeface) * 1.2f)
+    }
+
+    /** Píxeis pintados por uma amostra de texto: mede o peso do traço que o leitor vê. */
+    private fun ink(typeface: Typeface): Int {
+        val bitmap = android.graphics.Bitmap.createBitmap(600, 80, android.graphics.Bitmap.Config.ARGB_8888)
+        val paint = android.graphics.Paint().apply {
+            this.typeface = typeface
+            textSize = 48f
+            color = android.graphics.Color.BLACK
+        }
+        android.graphics.Canvas(bitmap).drawText("Avante camaradas", 0f, 60f, paint)
+        val pixels = IntArray(bitmap.width * bitmap.height)
+        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+        return pixels.count { android.graphics.Color.alpha(it) > 128 }
+    }
+
+    @Test
+    fun question_withSourceSans_usesItsOwnBold() = assertUsesBoldFile(ReaderFont.SOURCE_SANS, R.font.source_sans_4_bold)
+
+    @Test
+    fun quote_withSourceSans_usesItsItalic() = assertUsesItalicFile(ReaderFont.SOURCE_SANS, R.font.source_sans_4_italic)
+
+    @Test
+    fun sourceSans_textIsTheRegularWeightAndQuestionIsHeavier() {
+        val (question, text, quote) = renderAll(
+            listOf(ArticleBlock.Question("Porquê?"), ArticleBlock.Text("Entrei."), ArticleBlock.Quote("A luta.")),
+            ReaderSettings(font = ReaderFont.SOURCE_SANS)
+        )
+
+        assertTrue(ink(text.typeface) > ink(font(R.font.source_sans_vf)) * 1.5f)
+        assertTrue(ink(quote.typeface) > ink(font(R.font.source_sans_italic_vf)) * 1.5f)
+        assertTrue(ink(question.typeface) > ink(text.typeface) * 1.2f)
     }
 }

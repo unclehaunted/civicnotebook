@@ -4,46 +4,54 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import pt.avante.app.R
+import pt.avante.app.data.ReaderFont
+
+// Itálico e negrito sempre de ficheiros desenhados ou dos recursos XML que fixam a instância
+// wght de uma fonte variável (a instância por omissão é a mais leve): nunca sintetizados (#6).
 
 val Bitter = FontFamily(
     Font(R.font.bitter_regular, FontWeight.Normal),
-    Font(R.font.bitter_700, FontWeight.Bold),
-    Font(R.font.bitter_600, FontWeight.SemiBold)
+    Font(R.font.bitter_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.bitter_600, FontWeight.SemiBold),
+    Font(R.font.bitter_700, FontWeight.Bold)
 )
 
 val LibreFranklin = FontFamily(
-    Font(R.font.libre_franklin, FontWeight.Normal),
-    Font(R.font.libre_franklin, FontWeight.Medium),
-    Font(R.font.libre_franklin, FontWeight.Bold)
-)
-
-val IBMPlexSans = FontFamily(
-    Font(R.font.ibm_plex_sans_regular, FontWeight.Normal),
-    Font(R.font.ibm_plex_sans_medium, FontWeight.Medium),
-    Font(R.font.ibm_plex_sans_medium, FontWeight.Bold)
+    Font(R.font.libre_franklin_regular, FontWeight.Normal),
+    Font(R.font.libre_franklin_medium, FontWeight.Medium),
+    Font(R.font.libre_franklin_bold, FontWeight.Bold),
+    Font(R.font.libre_franklin_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
 val SourceSans4 = FontFamily(
     Font(R.font.source_sans_4_regular, FontWeight.Normal),
-    Font(R.font.source_sans_4_italic, FontWeight.Normal, style = androidx.compose.ui.text.font.FontStyle.Italic)
+    Font(R.font.source_sans_4_bold, FontWeight.Bold),
+    Font(R.font.source_sans_4_italic, FontWeight.Normal, FontStyle.Italic)
 )
 
 val AtkinsonHyperlegible = FontFamily(
     Font(R.font.atkinson_hyperlegible_regular, FontWeight.Normal),
     Font(R.font.atkinson_hyperlegible_700, FontWeight.Bold),
-    Font(R.font.atkinson_hyperlegible_italic, FontWeight.Normal, style = androidx.compose.ui.text.font.FontStyle.Italic)
+    Font(R.font.atkinson_hyperlegible_italic, FontWeight.Normal, FontStyle.Italic)
+)
+
+/** Escrita (#5): a face das palavras do Leitor nas Notas. */
+val IAWriterDuo = FontFamily(
+    Font(R.font.ia_writer_duo_regular, FontWeight.Normal),
+    Font(R.font.ia_writer_duo_italic, FontWeight.Normal, FontStyle.Italic),
+    Font(R.font.ia_writer_duo_bold, FontWeight.Bold)
 )
 
 /** Mapeia a escolha de fonte das Definições para a FontFamily Compose (usado em previews). */
-fun readerFontFamily(font: pt.avante.app.data.ReaderFont): FontFamily = when (font) {
-    pt.avante.app.data.ReaderFont.LIBRE_FRANKLIN -> LibreFranklin
-    pt.avante.app.data.ReaderFont.ATKINSON_HYPERLEGIBLE -> AtkinsonHyperlegible
-    pt.avante.app.data.ReaderFont.BITTER -> Bitter
-    pt.avante.app.data.ReaderFont.IBM_PLEX_SANS -> IBMPlexSans
-    pt.avante.app.data.ReaderFont.SOURCE_SANS -> SourceSans4
+fun readerFontFamily(font: ReaderFont): FontFamily = when (font) {
+    ReaderFont.LIBRE_FRANKLIN -> LibreFranklin
+    ReaderFont.ATKINSON_HYPERLEGIBLE -> AtkinsonHyperlegible
+    ReaderFont.BITTER -> Bitter
+    ReaderFont.SOURCE_SANS -> SourceSans4
 }
 
 val Typography = Typography(
@@ -97,21 +105,21 @@ val Typography = Typography(
         letterSpacing = 0.25.sp
     ),
     labelLarge = TextStyle(
-        fontFamily = IBMPlexSans,
+        fontFamily = LibreFranklin,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     labelMedium = TextStyle(
-        fontFamily = IBMPlexSans,
+        fontFamily = LibreFranklin,
         fontWeight = FontWeight.Medium,
         fontSize = 11.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = IBMPlexSans,
+        fontFamily = LibreFranklin,
         fontWeight = FontWeight.Medium,
         fontSize = 10.sp,
         lineHeight = 14.sp,
